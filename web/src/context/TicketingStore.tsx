@@ -3,8 +3,8 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { TicketType, TicketPurchase, TicketedEventSummary, EventWithDetails } from '@/types';
 import { mockTicketTypes, mockPurchases, ticketedEventIds } from '@/lib/mock-ticket-data';
-import { events as allEvents } from '@/lib/mock-data';
 import { getEventDate, getEventImageUrl } from '@/lib/helpers';
+import { useEventStore } from '@/context/EventStore';
 
 function buildSummary(
   event: EventWithDetails,
@@ -69,6 +69,7 @@ function genTicketTypeId() {
 }
 
 export function TicketingProvider({ children }: { children: React.ReactNode }) {
+  const { events: allEvents } = useEventStore();
   const [ticketTypes, setTicketTypes] = useState<TicketType[]>(mockTicketTypes);
   const [purchases, setPurchases] = useState<TicketPurchase[]>(mockPurchases);
   const [configuredMap, setConfiguredMap] = useState<Record<string, boolean>>(buildInitialConfigured);
@@ -78,12 +79,12 @@ export function TicketingProvider({ children }: { children: React.ReactNode }) {
     allEvents
       .filter(e => configuredMap[e.id])
       .map(e => buildSummary(e, ticketTypes, purchases)),
-    [configuredMap, ticketTypes, purchases]
+    [allEvents, configuredMap, ticketTypes, purchases]
   );
 
   const unticketedEvents = useMemo(() =>
     allEvents.filter(e => !configuredMap[e.id]),
-    [configuredMap]
+    [allEvents, configuredMap]
   );
 
   const assignTickets = useCallback((eventId: string, newTypes: Omit<TicketType, 'id' | 'eventId'>[]) => {

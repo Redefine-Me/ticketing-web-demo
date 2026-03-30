@@ -13,6 +13,8 @@ type TabId = (typeof tabs)[number]["id"];
 
 export function DashboardTabs({ children }: { children: React.ReactNode }) {
   const [activeTab, setActiveTab] = useState<TabId>("dashboard");
+  const mobilePreviewPath =
+    process.env.NEXT_PUBLIC_MOBILE_PREVIEW_PATH || "/mobile";
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -49,7 +51,7 @@ export function DashboardTabs({ children }: { children: React.ReactNode }) {
       ) : (
         <div className="relative flex-1 overflow-hidden bg-[#0a0a0a]">
           <iframe
-            src="http://localhost:3001"
+            src={mobilePreviewPath}
             className="absolute inset-0 h-full w-full border-0"
             title="Mobile App Preview"
           />

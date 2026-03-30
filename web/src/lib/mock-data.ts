@@ -1,4 +1,4 @@
-import { University, Society, Category, EventWithDetails, UserProfile } from '@/types';
+import { University, Society, Category, EventWithDetails, UserProfile } from '../types';
 
 // ── Universities ──────────────────────────────────────────────
 export const universities: University[] = [

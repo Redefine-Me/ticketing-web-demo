@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { EventWithDetails } from '@/types';
-import { events as mockEvents } from '@/lib/mock-data';
+import { categories, events as mockEvents, societies } from '@/lib/mock-data';
 
 interface EventStoreContextType {
   events: EventWithDetails[];
@@ -16,6 +16,144 @@ interface EventStoreContextType {
 const EventStoreContext = createContext<EventStoreContextType | null>(null);
 
 const STORAGE_KEY = 'rm_event_interactions';
+const SHARED_EVENTS_STORAGE_KEY = 'rm_shared_dashboard_events_v1';
+
+interface SharedDashboardSchedule {
+  scheduledAt: string;
+  isEnd: boolean;
+  order: number;
+  locationName: string | null;
+  locationId: string | null;
+  locationGoogleMapsUrl: string | null;
+}
+
+interface SharedDashboardEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: string | null;
+  likes: number;
+  attending: number;
+  categories: string[];
+  imageUrl: string | null;
+  registrationUrl: string | null;
+  isFree: boolean;
+  price: string | null;
+  schedules: SharedDashboardSchedule[];
+}
+
+function parseDashboardPrice(value: string | null): number | null {
+  if (!value) return null;
+  const cleaned = value.replace(/[^\d.]/g, '');
+  const parsed = Number.parseFloat(cleaned);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function makeCategory(name: string) {
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  return {
+    id: `cat-${slug || 'general'}`,
+    name: name.toLowerCase(),
+    slug: slug || 'general',
+  };
+}
+
+function mapCategoryNames(names: string[]) {
+  return names.map((raw) => {
+    const name = raw.trim();
+    const found = categories.find(
+      (c) => c.name.toLowerCase() === name.toLowerCase() || c.slug.toLowerCase() === name.toLowerCase()
+    );
+    return found ?? makeCategory(name);
+  });
+}
+
+function mapSchedules(event: SharedDashboardEvent, fallback: EventWithDetails | undefined) {
+  if (event.schedules.length === 0) {
+    return fallback?.schedule_entries ?? [];
+  }
+
+  return [...event.schedules]
+    .sort((a, b) => a.order - b.order)
+    .map((entry, index) => ({
+      id: `${event.id}-schedule-${index}`,
+      event_id: event.id,
+      location_id: entry.locationId,
+      scheduled_at: entry.scheduledAt,
+      is_end_schedule: entry.isEnd,
+      schedule_order: entry.order ?? index,
+      location: entry.locationName
+        ? {
+            id: entry.locationId ?? `${event.id}-location-${index}`,
+            name: entry.locationName,
+            street: null,
+            postcode: null,
+            google_maps_url: entry.locationGoogleMapsUrl ?? null,
+          }
+        : null,
+    }));
+}
+
+function dashboardToMobileEvents(
+  sharedEvents: SharedDashboardEvent[],
+  fallbackEvents: EventWithDetails[]
+): EventWithDetails[] {
+  const byId = new Map(fallbackEvents.map((e) => [e.id, e]));
+
+  return sharedEvents.map((event, index) => {
+    const fallback = byId.get(event.id);
+    const mappedCategories = mapCategoryNames(event.categories ?? []);
+    const primaryCategory =
+      mappedCategories[0] ??
+      fallback?.category ??
+      categories[0] ??
+      makeCategory('general');
+
+    return {
+      id: event.id,
+      name: event.title,
+      description: event.description ?? '',
+      is_free: event.isFree,
+      price: event.isFree ? null : parseDashboardPrice(event.price),
+      registration_url: event.registrationUrl,
+      source_post_url: fallback?.source_post_url ?? null,
+      like_count: event.likes,
+      attend_count: event.attending,
+      created_at: event.date ?? fallback?.created_at ?? new Date().toISOString(),
+      category: primaryCategory,
+      categories: mappedCategories.length > 0 ? mappedCategories : [primaryCategory],
+      societies:
+        fallback?.societies && fallback.societies.length > 0
+          ? fallback.societies
+          : [societies[index % societies.length]],
+      images:
+        fallback?.images && fallback.images.length > 0
+          ? fallback.images
+          : event.imageUrl
+            ? [{ id: `${event.id}-image-0`, full_url: event.imageUrl, small_url: event.imageUrl }]
+            : [],
+      schedule_entries: mapSchedules(event, fallback),
+      isLiked: fallback?.isLiked ?? false,
+      isAttending: fallback?.isAttending ?? false,
+    };
+  });
+}
+
+function loadSharedEvents(fallbackEvents: EventWithDetails[]): EventWithDetails[] {
+  if (typeof window === 'undefined') return fallbackEvents;
+  try {
+    const raw = localStorage.getItem(SHARED_EVENTS_STORAGE_KEY);
+    if (!raw) return fallbackEvents;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return fallbackEvents;
+    return dashboardToMobileEvents(parsed as SharedDashboardEvent[], fallbackEvents);
+  } catch {
+    return fallbackEvents;
+  }
+}
 
 function loadInteractions(): Record<string, { isLiked: boolean; isAttending: boolean }> {
   if (typeof window === 'undefined') return {};
@@ -50,11 +188,24 @@ function hydrateEvents(base: EventWithDetails[]): EventWithDetails[] {
 }
 
 export function EventStoreProvider({ children }: { children: React.ReactNode }) {
-  const [events, setEvents] = useState<EventWithDetails[]>(() => hydrateEvents(mockEvents));
+  const [events, setEvents] = useState<EventWithDetails[]>(() =>
+    hydrateEvents(loadSharedEvents(mockEvents))
+  );
 
   useEffect(() => {
     saveInteractions(events);
   }, [events]);
+
+  useEffect(() => {
+    const onStorage = (evt: StorageEvent) => {
+      if (evt.key !== SHARED_EVENTS_STORAGE_KEY) return;
+      const nextBase = loadSharedEvents(mockEvents);
+      setEvents(hydrateEvents(nextBase));
+    };
+
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const toggleLike = useCallback((id: string) => {
     setEvents(prev =>

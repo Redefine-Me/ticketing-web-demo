@@ -1,5 +1,25 @@
 /** @type {import('next').NextConfig} */
+const enableMobileProxy = process.env.ENABLE_MOBILE_PROXY === 'true';
+const mobileBasePath = process.env.MOBILE_BASE_PATH || '/mobile';
+const mobileAppOrigin = process.env.MOBILE_APP_ORIGIN || 'http://localhost:3001';
+
 const nextConfig = {
+  async rewrites() {
+    if (!enableMobileProxy) {
+      return [];
+    }
+
+    return [
+      {
+        source: `${mobileBasePath}/:path*`,
+        destination: `${mobileAppOrigin}${mobileBasePath}/:path*`,
+      },
+      {
+        source: mobileBasePath,
+        destination: `${mobileAppOrigin}${mobileBasePath}`,
+      },
+    ];
+  },
   async headers() {
     const sharedHeaders = [
       "default-src 'self'",
@@ -90,4 +110,3 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
-

@@ -2,33 +2,32 @@
 
 A modern, Luma-inspired event discovery website for UK university society events. Built with Next.js, TypeScript, and TailwindCSS.
 
-## Quick Start (Run Both Apps)
+## Quick Start
 
-Use two terminals.
+### Unified mode (recommended)
 
-1. Free port 3001 if needed:
-```bash
-lsof -nP -iTCP:3001 -sTCP:LISTEN
-kill <PID>
-```
-
-2. Terminal 1: Start Dashboard (port 3000)
+From the project root:
 ```bash
 cd <project-root>
 npm install
 npm run dev
 ```
 
-3. Terminal 2: Start Phone App (port 3001)
+This starts both apps together. Open:
+- Dashboard: http://localhost:3000
+- Mobile app (proxied through dashboard server): http://localhost:3000/mobile
+
+### Mobile standalone mode
+
+From the `web` directory:
 ```bash
 cd <project-root>/web
 npm install
 npm run dev
 ```
 
-4. Open both apps:
-- Dashboard: http://localhost:3000
-- Phone: http://localhost:3001
+Open:
+- Mobile app standalone: http://localhost:3001
 
 ## Features
 
@@ -165,7 +164,6 @@ The project uses:
 ## License
 
 Private project - All rights reserved
-
 
 
 

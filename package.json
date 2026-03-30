@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "bash ./scripts/dev-unified.sh",
+    "dev:main": "next dev --webpack",
+    "dev:web": "npm --prefix web run dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
