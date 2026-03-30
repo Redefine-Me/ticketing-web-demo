@@ -83,3 +83,40 @@ export interface CategoryMeta {
   color: string;
   description: string;
 }
+
+// ── Ticketing Types ──────────────────────────────────────────
+
+/** A ticket type configured for an event (e.g., "VIP", "Member Price"). */
+export interface TicketType {
+  id: string;
+  eventId: string;
+  name: string;
+  price: number;          // GBP, minimum 1.00
+  isMemberTicket: boolean;
+  totalAvailable: number;
+}
+
+/** A purchased ticket instance. */
+export interface TicketPurchase {
+  id: string;
+  ticketTypeId: string;
+  eventId: string;
+  buyerName: string;
+  buyerEmail: string;
+  purchasedAt: string;    // ISO 8601
+  attendedAt: string | null; // ISO 8601, null if not yet attended
+}
+
+/** Aggregated view of a ticketed event for the main list page. */
+export interface TicketedEventSummary {
+  eventId: string;
+  eventTitle: string;
+  eventDate: string | null;
+  eventDescription: string;
+  eventImageUrl: string | null;
+  ticketTypes: TicketType[];
+  purchases: TicketPurchase[];
+  totalRevenue: number;
+  totalSold: number;
+  totalAvailable: number;
+}

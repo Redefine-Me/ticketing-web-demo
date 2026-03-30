@@ -2,18 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HomeIcon, TicketIcon } from './icons';
+import { HomeIcon, TicketIcon, ClipboardListIcon } from './icons';
 
 const tabs = [
   { href: '/', label: 'Home', Icon: HomeIcon },
-  { href: '/ticketing', label: 'Ticketing', Icon: TicketIcon },
+  { href: '/ticketing', label: 'Tickets', Icon: TicketIcon },
+  { href: '/manage', label: 'Manage', Icon: ClipboardListIcon },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-white/80 dark:bg-[#1A1A1C]/80 backdrop-blur-xl border-t border-gray-200 dark:border-gray-800">
+    <nav className="bg-white dark:bg-[#1A1A1C] border-t border-gray-200 dark:border-gray-800">
       <div className="flex pb-2">
         {tabs.map(({ href, label, Icon }) => {
           const active = href === '/' ? pathname === '/' : pathname.startsWith(href);

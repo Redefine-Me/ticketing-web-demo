@@ -8,12 +8,14 @@ export function Header() {
   const { isDark, setThemePreference } = useTheme();
 
   return (
-    <header className="bg-white/80 dark:bg-[#1A1A1C]/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
-      <div className="px-4 h-12 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h1 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
-            Redefine<span className="text-primary-500">Me</span>
-          </h1>
+    <header className="bg-white dark:bg-[#1A1A1C] border-b border-gray-200/50 dark:border-gray-800/50">
+      <div className="px-4 h-14 flex items-center justify-between">
+        <div className="flex items-center">
+          <img
+            src={isDark ? "/logos/Redefine Me logo wno bg white.png" : "/logos/Redefine Me logo wno bg.png"}
+            alt="Redefine Me"
+            className="w-36"
+          />
         </div>
 
         <div className="flex items-center gap-3">

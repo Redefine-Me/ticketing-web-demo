@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Category } from '@/types';
 import { categoryMeta } from '@/lib/theme';
 import { capitalizeCategoryName } from '@/lib/helpers';
+import { CategoryIcon } from './CategoryIcon';
 
 interface CategoryPillsProps {
   categories: Category[];
@@ -35,7 +36,7 @@ export function CategoryPills({ categories, max, size = 'small', linkable = fals
               color: color,
             }}
           >
-            {meta?.icon && <span className="mr-1">{meta.icon}</span>}
+            {meta?.icon && <CategoryIcon name={meta.icon} className="mr-1 w-3 h-3" />}
             {label}
           </span>
         );
@@ -64,12 +65,15 @@ export function CategoryChip({ name, slug, active, onClick }: CategoryChipProps)
   const meta = categoryMeta[name];
   const color = meta?.color ?? '#6B7280';
   const label = capitalizeCategoryName(name);
+  const isWide = name === 'food & drink';
 
   if (onClick) {
     return (
       <button
         onClick={onClick}
-        className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
+        className={`inline-flex items-center whitespace-nowrap rounded-full font-medium transition-all duration-200 ${
+          isWide ? 'h-8 px-4 text-sm' : 'h-7 px-3 text-xs'
+        } ${
           active
             ? 'text-white shadow-md scale-105'
             : 'hover:scale-105 dark:text-gray-300'
@@ -79,7 +83,7 @@ export function CategoryChip({ name, slug, active, onClick }: CategoryChipProps)
           color: active ? '#fff' : color,
         }}
       >
-        {meta?.icon && <span className="mr-1.5">{meta.icon}</span>}
+        {meta?.icon && <CategoryIcon name={meta.icon} className={`mr-1 ${isWide ? 'w-3.5 h-3.5' : 'w-3 h-3'}`} />}
         {label}
       </button>
     );
@@ -88,13 +92,15 @@ export function CategoryChip({ name, slug, active, onClick }: CategoryChipProps)
   return (
     <Link
       href={`/category/${slug}`}
-      className="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium hover:scale-105 transition-transform duration-200 dark:text-gray-300"
+      className={`inline-flex items-center whitespace-nowrap rounded-full font-medium hover:scale-105 transition-transform duration-200 dark:text-gray-300 ${
+        isWide ? 'h-8 px-4 text-sm' : 'h-7 px-3 text-xs'
+      }`}
       style={{
         backgroundColor: `${color}15`,
         color: color,
       }}
     >
-      {meta?.icon && <span className="mr-1.5">{meta.icon}</span>}
+      {meta?.icon && <CategoryIcon name={meta.icon} className={`mr-1 ${isWide ? 'w-3.5 h-3.5' : 'w-3 h-3'}`} />}
       {label}
     </Link>
   );

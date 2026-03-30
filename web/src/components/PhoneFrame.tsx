@@ -13,6 +13,13 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     function calc() {
+      const mobileViewport = window.matchMedia('(max-width: 768px)').matches;
+
+      if (mobileViewport) {
+        setScale(1);
+        return;
+      }
+
       const maxH = window.innerHeight - 40; // 20px padding top+bottom
       const maxW = window.innerWidth - 32;
       const s = Math.min(1, maxH / FRAME_H, maxW / FRAME_W);

@@ -29,7 +29,7 @@ export default function HomePage() {
   const sections = useMemo(() => groupEventsByDate(filteredEvents), [filteredEvents]);
 
   return (
-    <div className="px-4 py-6 space-y-8">
+    <div className="px-4 py-6 space-y-5">
       {/* Your Events Carousel */}
       {attendingEvents.length > 0 && (
         <section>
@@ -56,7 +56,7 @@ export default function HomePage() {
       </section>
 
       {!search && (
-        <>
+        <div className="space-y-2">
           {/* Categories */}
           <section>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Browse by Category</h2>
@@ -76,7 +76,7 @@ export default function HomePage() {
               ))}
             </div>
           </section>
-        </>
+        </div>
       )}
 
       {/* Recommended Events */}
