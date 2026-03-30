@@ -32,11 +32,11 @@ export function Sidebar() {
       <div className="flex h-16 items-center border-b border-border px-6">
         <Link href={nav.href("/overview")} className="flex items-center">
           <Image
-            src="/logos/Redefine Me logo wno bg.png"
+            src="/logos/Redefine%20Me%20logo%20wno%20bg.png"
             alt="Redefine Me"
-            width={640}
-            height={144}
-            className="h-[154px] w-auto"
+            width={320}
+            height={72}
+            className="h-10 w-auto"
             priority
           />
         </Link>

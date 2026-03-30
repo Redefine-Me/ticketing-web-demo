@@ -75,11 +75,11 @@ export function Topbar() {
             )}
           </Button>
           <Image
-            src="/logos/Redefine Me logo wno bg.png"
+            src="/logos/Redefine%20Me%20logo%20wno%20bg.png"
             alt="Redefine Me"
-            width={280}
-            height={64}
-            className="h-14 w-auto md:hidden"
+            width={160}
+            height={36}
+            className="h-10 w-auto"
             priority
           />
         </div>

@@ -2,6 +2,34 @@
 
 A modern, Luma-inspired event discovery website for UK university society events. Built with Next.js, TypeScript, and TailwindCSS.
 
+## Quick Start (Run Both Apps)
+
+Use two terminals.
+
+1. Free port 3001 if needed:
+```bash
+lsof -nP -iTCP:3001 -sTCP:LISTEN
+kill <PID>
+```
+
+2. Terminal 1: Start Dashboard (port 3000)
+```bash
+cd <project-root>
+npm install
+npm run dev
+```
+
+3. Terminal 2: Start Phone App (port 3001)
+```bash
+cd <project-root>/web
+npm install
+npm run dev
+```
+
+4. Open both apps:
+- Dashboard: http://localhost:3000
+- Phone: http://localhost:3001
+
 ## Features
 
 - **Event Discovery**: Browse events from university societies across the UK
