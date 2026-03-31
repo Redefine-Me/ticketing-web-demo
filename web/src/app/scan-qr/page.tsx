@@ -14,9 +14,9 @@ export default function ScanQRPage() {
   return (
     <div className="fixed inset-0 bg-black flex flex-col">
       {/* Header */}
-      <div className="relative z-10 flex items-center justify-between px-4 pt-4 pb-2">
+      <div className="relative z-10 flex items-center justify-between px-4 pt-[70px] pb-2">
         <BackButton />
-        <h1 className="text-lg font-semibold text-white absolute left-1/2 -translate-x-1/2">
+        <h1 className="text-lg font-semibold text-primary-500 absolute left-1/2 -translate-x-1/2">
           Scan Tickets
         </h1>
         <div className="w-10" />
