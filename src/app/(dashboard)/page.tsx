@@ -1,3 +1,7 @@
-import OverviewPage from "./overview/page";
+"use client";
 
-export default OverviewPage;
+import { redirect } from "next/navigation";
+
+export default function DashboardPage() {
+  redirect("/society/s-001/dashboard");
+}

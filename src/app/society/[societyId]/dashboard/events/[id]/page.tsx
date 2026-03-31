@@ -8,6 +8,8 @@ import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { formatDateTime } from "@/lib/utils";
 import { EventSourceBadge } from "@/components/dashboard/EventSourceBadge";
+import { TicketedBadge } from "@/components/ticketing/TicketedBadge";
+import { ManageAttendeesModal } from "@/components/ticketing/ManageAttendeesModal";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +35,7 @@ import {
   Eye,
   Heart,
   CalendarCheck,
+  Ticket,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -48,8 +51,17 @@ export default function EventDetailPage() {
   const router = useRouter();
   const nav = useDashboardNav();
   const { society } = useSocietyAuth();
-  const { events, loading, fetchEvents, deleteEvent } = useEvents(society?.id);
+  const {
+    events,
+    loading,
+    fetchEvents,
+    deleteEvent,
+    markAttended,
+    unmarkAttended,
+    refundPurchase,
+  } = useEvents(society?.id);
   const [deleting, setDeleting] = useState(false);
+  const [manageOpen, setManageOpen] = useState(false);
 
   useEffect(() => {
     if (society?.id) {
@@ -114,6 +126,12 @@ export default function EventDetailPage() {
               {event.status}
             </Badge>
             <EventSourceBadge source={event.source} />
+            {event.isTicketed && (
+              <TicketedBadge
+                sold={event.totalSold ?? 0}
+                total={event.totalAvailable ?? 0}
+              />
+            )}
           </div>
           {event.description && (
             <p className="max-w-2xl text-muted-foreground">
@@ -122,6 +140,12 @@ export default function EventDetailPage() {
           )}
         </div>
         <div className="flex items-center gap-2">
+          {event.isTicketed && (
+            <Button variant="outline" onClick={() => setManageOpen(true)}>
+              <Ticket className="mr-2 h-4 w-4" />
+              Manage Tickets
+            </Button>
+          )}
           <Button variant="outline" render={<Link href={nav.href(`/events/${params.id}/edit`)} />}>
             <Pencil className="mr-2 h-4 w-4" />
             Edit
@@ -180,6 +204,65 @@ export default function EventDetailPage() {
           icon={CalendarCheck}
         />
       </div>
+
+      {/* Ticketing */}
+      {event.isTicketed && event.ticketTypes && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle className="text-base">Ticketing</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                {event.totalSold ?? 0} / {event.totalAvailable ?? 0} tickets sold
+                {" · "}Total revenue: £{((event.totalRevenue ?? 0) / 1).toFixed(2)}
+              </p>
+            </div>
+            <Button variant="outline" onClick={() => setManageOpen(true)}>
+              <Ticket className="mr-2 h-4 w-4" />
+              Manage Attendees
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="px-3 py-2 text-left font-medium">Ticket Type</th>
+                    <th className="px-3 py-2 text-left font-medium">Price</th>
+                    <th className="px-3 py-2 text-left font-medium">Sold</th>
+                    <th className="px-3 py-2 text-right font-medium">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {event.ticketTypes.map((tt) => {
+                    const sold = (event.purchases ?? []).filter(
+                      (p) => p.ticketTypeId === tt.id,
+                    ).length;
+                    return (
+                      <tr key={tt.id} className="border-b last:border-0">
+                        <td className="px-3 py-2 font-medium">
+                          {tt.name}
+                          {tt.isMemberTicket && (
+                            <Badge variant="secondary" className="ml-2 text-xs">
+                              Member
+                            </Badge>
+                          )}
+                        </td>
+                        <td className="px-3 py-2">£{tt.price.toFixed(2)}</td>
+                        <td className="px-3 py-2">
+                          <TicketedBadge sold={sold} total={tt.totalAvailable} />
+                        </td>
+                        <td className="px-3 py-2 text-right font-medium">
+                          £{(sold * tt.price).toFixed(2)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Event details */}
       <div className="grid gap-6 lg:grid-cols-3">
@@ -251,6 +334,8 @@ export default function EventDetailPage() {
                 <p className="text-sm text-muted-foreground">
                   {event.isFree
                     ? "Free"
+                    : event.isTicketed
+                    ? `${event.price ?? "Ticketed"} (see ticketing above)`
                     : event.price
                     ? `${event.price}`
                     : "Paid"}
@@ -303,6 +388,17 @@ export default function EventDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      {event.isTicketed && (
+        <ManageAttendeesModal
+          event={event}
+          open={manageOpen}
+          onOpenChange={setManageOpen}
+          onMarkAttended={markAttended}
+          onUnmarkAttended={unmarkAttended}
+          onRefund={refundPurchase}
+        />
+      )}
     </div>
   );
 }
