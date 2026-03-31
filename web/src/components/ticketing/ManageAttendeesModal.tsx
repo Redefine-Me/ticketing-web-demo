@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTicketing } from '@/context/TicketingStore';
 import { useToast } from '@/components/Toast';
 import { TicketedEventSummary, TicketPurchase, TicketType } from '@/types';
-import { ChevronDownIcon } from '@/components/icons';
-import { ModalShell } from './ModalShell';
+import { ChevronDownIcon, XIcon } from '@/components/icons';
+import { SearchBar } from '@/components/SearchBar';
 
 function formatDateTime(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', {
@@ -37,12 +37,30 @@ export function ManageAttendeesModal({ eventSummary, onClose }: ManageAttendeesM
   // Get fresh data from the store
   const freshEvent = ticketedEvents.find(e => e.eventId === eventSummary.eventId) ?? eventSummary;
 
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(() => {
-    const first = freshEvent.ticketTypes[0]?.id;
-    return first ? new Set([first]) : new Set();
-  });
-
+  const [search, setSearch] = useState('');
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [refundTarget, setRefundTarget] = useState<{ purchase: TicketPurchase; ticketType: TicketType } | null>(null);
+  const [closing, setClosing] = useState(false);
+
+  const isSearching = search.trim().length > 0;
+  const query = search.toLowerCase();
+
+  // Filter purchases per ticket type based on search
+  const filteredByType = useMemo(() => {
+    const map = new Map<string, TicketPurchase[]>();
+    for (const tt of freshEvent.ticketTypes) {
+      const typePurchases = freshEvent.purchases.filter(p => p.ticketTypeId === tt.id);
+      if (!isSearching) {
+        map.set(tt.id, typePurchases);
+      } else {
+        map.set(tt.id, typePurchases.filter(p =>
+          p.buyerName.toLowerCase().includes(query) ||
+          p.buyerEmail.toLowerCase().includes(query)
+        ));
+      }
+    }
+    return map;
+  }, [freshEvent, isSearching, query]);
 
   function toggleCategory(id: string) {
     setExpandedCategories(prev => {
@@ -53,6 +71,11 @@ export function ManageAttendeesModal({ eventSummary, onClose }: ManageAttendeesM
     });
   }
 
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(onClose, 250);
+  }, [onClose]);
+
   function handleRefund() {
     if (!refundTarget) return;
     refundPurchase(refundTarget.purchase.id);
@@ -61,69 +84,105 @@ export function ManageAttendeesModal({ eventSummary, onClose }: ManageAttendeesM
   }
 
   return (
-    <ModalShell title="Manage Attendees" onClose={onClose}>
-      {/* Header summary */}
-      <div className="mb-4 space-y-1">
-        <h3 className="text-sm font-bold text-gray-900 dark:text-white">{freshEvent.eventTitle}</h3>
-        <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
-          <span>{freshEvent.totalSold} / {freshEvent.totalAvailable} tickets sold</span>
-          <span>Revenue: £{freshEvent.totalRevenue.toFixed(2)}</span>
+    <div className="absolute inset-0 z-50 flex items-end">
+      {/* Backdrop */}
+      <div
+        className={`absolute inset-0 bg-black/40 transition-opacity duration-250 ${closing ? 'opacity-0' : 'opacity-100'}`}
+        onClick={handleClose}
+      />
+      {/* Sheet — 90% height, slide animation */}
+      <div className={`relative w-full h-[85vh] bg-white dark:bg-[#1A1A1C] rounded-t-3xl flex flex-col z-10 ${closing ? 'animate-slide-down' : 'animate-slide-up'}`}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-white/10 flex-shrink-0">
+          <h2 className="text-base font-bold text-gray-900 dark:text-white">Manage Attendees</h2>
+          <button
+            onClick={handleClose}
+            className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+          >
+            <XIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          </button>
         </div>
-      </div>
 
-      {/* Ticket categories */}
-      <div className="space-y-2">
-        {freshEvent.ticketTypes.map(tt => {
-          const typePurchases = freshEvent.purchases.filter(p => p.ticketTypeId === tt.id);
-          const soldCount = typePurchases.length;
-          const isExpanded = expandedCategories.has(tt.id);
+        {/* Sticky summary + search */}
+        <div className="px-4 pt-4 pb-2 flex-shrink-0 space-y-3">
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">{freshEvent.eventTitle}</h3>
+            <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
+              <span>{freshEvent.totalSold} / {freshEvent.totalAvailable} tickets sold</span>
+              <span>Revenue: £{freshEvent.totalRevenue.toFixed(2)}</span>
+            </div>
+          </div>
+          <SearchBar value={search} onChange={setSearch} placeholder="Search by name or email..." />
+        </div>
 
-          return (
-            <div key={tt.id} className="border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
-              {/* Category header */}
-              <button
-                onClick={() => toggleCategory(tt.id)}
-                className="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{tt.name}</span>
-                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-200 dark:bg-white/15 text-gray-600 dark:text-gray-300">
-                    {soldCount} / {tt.totalAvailable}
-                  </span>
-                  <span className="text-[10px] text-gray-400 dark:text-gray-500">£{tt.price.toFixed(2)}</span>
-                </div>
-                <ChevronDownIcon className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-              </button>
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto hide-scrollbar px-4 py-3">
+          <div className="space-y-2">
+            {freshEvent.ticketTypes.map(tt => {
+              const typePurchases = filteredByType.get(tt.id) ?? [];
+              const totalSold = freshEvent.purchases.filter(p => p.ticketTypeId === tt.id).length;
+              // When searching: auto-expand categories that have matches; when not: use manual toggle
+              const isExpanded = isSearching ? typePurchases.length > 0 : expandedCategories.has(tt.id);
 
-              {/* Expanded attendee list */}
-              {isExpanded && (
-                <div className="border-t border-gray-100 dark:border-white/5">
-                  {typePurchases.length === 0 ? (
-                    <p className="p-3 text-xs text-gray-400 dark:text-gray-500 text-center">
-                      No tickets sold yet for this category.
-                    </p>
-                  ) : (
-                    <div className="divide-y divide-gray-100 dark:divide-white/5">
-                      {typePurchases.map(p => (
-                        <AttendeeRow
-                          key={p.id}
-                          purchase={p}
-                          ticketType={tt}
-                          onAttend={() => markAttended(p.id)}
-                          onUnattend={() => unmarkAttended(p.id)}
-                          onRefund={() => setRefundTarget({ purchase: p, ticketType: tt })}
-                        />
-                      ))}
+              // When searching, hide categories with no matches
+              if (isSearching && typePurchases.length === 0) return null;
+
+              return (
+                <div key={tt.id} className="border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
+                  {/* Category header */}
+                  <button
+                    onClick={() => !isSearching && toggleCategory(tt.id)}
+                    className={`w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 transition-colors ${isSearching ? 'cursor-default' : 'hover:bg-gray-100 dark:hover:bg-white/10'}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{tt.name}</span>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-gray-200 dark:bg-white/15 text-gray-600 dark:text-gray-300">
+                        {isSearching ? `${typePurchases.length} found` : `${totalSold} / ${tt.totalAvailable}`}
+                      </span>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500">£{tt.price.toFixed(2)}</span>
+                    </div>
+                    {!isSearching && (
+                      <ChevronDownIcon className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    )}
+                  </button>
+
+                  {/* Attendee list */}
+                  {isExpanded && (
+                    <div className="border-t border-gray-100 dark:border-white/5">
+                      {typePurchases.length === 0 ? (
+                        <p className="p-3 text-xs text-gray-400 dark:text-gray-500 text-center">
+                          No tickets sold yet for this category.
+                        </p>
+                      ) : (
+                        <div className="divide-y divide-gray-100 dark:divide-white/5">
+                          {typePurchases.map(p => (
+                            <AttendeeRow
+                              key={p.id}
+                              purchase={p}
+                              ticketType={tt}
+                              onAttend={() => markAttended(p.id)}
+                              onUnattend={() => unmarkAttended(p.id)}
+                              onRefund={() => setRefundTarget({ purchase: p, ticketType: tt })}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              )}
-            </div>
-          );
-        })}
+              );
+            })}
+
+            {isSearching && Array.from(filteredByType.values()).every(arr => arr.length === 0) && (
+              <div className="text-center py-8">
+                <p className="text-sm text-gray-400 dark:text-gray-500">No attendees match &ldquo;{search}&rdquo;</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Refund Confirmation Dialog — rendered via portal */}
+      {/* Refund Confirmation Dialog */}
       {refundTarget && (
         <RefundConfirmDialog
           refundTarget={refundTarget}
@@ -131,7 +190,7 @@ export function ManageAttendeesModal({ eventSummary, onClose }: ManageAttendeesM
           onCancel={() => setRefundTarget(null)}
         />
       )}
-    </ModalShell>
+    </div>
   );
 }
 

@@ -194,8 +194,17 @@ body {
   to { transform: translateY(0); }
 }
 
+@keyframes slide-down {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.25s ease-in forwards;
 }
 
 .animate-fade-in {

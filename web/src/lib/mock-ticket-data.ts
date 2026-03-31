@@ -10,23 +10,22 @@ function pastDate(daysAgo: number, hour: number, minute = 0): string {
 
 // ── First names / last names for realistic mock buyers ───────
 const firstNames = [
-  'Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'James', 'Sophia', 'Oliver',
-  'Isabella', 'William', 'Mia', 'Benjamin', 'Charlotte', 'Elijah', 'Amelia',
-  'Lucas', 'Harper', 'Mason', 'Evelyn', 'Logan', 'Abigail', 'Alexander',
-  'Emily', 'Ethan', 'Elizabeth', 'Jacob', 'Sofia', 'Michael', 'Avery', 'Daniel',
-  'Ella', 'Henry', 'Scarlett', 'Sebastian', 'Grace', 'Jack', 'Chloe', 'Aiden',
-  'Victoria', 'Owen', 'Riley', 'Samuel', 'Aria', 'Ryan', 'Lily', 'Nathan',
-  'Zoey', 'Caleb', 'Penelope', 'Christian',
+  'James', 'Olivia', 'Liam', 'Emma', 'Noah', 'Ava', 'Ethan', 'Sophia',
+  'Mason', 'Isabella', 'Lucas', 'Mia', 'Oliver', 'Charlotte', 'Aiden',
+  'Amelia', 'Elijah', 'Harper', 'Logan', 'Evelyn', 'Jacob', 'Abigail',
+  'Michael', 'Emily', 'Daniel', 'Ella', 'Henry', 'Scarlett', 'Alexander',
+  'Grace', 'Sebastian', 'Lily', 'Jack', 'Aria', 'Owen', 'Chloe', 'Samuel',
+  'Zoey', 'Ryan', 'Penelope', 'Nathan', 'Layla', 'Leo', 'Riley', 'Adam',
+  'Nora', 'Dylan', 'Zara', 'Caleb', 'Hannah',
 ];
 
 const lastNames = [
-  'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller',
-  'Davis', 'Rodriguez', 'Martinez', 'Wilson', 'Anderson', 'Taylor', 'Thomas',
-  'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White', 'Harris',
-  'Clark', 'Lewis', 'Robinson', 'Walker', 'Young', 'Allen', 'King', 'Wright',
-  'Scott', 'Torres', 'Hill', 'Flores', 'Green', 'Adams', 'Nelson', 'Baker',
-  'Hall', 'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts', 'Gomez',
-  'Phillips', 'Evans', 'Turner', 'Diaz', 'Parker',
+  'Smith', 'Jones', 'Taylor', 'Brown', 'Wilson', 'Evans', 'Thomas',
+  'Roberts', 'Johnson', 'Walker', 'Wright', 'Robinson', 'Thompson', 'White',
+  'Hughes', 'Edwards', 'Green', 'Hall', 'Lewis', 'Harris', 'Clarke',
+  'Jackson', 'Wood', 'Turner', 'Martin', 'Cooper', 'Hill', 'Ward', 'Morris',
+  'Moore', 'King', 'Baker', 'Harrison', 'Morgan', 'Allen', 'Young',
+  'Anderson', 'Mitchell', 'Campbell', 'Phillips',
 ];
 
 function mockBuyer(seed: number) {
@@ -34,21 +33,27 @@ function mockBuyer(seed: number) {
   const last = lastNames[(seed * 7 + 3) % lastNames.length];
   return {
     name: `${first} ${last}`,
-    email: `${first.toLowerCase()}.${last.toLowerCase()}@student.ac.uk`,
+    email: `${first.toLowerCase()}.${last.toLowerCase()}@student.manchester.ac.uk`,
   };
 }
 
-// ── Ticket Types for "Battle of the Bands" (e22) ────────────
-export const battleOfBandsTicketTypes: TicketType[] = [
-  { id: 'tt-1', eventId: 'e22', name: 'Early Bird', price: 3.00, isMemberTicket: false, totalAvailable: 50 },
-  { id: 'tt-2', eventId: 'e22', name: 'Standard', price: 5.00, isMemberTicket: false, totalAvailable: 100 },
-  { id: 'tt-3', eventId: 'e22', name: 'VIP', price: 10.00, isMemberTicket: false, totalAvailable: 20 },
+// ── Ticket Types for "Simpsons Trivia Night" (e-004) ────────
+export const triviaTicketTypes: TicketType[] = [
+  { id: 'tt-004-1', eventId: 'e-004', name: 'Member', price: 2.00, isMemberTicket: true, totalAvailable: 40 },
+  { id: 'tt-004-2', eventId: 'e-004', name: 'Non-Member', price: 4.00, isMemberTicket: false, totalAvailable: 25 },
 ];
 
-// ── Ticket Types for "Pub Quiz Night" (e11) ──────────────────
-export const pubQuizTicketTypes: TicketType[] = [
-  { id: 'tt-4', eventId: 'e11', name: 'Member', price: 1.00, isMemberTicket: true, totalAvailable: 40 },
-  { id: 'tt-5', eventId: 'e11', name: 'Non-Member', price: 3.00, isMemberTicket: false, totalAvailable: 20 },
+// ── Ticket Types for "Springfield Film Festival" (e-008) ─────
+export const festivalTicketTypes: TicketType[] = [
+  { id: 'tt-008-1', eventId: 'e-008', name: 'General Admission', price: 3.00, isMemberTicket: false, totalAvailable: 80 },
+  { id: 'tt-008-2', eventId: 'e-008', name: 'Member Price', price: 1.00, isMemberTicket: true, totalAvailable: 30 },
+];
+
+// ── Ticket Types for "American Studies Spring Ball" (e-009) ──
+export const ballTicketTypes: TicketType[] = [
+  { id: 'tt-009-1', eventId: 'e-009', name: 'Early Bird', price: 25.00, isMemberTicket: false, totalAvailable: 50 },
+  { id: 'tt-009-2', eventId: 'e-009', name: 'Standard', price: 35.00, isMemberTicket: false, totalAvailable: 100 },
+  { id: 'tt-009-3', eventId: 'e-009', name: 'VIP', price: 55.00, isMemberTicket: false, totalAvailable: 20 },
 ];
 
 // ── Generate mock purchases ──────────────────────────────────
@@ -78,32 +83,40 @@ function generatePurchases(
   return purchases;
 }
 
-// Battle of the Bands: 47 Early Bird, 68 Standard, 14 VIP = 129 total
-export const battleOfBandsPurchases: TicketPurchase[] = [
-  ...generatePurchases('tt-1', 'e22', 47, 0, 0.3),
-  ...generatePurchases('tt-2', 'e22', 68, 50, 0.2),
-  ...generatePurchases('tt-3', 'e22', 14, 120, 0.4),
+// Simpsons Trivia Night: 36 Member, 18 Non-Member = 54 total
+export const triviaPurchases: TicketPurchase[] = [
+  ...generatePurchases('tt-004-1', 'e-004', 36, 0, 0.78),   // 28 attended
+  ...generatePurchases('tt-004-2', 'e-004', 18, 50, 0.67),   // 12 attended
 ];
 
-// Pub Quiz Night: 34 Member, 12 Non-Member = 46 total
-export const pubQuizPurchases: TicketPurchase[] = [
-  ...generatePurchases('tt-4', 'e11', 34, 140, 0.25),
-  ...generatePurchases('tt-5', 'e11', 12, 180, 0.15),
+// Springfield Film Festival: 52 General Admission, 24 Member = 76 total
+export const festivalPurchases: TicketPurchase[] = [
+  ...generatePurchases('tt-008-1', 'e-008', 52, 100, 0.77),  // 40 attended
+  ...generatePurchases('tt-008-2', 'e-008', 24, 160, 0.83),  // 20 attended
+];
+
+// American Studies Spring Ball: 47 Early Bird, 68 Standard, 14 VIP = 129 total
+export const ballPurchases: TicketPurchase[] = [
+  ...generatePurchases('tt-009-1', 'e-009', 47, 200, 0.81),  // 38 attended
+  ...generatePurchases('tt-009-2', 'e-009', 68, 260, 0.76),  // 52 attended
+  ...generatePurchases('tt-009-3', 'e-009', 14, 340, 0.79),  // 11 attended
 ];
 
 // ── All mock ticket data ─────────────────────────────────────
 export const mockTicketTypes: TicketType[] = [
-  ...battleOfBandsTicketTypes,
-  ...pubQuizTicketTypes,
+  ...triviaTicketTypes,
+  ...festivalTicketTypes,
+  ...ballTicketTypes,
 ];
 
 export const mockPurchases: TicketPurchase[] = [
-  ...battleOfBandsPurchases,
-  ...pubQuizPurchases,
+  ...triviaPurchases,
+  ...festivalPurchases,
+  ...ballPurchases,
 ];
 
 // Events that have tickets configured
-export const ticketedEventIds: string[] = ['e22', 'e11'];
+export const ticketedEventIds: string[] = ['e-004', 'e-008', 'e-009'];
 
 // Predefined ticket name suggestions
 export const ticketNameSuggestions = [

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTicketing } from '@/context/TicketingStore';
 import { TicketIcon, PlusIcon, QRCodeIcon } from '@/components/icons';
 import { TicketedEventSummary } from '@/types';
+import { SearchBar } from '@/components/SearchBar';
 import { AssignTicketsModal } from '@/components/ticketing/AssignTicketsModal';
 import { TicketConfigModal } from '@/components/ticketing/TicketConfigForm';
 import { ManageAttendeesModal } from '@/components/ticketing/ManageAttendeesModal';
@@ -21,9 +22,18 @@ function formatDate(iso: string | null): string {
 export default function ManagePage() {
   const router = useRouter();
   const { ticketedEvents } = useTicketing();
+  const [search, setSearch] = useState('');
   const [assignModalOpen, setAssignModalOpen] = useState(false);
   const [editEvent, setEditEvent] = useState<TicketedEventSummary | null>(null);
   const [manageEvent, setManageEvent] = useState<TicketedEventSummary | null>(null);
+
+  const filteredEvents = useMemo(() => {
+    if (!search.trim()) return ticketedEvents;
+    const q = search.toLowerCase();
+    return ticketedEvents.filter(
+      e => e.eventTitle.toLowerCase().includes(q) || e.eventDescription.toLowerCase().includes(q)
+    );
+  }, [ticketedEvents, search]);
 
   function closeModal() {
     setAssignModalOpen(false);
@@ -61,6 +71,13 @@ export default function ManagePage() {
         </button>
       </div>
 
+      {/* Search */}
+      {ticketedEvents.length > 0 && (
+        <div className="mb-4">
+          <SearchBar value={search} onChange={setSearch} placeholder="Search ticketed events..." />
+        </div>
+      )}
+
       {/* Ticketed Events List */}
       {ticketedEvents.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20">
@@ -72,7 +89,7 @@ export default function ManagePage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {ticketedEvents.map(evt => (
+          {filteredEvents.map(evt => (
             <div
               key={evt.eventId}
               className="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/10"
