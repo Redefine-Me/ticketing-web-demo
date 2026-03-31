@@ -65,6 +65,9 @@ export default function EditEventPage() {
     isFree: event.isFree,
     price: event.price ?? "",
     registrationUrl: event.registrationUrl ?? "",
+    isTicketed: event.isTicketed,
+    ticketTypes: event.ticketTypes,
+    purchases: event.purchases,
   };
 
   const handleSubmit = async (formData: EventFormData & { images: File[] }) => {

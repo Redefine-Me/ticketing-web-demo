@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -14,9 +14,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScheduleBuilder, type ScheduleEntry } from "@/components/events/ScheduleBuilder";
 import { ImageUploader } from "@/components/events/ImageUploader";
 import { CategorySelector } from "@/components/events/CategorySelector";
+import { TicketConfigPanel } from "@/components/ticketing/TicketConfigPanel";
+import type { TicketTypeFormData } from "@/components/ticketing/TicketTypeCard";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import type { Category } from "@/supabase_lib/types";
+import type { TicketType, TicketPurchase } from "@/lib/supabase/types";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
 
@@ -45,7 +48,10 @@ const eventFormSchema = z.object({
   registrationUrl: z.string().url("Enter a valid URL").optional().or(z.literal("")),
 });
 
-export type EventFormData = z.infer<typeof eventFormSchema>;
+export type EventFormData = z.infer<typeof eventFormSchema> & {
+  isTicketed?: boolean;
+  ticketTypes?: TicketType[];
+};
 
 interface EventFormProps {
   initialData?: {
@@ -58,6 +64,9 @@ interface EventFormProps {
     price?: string;
     registrationUrl?: string;
     images?: File[];
+    isTicketed?: boolean;
+    ticketTypes?: TicketType[];
+    purchases?: TicketPurchase[];
   };
   isScraped?: boolean;
   onSubmit: (data: EventFormData & { images: File[] }) => Promise<void>;
@@ -86,13 +95,34 @@ export function EventForm({
   const [images, setImages] = useState<File[]>(initialData?.images ?? []);
   const [submitting, setSubmitting] = useState(false);
 
+  // Ticketing state (managed outside react-hook-form for simplicity)
+  const [isTicketed, setIsTicketed] = useState(initialData?.isTicketed ?? false);
+  const [ticketTypes, setTicketTypes] = useState<TicketTypeFormData[]>(
+    initialData?.ticketTypes?.map((t) => ({
+      id: t.id,
+      name: t.name,
+      price: t.price,
+      isMemberTicket: t.isMemberTicket,
+      totalAvailable: t.totalAvailable,
+    })) ?? [{ name: "", price: 0, isMemberTicket: false, totalAvailable: 0 }],
+  );
+  const [ticketErrors, setTicketErrors] = useState<
+    Record<number, { name?: string; price?: string; totalAvailable?: string }>
+  >({});
+  const [ticketGlobalError, setTicketGlobalError] = useState<string>();
+  const [toggleWarning, setToggleWarning] = useState<string>();
+
+  const purchases = initialData?.purchases ?? [];
+
+  const totalSold = purchases.length;
+
   const {
     register,
     handleSubmit,
     control,
     watch,
     formState: { errors },
-  } = useForm<EventFormData>({
+  } = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
       title: initialData?.title ?? "",
@@ -108,14 +138,97 @@ export function EventForm({
 
   const isFree = watch("isFree");
 
-  async function handleFormSubmit(data: EventFormData) {
+  const handleToggleTicketed = useCallback(
+    (checked: boolean) => {
+      if (!checked && totalSold > 0) {
+        setToggleWarning(
+          `Cannot disable ticketing — ${totalSold} ticket${totalSold !== 1 ? "s have" : " has"} been sold. Refund all ticket holders first.`,
+        );
+        setTimeout(() => setToggleWarning(undefined), 5000);
+        return;
+      }
+      setToggleWarning(undefined);
+      setIsTicketed(checked);
+      if (checked && ticketTypes.length === 0) {
+        setTicketTypes([{ name: "", price: 0, isMemberTicket: false, totalAvailable: 0 }]);
+      }
+    },
+    [totalSold, ticketTypes.length],
+  );
+
+  function validateTickets(): boolean {
+    if (!isTicketed) return true;
+
+    const errs: typeof ticketErrors = {};
+    let valid = true;
+
+    if (ticketTypes.length === 0) {
+      setTicketGlobalError("At least one ticket type is required");
+      return false;
+    }
+
+    ticketTypes.forEach((tt, i) => {
+      const fieldErrs: { name?: string; price?: string; totalAvailable?: string } = {};
+      if (!tt.name.trim()) {
+        fieldErrs.name = "Ticket name is required";
+        valid = false;
+      }
+      if (tt.price < 1) {
+        fieldErrs.price = "Price must be at least £1.00";
+        valid = false;
+      }
+      if (tt.totalAvailable < 1) {
+        fieldErrs.totalAvailable = "Must offer at least 1 ticket";
+        valid = false;
+      }
+      // Check totalAvailable >= sold count
+      if (tt.id) {
+        const soldForType = purchases.filter((p) => p.ticketTypeId === tt.id).length;
+        if (tt.totalAvailable < soldForType) {
+          fieldErrs.totalAvailable = `${soldForType} tickets have been sold. Total available cannot be less than ${soldForType}.`;
+          valid = false;
+        }
+      }
+      if (Object.keys(fieldErrs).length > 0) errs[i] = fieldErrs;
+    });
+
+    setTicketErrors(errs);
+    setTicketGlobalError(valid ? undefined : undefined);
+    return valid;
+  }
+
+  async function handleFormSubmit(data: z.infer<typeof eventFormSchema>) {
+    if (!validateTickets()) return;
+
     setSubmitting(true);
     try {
-      await onSubmit({ ...data, images });
+      const payload: EventFormData & { images: File[] } = {
+        ...data,
+        images,
+        isTicketed,
+        ticketTypes: isTicketed
+          ? ticketTypes.map((t) => ({
+              id: t.id ?? "",
+              eventId: "",
+              name: t.name,
+              price: t.price,
+              isMemberTicket: t.isMemberTicket,
+              totalAvailable: t.totalAvailable,
+            }))
+          : undefined,
+      };
+      await onSubmit(payload);
     } finally {
       setSubmitting(false);
     }
   }
+
+  const hasTicketValidationErrors =
+    isTicketed &&
+    (Object.keys(ticketErrors).length > 0 ||
+      ticketTypes.some(
+        (t) => !t.name.trim() || t.price < 1 || t.totalAvailable < 1,
+      ));
 
   return (
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
@@ -266,6 +379,45 @@ export function EventForm({
         </CardContent>
       </Card>
 
+      {/* Ticketing */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Ticketing</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="isTicketed">Ticket Event</Label>
+              <p className="text-sm text-muted-foreground">
+                Enable ticket sales for this event
+              </p>
+            </div>
+            <Switch
+              id="isTicketed"
+              checked={isTicketed}
+              onCheckedChange={handleToggleTicketed}
+            />
+          </div>
+
+          {toggleWarning && (
+            <p className="text-sm text-red-600">{toggleWarning}</p>
+          )}
+
+          <TicketConfigPanel
+            open={isTicketed}
+            ticketTypes={ticketTypes}
+            onChange={(next) => {
+              setTicketTypes(next);
+              setTicketErrors({});
+              setTicketGlobalError(undefined);
+            }}
+            purchases={purchases}
+            errors={ticketErrors}
+            globalError={ticketGlobalError}
+          />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Images</CardTitle>
@@ -276,7 +428,11 @@ export function EventForm({
       </Card>
 
       <div className="flex justify-end">
-        <Button type="submit" size="lg" disabled={submitting}>
+        <Button
+          type="submit"
+          size="lg"
+          disabled={submitting || !!hasTicketValidationErrors}
+        >
           {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
           {submitLabel}
         </Button>

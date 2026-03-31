@@ -10,7 +10,7 @@ const mockApprovedAccounts = [
     society_account_approval_status: { name: "trusted" },
     societies: {
       id: "s-001",
-      name: "UoM Computer Science Society",
+      name: "American Studies Society",
       image_url: null,
       universities: { name: "University of Manchester" },
     },

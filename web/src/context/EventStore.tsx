@@ -16,7 +16,7 @@ interface EventStoreContextType {
 const EventStoreContext = createContext<EventStoreContextType | null>(null);
 
 const STORAGE_KEY = 'rm_event_interactions';
-const SHARED_EVENTS_STORAGE_KEY = 'rm_shared_dashboard_events_v1';
+const SHARED_EVENTS_STORAGE_KEY = 'rm_shared_dashboard_events_v2';
 
 interface SharedDashboardSchedule {
   scheduledAt: string;
@@ -188,8 +188,9 @@ function hydrateEvents(base: EventWithDetails[]): EventWithDetails[] {
 }
 
 export function EventStoreProvider({ children }: { children: React.ReactNode }) {
+  // Mock data is the source of truth — always seed from it
   const [events, setEvents] = useState<EventWithDetails[]>(() =>
-    hydrateEvents(loadSharedEvents(mockEvents))
+    hydrateEvents(mockEvents)
   );
 
   useEffect(() => {

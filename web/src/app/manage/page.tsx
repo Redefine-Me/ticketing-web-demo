@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTicketing } from '@/context/TicketingStore';
-import { TicketIcon, PlusIcon } from '@/components/icons';
+import { TicketIcon, PlusIcon, QRCodeIcon } from '@/components/icons';
 import { TicketedEventSummary } from '@/types';
 import { AssignTicketsModal } from '@/components/ticketing/AssignTicketsModal';
 import { TicketConfigModal } from '@/components/ticketing/TicketConfigForm';
@@ -40,7 +40,15 @@ export default function ManagePage() {
     <div className="px-4 py-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Ticketing</h1>
+        <div className="flex items-center justify-between mb-1">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ticketing</h1>
+          <button
+            onClick={() => router.push('/scan-qr')}
+            className="p-2 -m-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-900 dark:text-white"
+          >
+            <QRCodeIcon className="w-6 h-6" />
+          </button>
+        </div>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           Manage ticket sales and attendees for your events
         </p>

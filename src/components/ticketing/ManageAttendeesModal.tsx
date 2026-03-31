@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { TicketedBadge } from "./TicketedBadge";
 import { AttendeeRow } from "./AttendeeRow";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import type { DashboardEvent } from "@/lib/supabase/types";
 
 interface ManageAttendeesModalProps {
@@ -37,21 +37,26 @@ export function ManageAttendeesModal({
   const totalAvailable = event.totalAvailable ?? 0;
   const totalRevenue = event.totalRevenue ?? 0;
 
-  // Track expanded categories — first is expanded by default
-  const [expanded, setExpanded] = useState<Record<string, boolean>>(() => {
-    const init: Record<string, boolean> = {};
-    ticketTypes.forEach((tt, i) => {
-      init[tt.id] = i === 0;
-    });
-    return init;
-  });
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // All collapsed by default
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   function toggleExpanded(id: string) {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) {
+          setSearchQuery("");
+          setExpanded({});
+        }
+        onOpenChange(next);
+      }}
+    >
       <DialogContent className="w-[80vw] max-w-[80vw] h-[80vh] max-h-[80vh] flex flex-col overflow-hidden sm:max-w-[80vw]">
         <DialogHeader>
           <DialogTitle>{event.title}</DialogTitle>
@@ -65,13 +70,45 @@ export function ManageAttendeesModal({
           </DialogDescription>
         </DialogHeader>
 
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-md border bg-background pl-9 pr-8 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
         <div className="flex-1 overflow-y-auto space-y-2 pr-1">
           {ticketTypes.map((tt) => {
-            const typePurchases = purchases.filter(
+            const query = searchQuery.toLowerCase().trim();
+            const allTypePurchases = purchases.filter(
               (p) => p.ticketTypeId === tt.id,
             );
-            const sold = typePurchases.length;
-            const isOpen = expanded[tt.id] ?? false;
+            const filteredPurchases = query
+              ? allTypePurchases.filter(
+                  (p) =>
+                    p.buyerName.toLowerCase().includes(query) ||
+                    p.buyerEmail.toLowerCase().includes(query),
+                )
+              : allTypePurchases;
+
+            // Hide sections with no matches when searching
+            if (query && filteredPurchases.length === 0) return null;
+
+            const sold = allTypePurchases.length;
+            const isOpen = query ? true : (expanded[tt.id] ?? false);
 
             return (
               <div key={tt.id} className="rounded-lg border">
@@ -96,13 +133,15 @@ export function ManageAttendeesModal({
 
                 {isOpen && (
                   <div className="px-4 pb-3 border-t">
-                    {typePurchases.length === 0 ? (
+                    {filteredPurchases.length === 0 ? (
                       <p className="py-4 text-center text-sm text-muted-foreground">
-                        No tickets sold yet for this category.
+                        {query
+                          ? "No matching attendees."
+                          : "No tickets sold yet for this category."}
                       </p>
                     ) : (
                       <div className="divide-y">
-                        {typePurchases.map((p) => (
+                        {filteredPurchases.map((p) => (
                           <AttendeeRow
                             key={p.id}
                             purchase={p}

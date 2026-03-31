@@ -216,6 +216,7 @@ function toDashboardEvent(row: any): DashboardEvent {
     isOnline: row.is_online ?? false,
     isFree: row.is_free ?? true,
     price: row.price,
+    isTicketed: false,
     schedules: sortedEntries.map(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (e: any) => ({

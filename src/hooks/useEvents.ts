@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import type { DashboardEvent } from "@/lib/supabase/types";
-import { events as webMockEvents } from "../../web/src/lib/mock-data";
-import type { EventWithDetails } from "../../web/src/types";
+import { useState, useCallback, useMemo } from "react";
+import type { DashboardEvent, TicketType, TicketPurchase } from "@/lib/supabase/types";
+import { mockEvents } from "@/lib/mock-data";
 
-const SHARED_EVENTS_STORAGE_KEY = "rm_shared_dashboard_events_v1";
+const SHARED_EVENTS_STORAGE_KEY = "rm_shared_dashboard_events_v2";
 
 type FormSchedule = {
   date?: string;
@@ -87,50 +86,37 @@ function toDashboardSchedules(input: unknown) {
   return mapped;
 }
 
-function mobileEventToDashboardEvent(event: EventWithDetails): DashboardEvent {
-  const startSchedule = event.schedule_entries.find((e) => !e.is_end_schedule);
-  const schedules: DashboardEvent["schedules"] = event.schedule_entries
-    .map((entry, index) => ({
-      scheduledAt: entry.scheduled_at,
-      isEnd: entry.is_end_schedule,
-      order: entry.schedule_order ?? index,
-      locationName: entry.location?.name ?? null,
-      locationId: entry.location?.id ?? null,
-      locationGoogleMapsUrl: entry.location?.google_maps_url ?? null,
-      buildingName: entry.location?.name ?? null,
-      buildingId: entry.location?.id ?? null,
-      buildingGoogleMapsUrl: entry.location?.google_maps_url ?? null,
-      roomName: null,
-      roomId: null,
-      description: null,
-    }))
-    .sort((a, b) => a.order - b.order);
+const sharedSeedEvents: DashboardEvent[] = mockEvents;
 
-  return {
-    id: event.id,
-    title: event.name,
-    description: event.description ?? "",
-    date: startSchedule?.scheduled_at ?? event.created_at ?? null,
-    status: "live",
-    source: "manual",
-    likes: event.like_count,
-    attending: event.attend_count,
-    categories: event.categories.map((c) => c.name),
-    imageUrl: event.images[0]?.full_url ?? null,
-    registrationUrl: event.registration_url,
-    isOnline: false,
-    isFree: event.is_free,
-    price: event.price == null ? null : `£${event.price}`,
-    schedules,
-  };
+/** Compute derived ticketing totals for a single event. */
+function withTicketingTotals(event: DashboardEvent): DashboardEvent {
+  if (!event.isTicketed || !event.ticketTypes) return event;
+  const purchases = event.purchases ?? [];
+  const totalAvailable = event.ticketTypes.reduce((sum, t) => sum + t.totalAvailable, 0);
+  const totalSold = purchases.length;
+  const totalRevenue = event.ticketTypes.reduce((sum, t) => {
+    const sold = purchases.filter((p) => p.ticketTypeId === t.id).length;
+    return sum + sold * t.price;
+  }, 0);
+  return { ...event, totalAvailable, totalSold, totalRevenue };
 }
-
-const sharedSeedEvents: DashboardEvent[] = webMockEvents.map(mobileEventToDashboardEvent);
 
 export function useEvents(societyId: string | undefined) {
   const [events, setEvents] = useState<DashboardEvent[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Compute ticketing totals on the fly
+  const eventsWithTotals = useMemo(() => events.map(withTicketingTotals), [events]);
+
+  const ticketedEvents = useMemo(
+    () => eventsWithTotals.filter((e) => e.isTicketed),
+    [eventsWithTotals],
+  );
+  const nonTicketedEvents = useMemo(
+    () => eventsWithTotals.filter((e) => !e.isTicketed),
+    [eventsWithTotals],
+  );
 
   const fetchEvents = useCallback(async () => {
     if (!societyId) return;
@@ -140,18 +126,25 @@ export function useEvents(societyId: string | undefined) {
     // Simulate network delay
     await new Promise((r) => setTimeout(r, 200));
 
-    const shared = loadSharedEvents();
-    const next = shared ?? sharedSeedEvents;
-    setEvents(next);
-    if (!shared) {
-      saveSharedEvents(next);
-    }
+    // Mock data is the source of truth — always seed from it
+    setEvents(sharedSeedEvents);
+    saveSharedEvents(sharedSeedEvents);
     setLoading(false);
   }, [societyId]);
 
   const createEvent = async (formData: Record<string, unknown>, categoryIds?: string[]) => {
     const schedules = toDashboardSchedules(formData.schedules);
     const firstStart = schedules.find((s) => !s.isEnd)?.scheduledAt ?? null;
+
+    // Handle ticketing data from form
+    const isTicketed = Boolean(formData.isTicketed);
+    const ticketTypes: TicketType[] | undefined = isTicketed && Array.isArray(formData.ticketTypes)
+      ? (formData.ticketTypes as Omit<TicketType, "id" | "eventId">[]).map((t, i) => ({
+          ...t,
+          id: `tt-${Date.now()}-${i}`,
+          eventId: `e-${Date.now()}`,
+        }))
+      : undefined;
 
     const newEvent: DashboardEvent = {
       id: `e-${Date.now()}`,
@@ -171,7 +164,20 @@ export function useEvents(societyId: string | undefined) {
         ? null
         : ((formData.price as string) || null),
       schedules,
+      isTicketed,
+      ticketTypes: ticketTypes
+        ? ticketTypes.map((t) => ({ ...t, eventId: `e-${Date.now()}` }))
+        : undefined,
+      purchases: isTicketed ? [] : undefined,
     };
+
+    // Fix eventId now that we have the real one
+    if (newEvent.ticketTypes) {
+      newEvent.ticketTypes = newEvent.ticketTypes.map((t) => ({
+        ...t,
+        eventId: newEvent.id,
+      }));
+    }
 
     setEvents((prev) => {
       const next = [newEvent, ...prev];
@@ -189,31 +195,55 @@ export function useEvents(societyId: string | undefined) {
     const schedules = toDashboardSchedules(formData.schedules);
     const firstStart = schedules.find((s) => !s.isEnd)?.scheduledAt ?? null;
 
+    const isTicketed = formData.isTicketed != null ? Boolean(formData.isTicketed) : undefined;
+    const rawTicketTypes = Array.isArray(formData.ticketTypes) ? formData.ticketTypes as TicketType[] : undefined;
+
     setEvents((prev) => {
-      const next = prev.map((e) =>
-        e.id === eventId
-          ? {
-              ...e,
-              title: (formData.title as string) ?? e.title,
-              description: (formData.description as string) ?? e.description,
-              date: firstStart ?? e.date,
-              categories: categoryIds ?? e.categories,
-              registrationUrl:
-                ((formData.registrationUrl as string) || null) ?? e.registrationUrl,
-              isOnline:
-                formData.isOnline == null ? e.isOnline : Boolean(formData.isOnline),
-              isFree:
-                formData.isFree == null ? e.isFree : Boolean(formData.isFree),
-              price:
-                formData.isFree == null
-                  ? e.price
-                  : Boolean(formData.isFree)
-                    ? null
-                    : ((formData.price as string) || null),
-              schedules: schedules.length > 0 ? schedules : e.schedules,
-            }
-          : e
-      );
+      const next = prev.map((e) => {
+        if (e.id !== eventId) return e;
+
+        const updatedTicketed = isTicketed ?? e.isTicketed;
+        let updatedTicketTypes = e.ticketTypes;
+        let updatedPurchases = e.purchases;
+
+        if (isTicketed != null) {
+          if (updatedTicketed && rawTicketTypes) {
+            // Assign IDs to new ticket types, keep existing ones
+            updatedTicketTypes = rawTicketTypes.map((t, i) => ({
+              ...t,
+              id: t.id || `tt-${Date.now()}-${i}`,
+              eventId,
+            }));
+          } else if (!updatedTicketed) {
+            updatedTicketTypes = undefined;
+            updatedPurchases = undefined;
+          }
+        }
+
+        return {
+          ...e,
+          title: (formData.title as string) ?? e.title,
+          description: (formData.description as string) ?? e.description,
+          date: firstStart ?? e.date,
+          categories: categoryIds ?? e.categories,
+          registrationUrl:
+            ((formData.registrationUrl as string) || null) ?? e.registrationUrl,
+          isOnline:
+            formData.isOnline == null ? e.isOnline : Boolean(formData.isOnline),
+          isFree:
+            formData.isFree == null ? e.isFree : Boolean(formData.isFree),
+          price:
+            formData.isFree == null
+              ? e.price
+              : Boolean(formData.isFree)
+                ? null
+                : ((formData.price as string) || null),
+          schedules: schedules.length > 0 ? schedules : e.schedules,
+          isTicketed: updatedTicketed,
+          ticketTypes: updatedTicketTypes,
+          purchases: updatedPurchases ?? e.purchases,
+        };
+      });
       saveSharedEvents(next);
       return next;
     });
@@ -227,5 +257,114 @@ export function useEvents(societyId: string | undefined) {
     });
   };
 
-  return { events, loading, error, fetchEvents, createEvent, updateEvent, deleteEvent };
+  // ── Ticketing actions ──────────────────────────────────
+
+  const assignTickets = async (
+    eventId: string,
+    ticketTypes: Omit<TicketType, "id" | "eventId">[],
+  ) => {
+    await new Promise((r) => setTimeout(r, 150));
+    setEvents((prev) => {
+      const next = prev.map((e) => {
+        if (e.id !== eventId) return e;
+        return {
+          ...e,
+          isTicketed: true,
+          ticketTypes: ticketTypes.map((t, i) => ({
+            ...t,
+            id: `tt-${Date.now()}-${i}`,
+            eventId,
+          })),
+          purchases: e.purchases ?? [],
+        };
+      });
+      saveSharedEvents(next);
+      return next;
+    });
+  };
+
+  const updateTickets = async (eventId: string, ticketTypes: TicketType[]) => {
+    await new Promise((r) => setTimeout(r, 150));
+    setEvents((prev) => {
+      const next = prev.map((e) =>
+        e.id === eventId ? { ...e, ticketTypes } : e,
+      );
+      saveSharedEvents(next);
+      return next;
+    });
+  };
+
+  const removeTicketing = (eventId: string) => {
+    setEvents((prev) => {
+      const next = prev.map((e) => {
+        if (e.id !== eventId) return e;
+        const totalSold = (e.purchases ?? []).length;
+        if (totalSold > 0) return e; // blocked
+        return {
+          ...e,
+          isTicketed: false,
+          ticketTypes: undefined,
+          purchases: undefined,
+        };
+      });
+      saveSharedEvents(next);
+      return next;
+    });
+  };
+
+  const markAttended = (purchaseId: string) => {
+    setEvents((prev) => {
+      const next = prev.map((e) => ({
+        ...e,
+        purchases: e.purchases?.map((p) =>
+          p.id === purchaseId ? { ...p, attendedAt: new Date().toISOString() } : p,
+        ),
+      }));
+      saveSharedEvents(next);
+      return next;
+    });
+  };
+
+  const unmarkAttended = (purchaseId: string) => {
+    setEvents((prev) => {
+      const next = prev.map((e) => ({
+        ...e,
+        purchases: e.purchases?.map((p) =>
+          p.id === purchaseId ? { ...p, attendedAt: null } : p,
+        ),
+      }));
+      saveSharedEvents(next);
+      return next;
+    });
+  };
+
+  const refundPurchase = (purchaseId: string) => {
+    setEvents((prev) => {
+      const next = prev.map((e) => ({
+        ...e,
+        purchases: e.purchases?.filter((p) => p.id !== purchaseId),
+      }));
+      saveSharedEvents(next);
+      return next;
+    });
+  };
+
+  return {
+    events: eventsWithTotals,
+    loading,
+    error,
+    fetchEvents,
+    createEvent,
+    updateEvent,
+    deleteEvent,
+    // Ticketing
+    assignTickets,
+    updateTickets,
+    removeTicketing,
+    markAttended,
+    unmarkAttended,
+    refundPurchase,
+    ticketedEvents,
+    nonTicketedEvents,
+  };
 }

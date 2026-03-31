@@ -149,6 +149,29 @@ export interface SocietyWithProfile extends SocietyRow {
   universities: UniversityRow | null;
 }
 
+// Ticketing types
+
+/** A ticket type configured for an event (e.g., "VIP", "Member Price"). */
+export interface TicketType {
+  id: string;
+  eventId: string;
+  name: string;
+  price: number; // GBP, minimum 1.00
+  isMemberTicket: boolean;
+  totalAvailable: number; // total tickets offered for this type
+}
+
+/** A purchased ticket instance. */
+export interface TicketPurchase {
+  id: string;
+  ticketTypeId: string;
+  eventId: string;
+  buyerName: string;
+  buyerEmail: string;
+  purchasedAt: string; // ISO 8601
+  attendedAt: string | null; // ISO 8601, null if not yet attended
+}
+
 // Dashboard-specific types
 
 export interface DashboardEvent {
@@ -180,6 +203,16 @@ export interface DashboardEvent {
     roomId: string | null;
     description: string | null;
   }>;
+
+  // Ticketing (optional — only present if "Ticket Event" toggle is on)
+  isTicketed: boolean;
+  ticketTypes?: TicketType[];
+  purchases?: TicketPurchase[];
+
+  // Computed (derived in hook, not stored)
+  totalRevenue?: number;
+  totalSold?: number;
+  totalAvailable?: number;
 }
 
 export interface AnalyticsData {
