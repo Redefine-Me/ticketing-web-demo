@@ -1,0 +1,26 @@
+{
+  "society": {
+    "name": "UoM American Studies Society",
+    "handle": "uom_assoc"
+  },
+  "event": {
+    "title": "The Simpsons Movie Screening + Drinks",
+    "caption": "SIMPSONS MOVIE SCREENING + DRINKS!!!! Spider Pig. Spider Pig. Does whatever a Spider Pig does. Come watch Homer doom an entire town then drown your sorrows at BrewDog. Tuesday 31st March, 6pm SU B1 ➡️ 8pm BrewDog Oxford Rd 🇺🇸🍩🍺",
+    "date": "2026-03-31",
+    "schedule": [
+      {
+        "start": "18:00",
+        "end": "20:00",
+        "activity": "Film screening",
+        "venue": "SU B1, Students Union"
+      },
+      {
+        "start": "20:00",
+        "end": "22:00",
+        "activity": "Drinks",
+        "venue": "BrewDog, Oxford Road"
+      }
+    ],
+    "imageStyle": "The Simpsons visual style"
+  }
+}
