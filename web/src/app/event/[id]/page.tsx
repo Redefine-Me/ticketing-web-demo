@@ -14,7 +14,17 @@ import {
 } from '@/lib/helpers';
 import { CategoryPills } from '@/components/CategoryPills';
 import { BackButton } from '@/components/BackButton';
-import { HeartIcon, MapPinIcon, CalendarIcon, UsersIcon, ShareIcon } from '@/components/icons';
+import {
+  AlertCircleIcon,
+  CalendarOutlineIcon,
+  CheckmarkCircleIcon,
+  HeartIcon,
+  LogoInstagramIcon,
+  MapPinIcon,
+  CalendarIcon,
+  UsersIcon,
+  ShareIcon,
+} from '@/components/icons';
 import Link from 'next/link';
 
 export default function EventDetailPage() {
@@ -28,7 +38,7 @@ export default function EventDetailPage() {
   if (!event) {
     return (
       <div className="px-4 py-20 text-center">
-        <p className="text-4xl mb-4">😕</p>
+        <AlertCircleIcon className="w-10 h-10 mx-auto mb-4 text-gray-400 dark:text-gray-500" />
         <p className="text-gray-500 dark:text-gray-400 mb-4">Event not found</p>
         <button
           onClick={() => router.back()}
@@ -94,7 +104,7 @@ export default function EventDetailPage() {
           </>
         ) : (
           <div className="w-full h-[300px] flex items-center justify-center">
-            <span className="text-6xl">📅</span>
+            <CalendarOutlineIcon className="w-16 h-16 text-gray-400 dark:text-gray-500" />
           </div>
         )}
       </div>
@@ -171,7 +181,7 @@ export default function EventDetailPage() {
         {/* Attending badge */}
         {event.isAttending && (
           <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800">
-            <span className="text-emerald-600 dark:text-emerald-400 text-lg">✓</span>
+            <CheckmarkCircleIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
               You&apos;re attending this event
             </p>
@@ -208,7 +218,8 @@ export default function EventDetailPage() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm text-pink-500 hover:text-pink-600 font-medium"
           >
-            📸 @{society.instagram_handle}
+            <LogoInstagramIcon className="w-4 h-4" />
+            @{society.instagram_handle}
           </a>
         )}
 
@@ -232,7 +243,10 @@ export default function EventDetailPage() {
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
-            {event.isAttending ? '✓ Attending' : 'Attend'}
+            <span className="inline-flex items-center justify-center gap-2">
+              {event.isAttending && <CheckmarkCircleIcon className="w-4 h-4" />}
+              {event.isAttending ? 'Attending' : 'Attend'}
+            </span>
           </button>
           <button
             onClick={() => toggleLike(event.id)}

@@ -3,7 +3,7 @@
 import { useEventStore } from '@/context/EventStore';
 import { getEventImageUrl, getSocietyName, getEventDate } from '@/lib/helpers';
 import Link from 'next/link';
-import { TicketIcon, QRCodeIcon } from '@/components/icons';
+import { CalendarOutlineIcon, TicketIcon, QRCodeIcon } from '@/components/icons';
 
 function formatShortDate(date: Date): string {
   return date.toLocaleDateString('en-GB', {
@@ -68,7 +68,9 @@ export default function TicketingPage() {
                 {imageUrl ? (
                   <img src={imageUrl} alt={event.name} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-xl">📅</div>
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <CalendarOutlineIcon className="w-6 h-6" />
+                  </div>
                 )}
               </div>
 

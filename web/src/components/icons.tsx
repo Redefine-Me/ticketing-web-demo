@@ -1,3 +1,21 @@
+import {
+  IoAlertCircleOutline,
+  IoCalendarOutline,
+  IoCheckmarkCircle,
+  IoClose,
+  IoFolderOpenOutline,
+  IoHeart,
+  IoLocationOutline,
+  IoLogoInstagram,
+  IoSchoolOutline,
+  IoSearchOutline,
+  IoTimeOutline,
+} from 'react-icons/io5';
+
+type IconProps = {
+  className?: string;
+};
+
 export function HeartIcon({ filled, className = '' }: { filled: boolean; className?: string }) {
   return (
     <svg
@@ -184,4 +202,48 @@ export function DiscoverIcon({ className = '' }: { className?: string }) {
       <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" opacity="0.3" />
     </svg>
   );
+}
+
+export function AlertCircleIcon({ className = '' }: IconProps) {
+  return <IoAlertCircleOutline className={className} />;
+}
+
+export function CalendarOutlineIcon({ className = '' }: IconProps) {
+  return <IoCalendarOutline className={className} />;
+}
+
+export function CheckmarkCircleIcon({ className = '' }: IconProps) {
+  return <IoCheckmarkCircle className={className} />;
+}
+
+export function CloseIcon({ className = '' }: IconProps) {
+  return <IoClose className={className} />;
+}
+
+export function FolderOpenIcon({ className = '' }: IconProps) {
+  return <IoFolderOpenOutline className={className} />;
+}
+
+export function HeartFillIcon({ className = '' }: IconProps) {
+  return <IoHeart className={className} />;
+}
+
+export function LocationOutlineIcon({ className = '' }: IconProps) {
+  return <IoLocationOutline className={className} />;
+}
+
+export function LogoInstagramIcon({ className = '' }: IconProps) {
+  return <IoLogoInstagram className={className} />;
+}
+
+export function SchoolOutlineIcon({ className = '' }: IconProps) {
+  return <IoSchoolOutline className={className} />;
+}
+
+export function SearchOutlineIcon({ className = '' }: IconProps) {
+  return <IoSearchOutline className={className} />;
+}
+
+export function TimeOutlineIcon({ className = '' }: IconProps) {
+  return <IoTimeOutline className={className} />;
 }

@@ -7,7 +7,7 @@ import { societies } from '@/lib/mock-data';
 import { groupEventsByDate } from '@/lib/helpers';
 import { EventListRow } from '@/components/EventCard';
 import { BackButton } from '@/components/BackButton';
-import { UsersIcon } from '@/components/icons';
+import { AlertCircleIcon, LogoInstagramIcon, UsersIcon } from '@/components/icons';
 
 export default function SocietyPage() {
   const params = useParams();
@@ -26,7 +26,7 @@ export default function SocietyPage() {
   if (!society) {
     return (
       <div className="px-4 py-20 text-center">
-        <p className="text-4xl mb-4">😕</p>
+        <AlertCircleIcon className="w-10 h-10 mx-auto mb-4 text-gray-400 dark:text-gray-500" />
         <p className="text-gray-500 dark:text-gray-400">Society not found</p>
       </div>
     );
@@ -66,9 +66,10 @@ export default function SocietyPage() {
                 href={`https://instagram.com/${society.instagram_handle}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 text-sm font-medium text-pink-500 bg-pink-50 dark:bg-pink-900/20 rounded-full hover:bg-pink-100 dark:hover:bg-pink-900/40 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-pink-500 bg-pink-50 dark:bg-pink-900/20 rounded-full hover:bg-pink-100 dark:hover:bg-pink-900/40 transition-colors"
               >
-                📸 Instagram
+                <LogoInstagramIcon className="w-4 h-4" />
+                Instagram
               </a>
             )}
             <button

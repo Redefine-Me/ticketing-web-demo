@@ -8,6 +8,8 @@ import { categoryMeta } from '@/lib/theme';
 import { capitalizeCategoryName, groupEventsByDate } from '@/lib/helpers';
 import { EventCard } from '@/components/EventCard';
 import { BackButton } from '@/components/BackButton';
+import { CategoryIcon } from '@/components/CategoryIcon';
+import { AlertCircleIcon, FolderOpenIcon } from '@/components/icons';
 
 export default function CategoryPage() {
   const params = useParams();
@@ -32,7 +34,7 @@ export default function CategoryPage() {
   if (!category) {
     return (
       <div className="px-4 py-20 text-center">
-        <p className="text-4xl mb-4">😕</p>
+        <AlertCircleIcon className="w-10 h-10 mx-auto mb-4 text-gray-400 dark:text-gray-500" />
         <p className="text-gray-500 dark:text-gray-400">Category not found</p>
       </div>
     );
@@ -48,7 +50,11 @@ export default function CategoryPage() {
           className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
           style={{ backgroundColor: `${meta?.color ?? '#6B7280'}15` }}
         >
-          {meta?.icon ?? '📂'}
+          {meta?.icon ? (
+            <CategoryIcon name={meta.icon} className="w-7 h-7" />
+          ) : (
+            <FolderOpenIcon className="w-7 h-7 text-gray-500" />
+          )}
         </div>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -67,7 +73,11 @@ export default function CategoryPage() {
       {/* Events */}
       {sections.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-4xl mb-3">{meta?.icon ?? '📂'}</p>
+          {meta?.icon ? (
+            <CategoryIcon name={meta.icon} className="w-10 h-10 mx-auto mb-3" />
+          ) : (
+            <FolderOpenIcon className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
+          )}
           <p className="text-gray-500 dark:text-gray-400">No events in this category yet</p>
         </div>
       ) : (

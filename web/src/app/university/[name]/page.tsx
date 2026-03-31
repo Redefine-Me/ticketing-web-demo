@@ -7,6 +7,7 @@ import { universities } from '@/lib/mock-data';
 import { groupEventsByDate } from '@/lib/helpers';
 import { EventCard } from '@/components/EventCard';
 import { BackButton } from '@/components/BackButton';
+import { AlertCircleIcon, SchoolOutlineIcon } from '@/components/icons';
 
 export default function UniversityPage() {
   const params = useParams();
@@ -27,7 +28,7 @@ export default function UniversityPage() {
   if (!university) {
     return (
       <div className="px-4 py-20 text-center">
-        <p className="text-4xl mb-4">😕</p>
+        <AlertCircleIcon className="w-10 h-10 mx-auto mb-4 text-gray-400 dark:text-gray-500" />
         <p className="text-gray-500 dark:text-gray-400">University not found</p>
       </div>
     );
@@ -59,7 +60,7 @@ export default function UniversityPage() {
 
         {sections.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-4xl mb-3">🏛️</p>
+            <SchoolOutlineIcon className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
             <p className="text-gray-500 dark:text-gray-400">No upcoming events at this university</p>
           </div>
         ) : (

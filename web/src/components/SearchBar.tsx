@@ -1,6 +1,6 @@
 'use client';
 
-import { SearchIcon } from './icons';
+import { CloseIcon, SearchIcon } from './icons';
 
 interface SearchBarProps {
   value: string;
@@ -22,9 +22,10 @@ export function SearchBar({ value, onChange, placeholder = 'Search events...' }:
       {value && (
         <button
           onClick={() => onChange('')}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-sm"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          aria-label="Clear search"
         >
-          ✕
+          <CloseIcon className="w-4 h-4" />
         </button>
       )}
     </div>

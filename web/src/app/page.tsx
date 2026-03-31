@@ -9,7 +9,7 @@ import { EventCard, AttendingEventCard } from '@/components/EventCard';
 import { CategoryChip } from '@/components/CategoryPills';
 import { UniversityCard } from '@/components/UniversityCard';
 import { SearchBar } from '@/components/SearchBar';
-import { ChevronRightIcon } from '@/components/icons';
+import { ChevronRightIcon, SearchOutlineIcon } from '@/components/icons';
 
 export default function HomePage() {
   const { events, attendingEvents } = useEventStore();
@@ -92,7 +92,7 @@ export default function HomePage() {
 
         {sections.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-4xl mb-3">🔍</p>
+            <SearchOutlineIcon className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-500" />
             <p className="text-gray-500 dark:text-gray-400">No events found</p>
           </div>
         ) : (

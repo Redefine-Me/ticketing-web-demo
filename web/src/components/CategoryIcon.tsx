@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  IoFolderOpenOutline,
   IoSchool,
   IoColorPalette,
   IoBriefcase,
@@ -20,9 +21,10 @@ import {
   IoFitness,
   IoHammer,
 } from 'react-icons/io5';
-import { IconType } from 'react-icons';
+import type { IconType } from 'react-icons';
 
 const iconMap: Record<string, IconType> = {
+  IoFolderOpenOutline,
   IoSchool,
   IoColorPalette,
   IoBriefcase,
