@@ -156,7 +156,7 @@ export interface TicketType {
   id: string;
   eventId: string;
   name: string;
-  price: number; // GBP, minimum 1.00
+  price: number; // GBP, 0 = free
   isMemberTicket: boolean;
   totalAvailable: number; // total tickets offered for this type
 }
@@ -187,8 +187,6 @@ export interface DashboardEvent {
   imageUrl: string | null;
   registrationUrl: string | null;
   isOnline: boolean;
-  isFree: boolean;
-  price: string | null;
   schedules: Array<{
     scheduledAt: string;
     isEnd: boolean;
@@ -240,4 +238,101 @@ export interface PostHogAnalyticsData {
     views: number;
   }>;
   registrationClicks: number;
+}
+
+// ── Booking types ──────────────────────────────────────────
+
+/** A university building with its rooms. */
+export interface UniversityBuilding {
+  id: string;
+  name: string;
+  address: string;
+  rooms: UniversityRoom[];
+}
+
+/** A room within a university building. */
+export interface UniversityRoom {
+  id: string;
+  name: string;
+  capacity: number;
+}
+
+/** An external (non-university) venue. */
+export interface NonUniversityVenue {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  website: string;
+  description: string;
+}
+
+/** Booking status. */
+export type BookingStatus = "pending" | "accepted" | "rejected";
+
+/** A message in a booking's communication history. */
+export interface BookingMessage {
+  id: string;
+  sender: "you" | "university" | "venue";
+  senderName: string;
+  message: string;
+  sentAt: string; // ISO 8601
+}
+
+/** A booking for a university room. */
+export interface UniversityBooking {
+  id: string;
+  type: "university";
+  eventId: string;
+  scheduleIndex: number;
+  buildingId: string;
+  buildingName: string;
+  roomId: string;
+  roomName: string;
+  expectedAttendees: number;
+  status: BookingStatus;
+  messages: BookingMessage[];
+  createdAt: string;
+}
+
+/** A booking for a non-university venue. */
+export interface NonUniversityBooking {
+  id: string;
+  type: "non-university";
+  eventId: string;
+  scheduleIndex: number;
+  venueId: string;
+  venueName: string;
+  phone: string;
+  website: string;
+  description: string;
+  status: BookingStatus;
+  messages: BookingMessage[];
+  createdAt: string;
+}
+
+/** Union type for any booking. */
+export type Booking = UniversityBooking | NonUniversityBooking;
+
+/** Aggregated view of an event's bookings for the Bookings page. */
+export interface EventBookingSummary {
+  eventId: string;
+  eventTitle: string;
+  eventDate: string | null;
+  schedules: DashboardEvent["schedules"];
+  bookings: Booking[];
+  statusCounts: {
+    pending: number;
+    accepted: number;
+    rejected: number;
+  };
+}
+
+/** Room availability slot for the calendar view. */
+export interface RoomAvailabilitySlot {
+  date: string;       // YYYY-MM-DD
+  startTime: string;  // HH:MM
+  endTime: string;    // HH:MM
+  status: "free" | "booked" | "mine";
+  bookedBy?: string;
 }

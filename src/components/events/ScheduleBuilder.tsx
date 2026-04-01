@@ -5,9 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus, X, MapPin } from "lucide-react";
+import { Plus, X, MapPin, CalendarCheck, Phone, ExternalLink, Check } from "lucide-react";
 import { LocationCombobox } from "./LocationCombobox";
 import { RoomCombobox } from "./RoomCombobox";
+import { BookingStatusBadge } from "@/components/bookings/BookingStatusBadge";
+import { RoomAvailabilityCalendar } from "@/components/bookings/RoomAvailabilityCalendar";
+import { useBookingsContext } from "@/contexts/BookingsContext";
+import { isUniversityBuilding, resolveVenueFromBuildingId } from "@/lib/mock-data-bookings";
+import { toast } from "sonner";
+import { AnimatePresence, motion } from "framer-motion";
 
 export interface ScheduleEntry {
   date: string;
@@ -24,6 +30,7 @@ export interface ScheduleEntry {
 interface ScheduleBuilderProps {
   value: ScheduleEntry[];
   onChange: (entries: ScheduleEntry[]) => void;
+  eventId?: string;
 }
 
 const emptyEntry: ScheduleEntry = {
@@ -35,8 +42,10 @@ const emptyEntry: ScheduleEntry = {
   description: "",
 };
 
-export function ScheduleBuilder({ value, onChange }: ScheduleBuilderProps) {
+export function ScheduleBuilder({ value, onChange, eventId }: ScheduleBuilderProps) {
   const [mapOpenIndex, setMapOpenIndex] = useState<number | null>(null);
+  const [bookingDropdownIndex, setBookingDropdownIndex] = useState<number | null>(null);
+  const bookingsCtx = useBookingsContext();
 
   function updateEntry(index: number, field: keyof ScheduleEntry, fieldValue: string) {
     const updated = value.map((entry, i) =>
@@ -197,6 +206,125 @@ export function ScheduleBuilder({ value, onChange }: ScheduleBuilderProps) {
                   onChange={(e) => updateEntry(index, "description", e.target.value)}
                 />
               </div>
+
+              {/* Inline booking controls */}
+              {entry.buildingId && eventId && (() => {
+                const booking = bookingsCtx.getBookingForSchedule(eventId, index);
+                const isUni = isUniversityBuilding(entry.buildingId!);
+                const venue = !isUni ? resolveVenueFromBuildingId(entry.buildingId!) : null;
+
+                if (isUni) {
+                  // University: "In Your Bookings" dropdown
+                  const availability = entry.buildingId && booking?.type === "university"
+                    ? bookingsCtx.getRoomAvailability(booking.buildingId, booking.roomId)
+                    : [];
+                  const isOpen = bookingDropdownIndex === index;
+                  return (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setBookingDropdownIndex(isOpen ? null : index)}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs hover:bg-muted transition-colors"
+                        >
+                          <CalendarCheck className="h-3 w-3 text-muted-foreground" />
+                          In Your Bookings
+                          {booking && <BookingStatusBadge status={booking.status} className="ml-1" />}
+                        </button>
+                      </div>
+                      <AnimatePresence>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="rounded-lg border border-border bg-background/50 p-3 space-y-3">
+                              {booking ? (
+                                <>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs text-muted-foreground">
+                                      {booking.type === "university" ? `${booking.buildingName}, ${booking.roomName}` : ""}
+                                    </span>
+                                    <BookingStatusBadge status={booking.status} />
+                                  </div>
+                                  {availability.length > 0 && (
+                                    <RoomAvailabilityCalendar slots={availability} />
+                                  )}
+                                  {availability.length === 0 && (
+                                    <p className="text-xs text-muted-foreground">No availability data for this room</p>
+                                  )}
+                                </>
+                              ) : (
+                                <p className="text-xs text-muted-foreground text-center py-2">
+                                  No booking for this room. Visit the Bookings page to create one.
+                                </p>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
+                if (venue) {
+                  // Non-university: "Add to Bookings" toggle
+                  return (
+                    <div className="space-y-2">
+                      {booking ? (
+                        <>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              if (booking.messages.length > 0) {
+                                if (!confirm("This booking has communication history. Remove it?")) return;
+                              }
+                              bookingsCtx.removeBooking(booking.id);
+                              toast.success("Booking removed");
+                            }}
+                          >
+                            <Check className="mr-1.5 h-3 w-3" />
+                            Remove from Bookings
+                          </Button>
+                          <div className="rounded-lg border border-border bg-background/50 p-3 space-y-2">
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <a href={`tel:${venue.phone}`} className="inline-flex items-center gap-1 hover:text-foreground">
+                                <Phone className="h-3 w-3" />
+                                {venue.phone}
+                              </a>
+                              <a href={venue.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-foreground">
+                                <ExternalLink className="h-3 w-3" />
+                                Website
+                              </a>
+                            </div>
+                            <BookingStatusBadge status={booking.status} />
+                          </div>
+                        </>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            await bookingsCtx.addNonUniversityBooking(eventId, index, venue.id);
+                            toast.success("Booking added");
+                          }}
+                        >
+                          <CalendarCheck className="mr-1.5 h-3 w-3" />
+                          Add to Bookings
+                        </Button>
+                      )}
+                    </div>
+                  );
+                }
+
+                return null;
+              })()}
 
               {/* Google Maps preview */}
               {entry.buildingId && entry.buildingGoogleMapsUrl && (

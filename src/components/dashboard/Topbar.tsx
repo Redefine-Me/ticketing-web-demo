@@ -20,6 +20,7 @@ import {
 import {
   LayoutDashboard,
   CalendarDays,
+  CalendarCheck,
   Users,
   UsersRound,
   PieChart,
@@ -32,6 +33,7 @@ import {
 const navItems = [
   { path: "/overview", label: "Overview", icon: LayoutDashboard },
   { path: "/events", label: "Events", icon: CalendarDays },
+  { path: "/bookings", label: "Bookings", icon: CalendarCheck },
   { path: "/followers", label: "Followers", icon: Users },
   { path: "/committee", label: "Committee", icon: UsersRound },
   { path: "/audience", label: "Audience", icon: PieChart },

@@ -3,14 +3,19 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Input } from "@/components/ui/input";
-import { Check, MapPin, Search, X, Loader2 } from "lucide-react";
+import { Check, MapPin, Building2, Search, X, Loader2 } from "lucide-react";
 import { GooglePlacesSearch, type GooglePlaceResult } from "./GooglePlacesSearch";
 import { cn } from "@/lib/utils";
+import {
+  universityBuildings,
+  nonUniversityVenues,
+} from "@/lib/mock-data-bookings";
 
 interface BuildingOption {
   id: string;
   name: string;
   google_maps_url: string | null;
+  type: "university" | "non-university";
 }
 
 interface LocationComboboxProps {
@@ -68,15 +73,23 @@ export function LocationCombobox({
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
       updatePosition();
-      // Mock building search
-      const mockBuildings: BuildingOption[] = [
-        { id: "b-001", name: "Kilburn Building", google_maps_url: "https://maps.google.com/?q=Kilburn+Building+Manchester" },
-        { id: "b-002", name: "University Place", google_maps_url: null },
-        { id: "b-005", name: "Alan Turing Building", google_maps_url: null },
-        { id: "b-004", name: "Kimpton Clocktower Hotel", google_maps_url: "https://maps.google.com/?q=Kimpton+Clocktower+Manchester" },
+      // Build options from shared data
+      const allBuildings: BuildingOption[] = [
+        ...universityBuildings.map((b) => ({
+          id: b.id,
+          name: b.name,
+          google_maps_url: null as string | null,
+          type: "university" as const,
+        })),
+        ...nonUniversityVenues.map((v) => ({
+          id: v.id,
+          name: v.name,
+          google_maps_url: null as string | null,
+          type: "non-university" as const,
+        })),
       ];
       const q = query.toLowerCase();
-      const results = mockBuildings.filter((b) => b.name.toLowerCase().includes(q));
+      const results = allBuildings.filter((b) => b.name.toLowerCase().includes(q));
       setOptions(results);
       setOpen(true);
       setSearched(true);
@@ -206,25 +219,54 @@ export function LocationCombobox({
               <p className="p-3 text-center text-sm text-muted-foreground">Searching...</p>
             ) : (
               <>
-                {options.length > 0 && (
-                  <div className="p-1">
-                    {options.map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-left hover:bg-muted transition-colors"
-                        onClick={() => handleSelect(option)}
-                      >
-                        <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                        <span className="truncate">{option.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                {(() => {
+                  const uniOptions = options.filter((o) => o.type === "university");
+                  const nonUniOptions = options.filter((o) => o.type === "non-university");
+                  return (
+                    <>
+                      {uniOptions.length > 0 && (
+                        <div className="p-1">
+                          <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            University Buildings
+                          </p>
+                          {uniOptions.map((option) => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-left hover:bg-muted transition-colors"
+                              onClick={() => handleSelect(option)}
+                            >
+                              <Building2 className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                              <span className="truncate">{option.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {nonUniOptions.length > 0 && (
+                        <div className={cn("p-1", uniOptions.length > 0 && "border-t border-border")}>
+                          <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            Other Venues
+                          </p>
+                          {nonUniOptions.map((option) => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-left hover:bg-muted transition-colors"
+                              onClick={() => handleSelect(option)}
+                            >
+                              <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                              <span className="truncate">{option.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
 
                 {searched && options.length === 0 && (
                   <p className="px-3 pt-3 pb-1 text-center text-sm text-muted-foreground">
-                    No saved buildings found
+                    No matching buildings or venues found
                   </p>
                 )}
 

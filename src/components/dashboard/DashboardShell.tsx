@@ -7,6 +7,7 @@ import { Topbar } from "./Topbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { BookingsProvider } from "@/contexts/BookingsContext";
 
 export function DashboardShell({
   societyId,
@@ -17,18 +18,20 @@ export function DashboardShell({
 }) {
   return (
     <DashboardProvider societyId={societyId}>
-      <TooltipProvider>
-        <AuroraBackground opacity={12} showRadialGradient={false} className="h-screen !min-h-0">
-          <div className="dashboard-scope flex h-screen">
-            <Sidebar />
-            <div className="flex flex-1 flex-col overflow-hidden">
-              <Topbar />
-              <DashboardTabs>{children}</DashboardTabs>
+      <BookingsProvider>
+        <TooltipProvider>
+          <AuroraBackground opacity={12} showRadialGradient={false} className="h-screen !min-h-0">
+            <div className="dashboard-scope flex h-screen">
+              <Sidebar />
+              <div className="flex flex-1 flex-col overflow-hidden">
+                <Topbar />
+                <DashboardTabs>{children}</DashboardTabs>
+              </div>
             </div>
-          </div>
-        </AuroraBackground>
-        <Toaster />
-      </TooltipProvider>
+          </AuroraBackground>
+          <Toaster />
+        </TooltipProvider>
+      </BookingsProvider>
     </DashboardProvider>
   );
 }

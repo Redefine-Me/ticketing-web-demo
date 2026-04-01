@@ -43,8 +43,6 @@ const eventFormSchema = z.object({
     )
     .min(1, "Add at least one schedule entry"),
   isOnline: z.boolean(),
-  isFree: z.boolean(),
-  price: z.string().max(100, "Price description must be under 100 characters").optional(),
   registrationUrl: z.string().url("Enter a valid URL").optional().or(z.literal("")),
 });
 
@@ -54,14 +52,13 @@ export type EventFormData = z.infer<typeof eventFormSchema> & {
 };
 
 interface EventFormProps {
+  eventId?: string;
   initialData?: {
     title: string;
     description: string;
     categoryIds: string[];
     schedules: ScheduleEntry[];
     isOnline: boolean;
-    isFree: boolean;
-    price?: string;
     registrationUrl?: string;
     images?: File[];
     isTicketed?: boolean;
@@ -85,6 +82,7 @@ const defaultSchedule: ScheduleEntry = {
 };
 
 export function EventForm({
+  eventId,
   initialData,
   isScraped,
   onSubmit,
@@ -130,13 +128,9 @@ export function EventForm({
       categoryIds: initialData?.categoryIds ?? [],
       schedules: initialData?.schedules ?? [{ ...defaultSchedule }],
       isOnline: initialData?.isOnline ?? false,
-      isFree: initialData?.isFree ?? true,
-      price: initialData?.price ?? "",
       registrationUrl: initialData?.registrationUrl ?? "",
     },
   });
-
-  const isFree = watch("isFree");
 
   const handleToggleTicketed = useCallback(
     (checked: boolean) => {
@@ -173,8 +167,8 @@ export function EventForm({
         fieldErrs.name = "Ticket name is required";
         valid = false;
       }
-      if (tt.price < 1) {
-        fieldErrs.price = "Price must be at least £1.00";
+      if (tt.price < 0) {
+        fieldErrs.price = "Price cannot be negative";
         valid = false;
       }
       if (tt.totalAvailable < 1) {
@@ -227,7 +221,7 @@ export function EventForm({
     isTicketed &&
     (Object.keys(ticketErrors).length > 0 ||
       ticketTypes.some(
-        (t) => !t.name.trim() || t.price < 1 || t.totalAvailable < 1,
+        (t) => !t.name.trim() || t.price < 0 || t.totalAvailable < 1,
       ));
 
   return (
@@ -294,7 +288,7 @@ export function EventForm({
             name="schedules"
             control={control}
             render={({ field }) => (
-              <ScheduleBuilder value={field.value} onChange={field.onChange} />
+              <ScheduleBuilder value={field.value} onChange={field.onChange} eventId={eventId} />
             )}
           />
           {errors.schedules && (
@@ -304,78 +298,6 @@ export function EventForm({
                 "Please fix schedule errors"}
             </p>
           )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Details</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="isOnline">Online event</Label>
-            <Controller
-              name="isOnline"
-              control={control}
-              render={({ field }) => (
-                <Switch
-                  id="isOnline"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              )}
-            />
-          </div>
-
-          <Separator />
-
-          <div className="flex items-center justify-between">
-            <Label htmlFor="isFree">Free event</Label>
-            <Controller
-              name="isFree"
-              control={control}
-              render={({ field }) => (
-                <Switch
-                  id="isFree"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              )}
-            />
-          </div>
-
-          {!isFree && (
-            <div className="space-y-1.5">
-              <Label htmlFor="price">Price</Label>
-              <p className="text-sm text-muted-foreground">Describe the price — not just a number</p>
-              <Input
-                id="price"
-                placeholder="e.g. £4 at the door"
-                maxLength={100}
-                {...register("price")}
-              />
-              {errors.price && (
-                <p className="text-sm text-destructive">{errors.price.message}</p>
-              )}
-            </div>
-          )}
-
-          <Separator />
-
-          <div className="space-y-1.5">
-            <Label htmlFor="registrationUrl">Registration URL</Label>
-            <Input
-              id="registrationUrl"
-              type="url"
-              placeholder="https://..."
-              {...register("registrationUrl")}
-            />
-            {errors.registrationUrl && (
-              <p className="text-sm text-destructive">
-                {errors.registrationUrl.message}
-              </p>
-            )}
-          </div>
         </CardContent>
       </Card>
 
@@ -415,6 +337,49 @@ export function EventForm({
             errors={ticketErrors}
             globalError={ticketGlobalError}
           />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="isOnline">Online event</Label>
+            <Controller
+              name="isOnline"
+              control={control}
+              render={({ field }) => (
+                <Switch
+                  id="isOnline"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
+          </div>
+
+          {!isTicketed && (
+            <>
+              <Separator />
+
+              <div className="space-y-1.5">
+                <Label htmlFor="registrationUrl">Registration URL</Label>
+                <Input
+                  id="registrationUrl"
+                  type="url"
+                  placeholder="https://..."
+                  {...register("registrationUrl")}
+                />
+                {errors.registrationUrl && (
+                  <p className="text-sm text-destructive">
+                    {errors.registrationUrl.message}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 

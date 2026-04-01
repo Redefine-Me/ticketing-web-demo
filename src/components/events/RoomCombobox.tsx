@@ -4,12 +4,14 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Check, DoorOpen, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { findBuilding } from "@/lib/mock-data-bookings";
+
 interface RoomOption {
   id: string;
   name: string;
   floor: string | null;
 }
-import { cn } from "@/lib/utils";
 
 interface RoomComboboxProps {
   buildingId: string;
@@ -41,23 +43,16 @@ export function RoomCombobox({
 
   const isConfirmed = !!roomId;
 
-  // Load mock rooms when building changes
+  // Load rooms from shared building data
   useEffect(() => {
     setLoaded(false);
     setAllRooms([]);
-    const mockRooms: Record<string, RoomOption[]> = {
-      "b-001": [
-        { id: "r-001", name: "LF15", floor: "Lower Ground" },
-        { id: "r-002", name: "LF31", floor: "Lower Ground" },
-        { id: "r-003", name: "2.15", floor: "2" },
-      ],
-      "b-002": [
-        { id: "r-004", name: "Theatre A", floor: "Ground" },
-        { id: "r-005", name: "Theatre B", floor: "Ground" },
-      ],
-    };
     setTimeout(() => {
-      setAllRooms(mockRooms[buildingId] ?? []);
+      const building = findBuilding(buildingId);
+      const rooms: RoomOption[] = building
+        ? building.rooms.map((r) => ({ id: r.id, name: r.name, floor: null }))
+        : [];
+      setAllRooms(rooms);
       setLoaded(true);
     }, 100);
   }, [buildingId]);

@@ -62,8 +62,6 @@ export default function EditEventPage() {
     categoryIds,
     schedules: dashboardScheduleToForm(event.schedules),
     isOnline: event.isOnline,
-    isFree: event.isFree,
-    price: event.price ?? "",
     registrationUrl: event.registrationUrl ?? "",
     isTicketed: event.isTicketed,
     ticketTypes: event.ticketTypes,
@@ -96,6 +94,7 @@ export default function EditEventPage() {
       </div>
 
       <EventForm
+        eventId={params.id}
         initialData={initialData}
         isScraped={isScraped}
         onSubmit={handleSubmit}
