@@ -172,9 +172,10 @@ function getColumns(
         <Button
           variant="outline"
           size="sm"
+          className="border-green-500 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800"
           onClick={(e) => {
             e.stopPropagation();
-            onManageTickets(row.original);
+            onManageTickets?.(row.original);
           }}
         >
           <Ticket className="mr-1.5 h-3.5 w-3.5" />

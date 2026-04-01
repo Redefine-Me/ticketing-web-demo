@@ -16,10 +16,13 @@ import { ImageUploader } from "@/components/events/ImageUploader";
 import { CategorySelector } from "@/components/events/CategorySelector";
 import { TicketConfigPanel } from "@/components/ticketing/TicketConfigPanel";
 import type { TicketTypeFormData } from "@/components/ticketing/TicketTypeCard";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2, Sparkles } from "lucide-react";
 import { APIProvider } from "@vis.gl/react-google-maps";
-import type { Category } from "@/supabase_lib/types";
+import type { Category, SocietyRow } from "@/supabase_lib/types";
 import type { TicketType, TicketPurchase } from "@/lib/supabase/types";
+import { AIImageGenModal } from "@/components/events/AIImageGenModal";
+import type { EventImage } from "@/lib/types/image-generation";
+import { filesToEventImages, eventImagesToFiles } from "@/lib/types/image-generation";
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
 
@@ -70,6 +73,7 @@ interface EventFormProps {
   submitLabel?: string;
   categories: Category[];
   categoriesLoading?: boolean;
+  society?: SocietyRow | null;
 }
 
 const defaultSchedule: ScheduleEntry = {
@@ -89,9 +93,11 @@ export function EventForm({
   submitLabel = "Create Event",
   categories,
   categoriesLoading,
+  society,
 }: EventFormProps) {
   const [images, setImages] = useState<File[]>(initialData?.images ?? []);
   const [submitting, setSubmitting] = useState(false);
+  const [aiModalOpen, setAiModalOpen] = useState(false);
 
   // Ticketing state (managed outside react-hook-form for simplicity)
   const [isTicketed, setIsTicketed] = useState(initialData?.isTicketed ?? false);
@@ -387,10 +393,38 @@ export function EventForm({
         <CardHeader>
           <CardTitle>Images</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
           <ImageUploader images={images} onChange={setImages} />
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => setAiModalOpen(true)}
+          >
+            <Sparkles className="h-4 w-4" />
+            Generate Images with AI
+          </Button>
         </CardContent>
       </Card>
+
+      <AIImageGenModal
+        open={aiModalOpen}
+        onOpenChange={setAiModalOpen}
+        initialImages={filesToEventImages(images)}
+        formData={{
+          title: watch("title"),
+          description: watch("description"),
+          categoryIds: watch("categoryIds"),
+          schedules: watch("schedules"),
+          isOnline: watch("isOnline"),
+        }}
+        categories={categories}
+        society={society ?? null}
+        onDone={async (outputImages: EventImage[]) => {
+          const files = await eventImagesToFiles(outputImages);
+          setImages(files);
+        }}
+      />
 
       <div className="flex justify-end">
         <Button

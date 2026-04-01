@@ -6,6 +6,7 @@ import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { useCategories } from "@/hooks/useCategories";
 import { EventForm, type EventFormData } from "@/components/events/EventForm";
+import { prefillNewEventForm } from "@/lib/mock-data";
 import { toast } from "sonner";
 
 export default function CreateEventPage() {
@@ -37,7 +38,7 @@ export default function CreateEventPage() {
         </p>
       </div>
 
-      <EventForm onSubmit={handleSubmit} categories={categories} categoriesLoading={categoriesLoading} />
+      <EventForm initialData={prefillNewEventForm} onSubmit={handleSubmit} categories={categories} categoriesLoading={categoriesLoading} society={society} />
     </div>
   );
 }
