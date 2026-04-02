@@ -8,6 +8,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { EventForm, type EventFormData } from "@/components/events/EventForm";
 import type { ImageItem } from "@/components/events/ImageUploader";
 import { toast } from "sonner";
+import { mockCreatedEvent } from "./mock-created-event";
 
 export default function CreateEventPage() {
   const router = useRouter();
@@ -38,7 +39,7 @@ export default function CreateEventPage() {
         </p>
       </div>
 
-      <EventForm onSubmit={handleSubmit} categories={categories} categoriesLoading={categoriesLoading} society={society} />
+      <EventForm initialData={mockCreatedEvent} onSubmit={handleSubmit} categories={categories} categoriesLoading={categoriesLoading} society={society} />
     </div>
   );
 }
