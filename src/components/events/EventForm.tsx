@@ -261,7 +261,7 @@ export function EventForm({
             <Textarea
               id="description"
               placeholder="Describe the event..."
-              rows={4}
+              rows={8}
               {...register("description")}
             />
             {errors.description && (
