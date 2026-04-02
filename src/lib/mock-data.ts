@@ -10,28 +10,28 @@ import type {
 // Mock society
 export const mockSociety: SocietyRow = {
   id: "s-001",
-  name: "American Studies Society",
-  instagram_handle: "uomamericanstudies",
+  name: "Manchester Malayalee Student Society",
+  instagram_handle: "mallusocmcr",
   description:
-    "The American Studies Society at the University of Manchester. Film screenings, cultural events, trivia nights, and socials celebrating American culture.",
-  bio_url: "https://linktr.ee/uomamericanstudies",
+    "PHOTOS/ TICKETS 👇💫",
+  bio_url: null,
   university_id: "u-001",
   image_url: null,
   created_at: "2025-09-01T00:00:00Z",
-  updated_at: "2026-03-01T00:00:00Z",
+  updated_at: "2026-03-17T00:00:00Z",
 };
 
 export const mockProfile: SocietyProfileRow = {
   id: "sp-001",
   society_id: "s-001",
-  name: "American Studies Society",
-  handle: "uomamericanstudies",
+  name: "Manchester Malayalee Student Society",
+  handle: "mallusocmcr",
   description: mockSociety.description,
   image_url: null,
-  follow_count: 312,
-  event_count: 10,
+  follow_count: 2598,
+  event_count: 11,
   created_at: "2025-09-01T00:00:00Z",
-  updated_at: "2026-03-01T00:00:00Z",
+  updated_at: "2026-03-17T00:00:00Z",
 };
 
 export const mockAccount: SocietyAccountRow = {
@@ -75,39 +75,50 @@ function mockPurchases(
   return purchases;
 }
 
-// e-004 Simpsons Trivia Night — ticket types
-const triviaTicketTypes: TicketType[] = [
-  { id: "tt-004-1", eventId: "e-004", name: "Member", price: 2, isMemberTicket: true, totalAvailable: 40 },
-  { id: "tt-004-2", eventId: "e-004", name: "Non-Member", price: 4, isMemberTicket: false, totalAvailable: 25 },
+// e-002 Onam Sadhya Night — ticket types
+const onamTicketTypes: TicketType[] = [
+  { id: "tt-002-1", eventId: "e-002", name: "Member", price: 3, isMemberTicket: true, totalAvailable: 50 },
+  { id: "tt-002-2", eventId: "e-002", name: "Non-Member", price: 5, isMemberTicket: false, totalAvailable: 30 },
 ];
 
-const triviaPurchases: TicketPurchase[] = [
-  ...mockPurchases("e-004", "tt-004-1", 36, 28, "2025-10-20T10:00:00Z"),
-  ...mockPurchases("e-004", "tt-004-2", 18, 12, "2025-10-25T10:00:00Z"),
+const onamPurchases: TicketPurchase[] = [
+  ...mockPurchases("e-002", "tt-002-1", 42, 35, "2025-09-28T10:00:00Z"),
+  ...mockPurchases("e-002", "tt-002-2", 24, 18, "2025-10-01T10:00:00Z"),
 ];
 
-// e-008 Springfield Film Festival — ticket types
-const festivalTicketTypes: TicketType[] = [
-  { id: "tt-008-1", eventId: "e-008", name: "General Admission", price: 3, isMemberTicket: false, totalAvailable: 80 },
-  { id: "tt-008-2", eventId: "e-008", name: "Member Price", price: 1, isMemberTicket: true, totalAvailable: 30 },
+// e-004 Diwali Rave — ticket types
+const diwaliTicketTypes: TicketType[] = [
+  { id: "tt-004-1", eventId: "e-004", name: "Early Bird", price: 5, isMemberTicket: false, totalAvailable: 60 },
+  { id: "tt-004-2", eventId: "e-004", name: "Standard", price: 8, isMemberTicket: false, totalAvailable: 100 },
 ];
 
-const festivalPurchases: TicketPurchase[] = [
-  ...mockPurchases("e-008", "tt-008-1", 52, 40, "2026-01-25T10:00:00Z"),
-  ...mockPurchases("e-008", "tt-008-2", 24, 20, "2026-01-28T10:00:00Z"),
+const diwaliPurchases: TicketPurchase[] = [
+  ...mockPurchases("e-004", "tt-004-1", 58, 45, "2025-10-10T10:00:00Z"),
+  ...mockPurchases("e-004", "tt-004-2", 82, 64, "2025-10-18T10:00:00Z"),
 ];
 
-// e-009 American Studies Spring Ball — ticket types
-const ballTicketTypes: TicketType[] = [
-  { id: "tt-009-1", eventId: "e-009", name: "Early Bird", price: 25, isMemberTicket: false, totalAvailable: 50 },
-  { id: "tt-009-2", eventId: "e-009", name: "Standard", price: 35, isMemberTicket: false, totalAvailable: 100 },
-  { id: "tt-009-3", eventId: "e-009", name: "VIP", price: 55, isMemberTicket: false, totalAvailable: 20 },
+// e-010 VAJRAM Annual Gala Night — ticket types
+const vajramTicketTypes: TicketType[] = [
+  { id: "tt-010-1", eventId: "e-010", name: "Early Bird", price: 25, isMemberTicket: false, totalAvailable: 50 },
+  { id: "tt-010-2", eventId: "e-010", name: "Standard", price: 35, isMemberTicket: false, totalAvailable: 120 },
+  { id: "tt-010-3", eventId: "e-010", name: "VIP", price: 60, isMemberTicket: false, totalAvailable: 20 },
 ];
 
-const ballPurchases: TicketPurchase[] = [
-  ...mockPurchases("e-009", "tt-009-1", 47, 38, "2026-01-15T10:00:00Z"),
-  ...mockPurchases("e-009", "tt-009-2", 68, 52, "2026-02-01T10:00:00Z"),
-  ...mockPurchases("e-009", "tt-009-3", 14, 11, "2026-02-20T10:00:00Z"),
+const vajramPurchases: TicketPurchase[] = [
+  ...mockPurchases("e-010", "tt-010-1", 48, 40, "2026-02-01T10:00:00Z"),
+  ...mockPurchases("e-010", "tt-010-2", 95, 75, "2026-02-15T10:00:00Z"),
+  ...mockPurchases("e-010", "tt-010-3", 17, 14, "2026-03-01T10:00:00Z"),
+];
+
+// e-011 THEYYAM — A Night of Kerala — ticket types
+const theyyamTicketTypes: TicketType[] = [
+  { id: "tt-011-1", eventId: "e-011", name: "Member", price: 3, isMemberTicket: true, totalAvailable: 80 },
+  { id: "tt-011-2", eventId: "e-011", name: "Non-Member", price: 6, isMemberTicket: false, totalAvailable: 60 },
+];
+
+const theyyamPurchases: TicketPurchase[] = [
+  ...mockPurchases("e-011", "tt-011-1", 62, 0, "2026-03-25T10:00:00Z"),
+  ...mockPurchases("e-011", "tt-011-2", 38, 0, "2026-03-28T10:00:00Z"),
 ];
 
 // ── Helper to build schedule tuple ──────────────────────────
@@ -151,210 +162,277 @@ function sched(
   ];
 }
 
-// Mock events — American Studies Society, Sep 2025 – Apr 2026
+// Mock events — Manchester Malayalee Student Society, Sep 2025 – Apr 2026
 export const mockEvents: DashboardEvent[] = [
   {
     id: "e-001",
-    title: "Freshers Welcome Social",
+    title: "Freshers Chai & Chill",
     description:
-      "Kick off the year with the American Studies Society! Meet fellow Americanists, grab free pizza, and sign up for our events. Games, music, and great company guaranteed.",
+      "ayoo freshers!! come thru for our first hangout of the year 🫨🫶🏽 free chai, snacks from back home and good vibes only. this is where the Mallu Soc MCR fam starts so don\u2019t be shy, just pull up 💫",
     date: "2025-09-25T18:00:00Z",
     status: "live",
-    source: "manual",
-    likes: 52,
-    attending: 87,
+    source: "scraped",
+    likes: 187,
+    attending: 94,
     categories: ["social"],
-    imageUrl: null,
+    imageUrl: "/event-images/freshers-chai-and-chill.png",
     registrationUrl: null,
     isOnline: false,
     isFree: true,
     price: null,
     isTicketed: false,
-    schedules: sched("2025-09-25T18:00:00Z", "2025-09-25T21:00:00Z", "Students' Union", "b-001"),
+    schedules: sched("2025-09-25T18:00:00Z", "2025-09-25T20:30:00Z", "Students' Union", "b-001", "Room 1 (ground floor)"),
   },
   {
     id: "e-002",
-    title: "The Simpsons Movie Screening",
+    title: "Onam Sadhya Night",
     description:
-      "Spider-Pig, Spider-Pig! Join us for a big-screen showing of The Simpsons Movie (2007). Free popcorn and donuts provided. 'D'oh!' optional but encouraged.",
-    date: "2025-10-10T19:00:00Z",
+      "it\u2019s ONAM season and Mallu Soc MCR is doing it proper 🔥🪷 full traditional sadhya feast on banana leaves \u2014 avial, sambar, payasam, the whole lot. if you know, you know. veggie heaven fr. get your tickets before they sell out\u203c\ufe0f",
+    date: "2025-10-11T18:30:00Z",
     status: "live",
-    source: "manual",
-    likes: 78,
-    attending: 64,
+    source: "scraped",
+    likes: 312,
+    attending: 120,
     categories: ["social", "arts"],
-    imageUrl: null,
+    imageUrl: "/event-images/onam-sadhya-night.png",
     registrationUrl: null,
     isOnline: false,
-    isFree: true,
-    price: null,
-    isTicketed: false,
-    schedules: sched("2025-10-10T19:00:00Z", "2025-10-10T21:30:00Z", "University Place", "b-002", "Theatre A"),
+    isFree: false,
+    price: "£3-£5",
+    isTicketed: true,
+    ticketTypes: onamTicketTypes,
+    purchases: onamPurchases,
+    schedules: sched("2025-10-11T18:30:00Z", "2025-10-11T22:00:00Z", "Samuel Alexander Building", "b-003", "Room A101"),
   },
   {
     id: "e-003",
-    title: "Treehouse of Horror Marathon",
+    title: "Militants vs Medics \u2014 Football",
     description:
-      "Halloween special! We're screening the best Treehouse of Horror episodes back-to-back. Fancy dress encouraged — best costume wins a prize. Candy and spooky snacks provided.",
-    date: "2025-10-30T18:30:00Z",
+      "MATCHDAY 🟣⚽ the Manchester Militants are back and we\u2019re taking on the Medics lot this Saturday. come support the boys from Mallu Soc MCR, it\u2019s gonna be kinda hardd 😏🦁",
+    date: "2025-10-25T14:00:00Z",
     status: "live",
     source: "scraped",
-    likes: 91,
-    attending: 73,
-    categories: ["social", "arts"],
-    imageUrl: null,
+    likes: 145,
+    attending: 65,
+    categories: ["sports"],
+    imageUrl: "/event-images/militants-vs-medics-football.png",
     registrationUrl: null,
     isOnline: false,
     isFree: true,
     price: null,
     isTicketed: false,
-    schedules: sched("2025-10-30T18:30:00Z", "2025-10-30T23:00:00Z", "Samuel Alexander Building", "b-003", "Lecture Theatre A"),
+    schedules: sched("2025-10-25T14:00:00Z", "2025-10-25T16:00:00Z", "Armitage Sports Centre", "b-007"),
   },
   {
     id: "e-004",
-    title: "Simpsons Trivia Night",
+    title: "Diwali Rave",
     description:
-      "Think you know your Simpsons? Prove it! Six rounds of trivia covering seasons 1-35, from classic golden-age episodes to modern deep cuts. Teams of up to 6. Prizes for top 3.",
-    date: "2025-11-14T19:30:00Z",
+      "DIWALI BUT MAKE IT MANCHESTER 🪩✨🔥 Mallu Soc MCR x Tamil Soc MCR are going all out \u2014 desi beats, LED sparklers, and way too many fairy lights. dress to impress, this one\u2019s gonna be different 💫💫",
+    date: "2025-11-01T21:00:00Z",
     status: "live",
     source: "manual",
-    likes: 65,
-    attending: 54,
-    categories: ["social"],
-    imageUrl: null,
-    registrationUrl: null,
+    likes: 278,
+    attending: 180,
+    categories: ["social", "arts"],
+    imageUrl: "/event-images/diwali-rave.png",
+    registrationUrl: "https://fixr.co/event/mallusoc-diwali-rave",
     isOnline: false,
     isFree: false,
-    price: "£2-£4",
+    price: "£5-£8",
     isTicketed: true,
-    ticketTypes: triviaTicketTypes,
-    purchases: triviaPurchases,
-    schedules: sched("2025-11-14T19:30:00Z", "2025-11-14T22:00:00Z", "256 Wilmslow Road", "b-004"),
+    ticketTypes: diwaliTicketTypes,
+    purchases: diwaliPurchases,
+    schedules: sched("2025-11-01T21:00:00Z", "2025-11-02T02:00:00Z", "256 Wilmslow Road", "b-004"),
   },
   {
     id: "e-005",
-    title: "Thanksgiving Special Screening",
+    title: "Kerala Film Screening",
     description:
-      "Celebrate Thanksgiving the Springfield way. We're screening the best Thanksgiving episodes from across all seasons, complete with pumpkin pie and cranberry juice.",
-    date: "2025-11-27T18:00:00Z",
+      "movie night innit 🎬🍿 Mallu Soc MCR is screening a proper Kerala classic with subtitles so everyone can vibe. free popcorn, comfy seats, no spoilers in the gc pls 🤷🏽\u200d♀\ufe0f",
+    date: "2025-11-20T19:00:00Z",
     status: "live",
     source: "scraped",
-    likes: 43,
-    attending: 38,
-    categories: ["social", "arts"],
-    imageUrl: null,
+    likes: 98,
+    attending: 52,
+    categories: ["arts"],
+    imageUrl: "/event-images/kerala-film-screening.png",
     registrationUrl: null,
     isOnline: false,
     isFree: true,
     price: null,
     isTicketed: false,
-    schedules: sched("2025-11-27T18:00:00Z", "2025-11-27T21:00:00Z", "University Place", "b-002", "Theatre B"),
+    schedules: sched("2025-11-20T19:00:00Z", "2025-11-20T21:30:00Z", "University Place", "b-002", "Lecture Theatre A"),
   },
   {
     id: "e-006",
-    title: "Christmas Simpsons Marathon",
+    title: "Mallu Soc MCR x Gujju Soc Christmas Mixer",
     description:
-      "End of term treat! A marathon of every Simpsons Christmas episode, from Simpsons Roasting on an Open Fire to the latest. Mince pies, hot chocolate, and festive vibes.",
-    date: "2025-12-12T17:00:00Z",
+      "COLLAB ALERT 🚨🎄 Mallu Soc MCR is linking up with Gujju Soc for the ultimate christmas mixer before everyone dips for the holidays. ugly jumpers encouraged, festive chaos guaranteed 🫶🏽🔥",
+    date: "2025-12-06T20:00:00Z",
     status: "live",
     source: "manual",
-    likes: 84,
-    attending: 69,
+    likes: 203,
+    attending: 140,
     categories: ["social"],
-    imageUrl: null,
+    imageUrl: "/event-images/christmas-mixer.png",
     registrationUrl: null,
     isOnline: false,
-    isFree: true,
+    isFree: false,
     price: null,
-    isTicketed: false,
-    schedules: sched("2025-12-12T17:00:00Z", "2025-12-12T22:00:00Z", "Samuel Alexander Building", "b-003", "Lecture Theatre A"),
+    isTicketed: true,
+    schedules: sched("2025-12-06T20:00:00Z", "2025-12-06T23:30:00Z", "Bierkeller Manchester", "b-008"),
   },
   {
     id: "e-007",
-    title: "Simpsons vs Family Guy Debate Night",
+    title: "New Year New Soc \u2014 Welcome Back",
     description:
-      "The ultimate showdown. Which is the greatest animated sitcom? Two teams debate, you decide. Clips, arguments, and plenty of audience participation. Pizza provided.",
-    date: "2026-01-22T19:00:00Z",
+      "WE\u2019RE BACKKK 🗣\ufe0f💫 first Mallu Soc MCR event of sem 2 and we missed you lot fr. come say hi, meet the new faces, and grab some free food before lectures ruin everything 😭🫶🏽",
+    date: "2026-01-22T18:00:00Z",
     status: "live",
-    source: "manual",
-    likes: 56,
-    attending: 47,
-    categories: ["social", "academic"],
-    imageUrl: null,
+    source: "scraped",
+    likes: 156,
+    attending: 88,
+    categories: ["social"],
+    imageUrl: "/event-images/new-year-welcome-back.png",
     registrationUrl: null,
     isOnline: false,
     isFree: true,
     price: null,
     isTicketed: false,
-    schedules: sched("2026-01-22T19:00:00Z", "2026-01-22T21:00:00Z", "Roscoe Building", "b-005", "Room 1.009"),
+    schedules: sched("2026-01-22T18:00:00Z", "2026-01-22T20:00:00Z", "Students' Union", "b-001", "Room 4"),
   },
   {
     id: "e-008",
-    title: "Springfield Film Festival",
+    title: "Blind Date Night",
     description:
-      "A full afternoon of Simpsons content — fan-favourite episodes voted by members, plus behind-the-scenes documentaries and a screening of 'A Star Is Burns'. Snacks and drinks included.",
-    date: "2026-02-20T14:00:00Z",
+      "ok hear us out 😏💘 Mallu Soc MCR x Tamil Soc MCR x Gujju Soc are doing a blind date matchmaking thing and it\u2019s gonna be SO jokes. sign up with your mates, answer some unhinged questions, and see who you match with. no pressure just vibes\u203c\ufe0f",
+    date: "2026-02-13T19:00:00Z",
     status: "live",
-    source: "scraped",
-    likes: 72,
-    attending: 61,
-    categories: ["social", "arts"],
-    imageUrl: null,
-    registrationUrl: null,
+    source: "manual",
+    likes: 267,
+    attending: 110,
+    categories: ["social"],
+    imageUrl: "/event-images/blind-date-night.png",
+    registrationUrl: "https://forms.gle/mallusoc-blinddate",
     isOnline: false,
     isFree: false,
-    price: "£1-£3",
+    price: null,
     isTicketed: true,
-    ticketTypes: festivalTicketTypes,
-    purchases: festivalPurchases,
-    schedules: sched("2026-02-20T14:00:00Z", "2026-02-20T20:00:00Z", "University Place", "b-002", "Theatre A"),
+    schedules: sched("2026-02-13T19:00:00Z", "2026-02-13T22:00:00Z", "University Place", "b-002", "Lecture Theatre B"),
   },
   {
     id: "e-009",
-    title: "American Studies Spring Ball",
+    title: "Militants Cricket Tournament",
     description:
-      "The highlight of the year! A formal dinner and dance at the Kimpton Clocktower Hotel. Three-course meal, live DJ, photo booth, and awards ceremony. Smart dress code.",
-    date: "2026-03-14T19:00:00Z",
+      "CRICKET SZN IS HERE 🏑🟣🦁 the Manchester Militants from Mallu Soc MCR are hosting a full tournament and we need YOU on the pitch. sign up as a team or solo \u2014 we\u2019ll sort the rest. let\u2019s get this W 🔥",
+    date: "2026-03-07T11:00:00Z",
     status: "live",
-    source: "manual",
-    likes: 118,
-    attending: 156,
-    categories: ["social"],
-    imageUrl: null,
-    registrationUrl: "https://fixr.co/event/amst-ball",
-    isOnline: false,
-    isFree: false,
-    price: "£25-£55",
-    isTicketed: true,
-    ticketTypes: ballTicketTypes,
-    purchases: ballPurchases,
-    schedules: sched(
-      "2026-03-14T19:00:00Z",
-      "2026-03-15T01:00:00Z",
-      "Kimpton Clocktower Hotel",
-      "b-006",
-    ),
-  },
-  {
-    id: "e-010",
-    title: "End of Year Simpsons Movie Night",
-    description:
-      "One last screening before exams! We're showing The Simpsons Movie again by popular demand, plus a bonus showing of the pilot episode. Free entry, free snacks, free good times.",
-    date: "2026-04-03T19:00:00Z",
-    status: "ingested",
-    source: "manual",
-    likes: 34,
-    attending: 29,
-    categories: ["social", "arts"],
-    imageUrl: null,
-    registrationUrl: null,
+    source: "scraped",
+    likes: 134,
+    attending: 72,
+    categories: ["sports"],
+    imageUrl: "/event-images/militants-cricket-tournament.png",
+    registrationUrl: "https://forms.gle/mallusoc-cricket",
     isOnline: false,
     isFree: true,
     price: null,
     isTicketed: false,
-    schedules: sched("2026-04-03T19:00:00Z", "2026-04-03T21:30:00Z", "University Place", "b-002", "Theatre A"),
+    schedules: sched("2026-03-07T11:00:00Z", "2026-03-07T17:00:00Z", "Platt Fields Park", "b-009"),
+  },
+  {
+    id: "e-010",
+    title: "VAJRAM \u2014 Annual Gala Night",
+    description:
+      "THE ONE YOU\u2019VE ALL BEEN WAITING FOR 👑✨ VAJRAM 2026 by Manchester Malayalee Student Society is coming and it\u2019s going to be OUR biggest night yet. think chandeliers, traditional fits, live performances and a whole lot of Kerala culture. black tie x desi elegance \u2014 you already know the vibe 🔥🫶🏽💫",
+    date: "2026-03-21T18:00:00Z",
+    status: "live",
+    source: "manual",
+    likes: 456,
+    attending: 250,
+    categories: ["social", "arts"],
+    imageUrl: "/event-images/vajram-annual-gala-night.png",
+    registrationUrl: "https://fixr.co/event/vajram-2026",
+    isOnline: false,
+    isFree: false,
+    price: "£25-£60",
+    isTicketed: true,
+    ticketTypes: vajramTicketTypes,
+    purchases: vajramPurchases,
+    schedules: sched(
+      "2026-03-21T18:00:00Z",
+      "2026-03-21T23:30:00Z",
+      "Whitworth Hall",
+      "b-010",
+      "Main Hall",
+    ),
+  },
+  {
+    id: "e-011",
+    title: "THEYYAM \u2014 A Night of Kerala",
+    description:
+      "THE WAIT IS OVER 🔥🔥🔥 THEYYAM \u2014 A Night of Kerala is pulling up and it\u2019s going to be UNREAL 🫶🏽💫 we\u2019re starting things off at Uni Place with live performances, traditional dance, spoken word and a whole cultural showcase that\u2019s gonna leave you speechless fr 😭✨ then we\u2019re moving the vibes to Impossible for food, drinks and the afterparty because why would we stop there 😏🍛🪩",
+    date: "2026-04-11T19:00:00Z",
+    status: "live",
+    source: "manual",
+    likes: 389,
+    attending: 210,
+    categories: ["social", "arts"],
+    imageUrl: null,
+    registrationUrl: "https://fixr.co/event/theyyam-2026",
+    isOnline: false,
+    isFree: false,
+    price: "£3-£6",
+    isTicketed: true,
+    ticketTypes: theyyamTicketTypes,
+    purchases: theyyamPurchases,
+    schedules: sched(
+      "2026-04-11T19:00:00Z",
+      "2026-04-12T00:00:00Z",
+      "University Place",
+      "b-002",
+      "Lecture Theatre A",
+    ),
   },
 ];
+
+// Prefill data for the "Create New Event" form (THEYYAM showcase event)
+export const prefillNewEventForm = {
+  title: "THEYYAM \u2014 A Night of Kerala",
+  description:
+    "THE WAIT IS OVER \ud83d\udd25\ud83d\udd25\ud83d\udd25\n\nTHEYYAM \u2014 A Night of Kerala is pulling up and it\u2019s going to be UNREAL \ud83e\udef6\ud83c\udffd\ud83d\udcab\n\nwe\u2019re starting things off at Uni Place with live performances, traditional dance, spoken word and a whole cultural showcase that\u2019s gonna leave you speechless fr \ud83d\ude2d\u2728 then we\u2019re moving the vibes to Impossible for food, drinks and the afterparty because why would we stop there \ud83d\ude0f\ud83c\udf5b\ud83e\udea9\n\nMEMBERS: \u00a33 (you already know the perks \ud83e\udd37\ud83c\udffd\u200d\u2640\ufe0f)\nNON-MEMBERS: \u00a36\n\ntickets selling FAST so don\u2019t sleep on this one\u203c\ufe0f\u203c\ufe0f\n\nlink in bio for tickets \ud83d\udc46\ud83d\udcab\n\n\ud83d\udccd University Place \u2192 Impossible Manchester\n\ud83d\udcc5 Saturday 11th April\n\ud83d\udd56 7PM - 12AM",
+  categoryIds: ["cat-001", "cat-004"],
+  schedules: [
+    {
+      date: "2026-04-11",
+      startTime: "19:00",
+      endTime: "21:30",
+      buildingName: "University Place",
+      buildingId: "b-002",
+      buildingGoogleMapsUrl: null,
+      roomName: "Lecture Theatre A",
+      roomId: "",
+      description: "Cultural showcase \u2014 live performances, traditional dance, spoken word, and music",
+    },
+    {
+      date: "2026-04-11",
+      startTime: "21:30",
+      endTime: "00:00",
+      buildingName: "Impossible Manchester",
+      buildingId: "v-008",
+      buildingGoogleMapsUrl: null,
+      roomName: "",
+      roomId: "",
+      description: "Afterparty \u2014 Kerala street food, drinks, music, and dancing",
+    },
+  ],
+  isOnline: false,
+  registrationUrl: "",
+  isTicketed: true,
+  ticketTypes: [
+    { id: "tt-new-1", eventId: "", name: "Member", price: 3, isMemberTicket: true, totalAvailable: 80 },
+    { id: "tt-new-2", eventId: "", name: "Non-Member", price: 6, isMemberTicket: false, totalAvailable: 60 },
+  ],
+};
 
 export const mockCategories = [
   { id: "cat-001", name: "social" },
@@ -391,7 +469,7 @@ function generateFollowerGrowth(days: number): Array<{ date: string; count: numb
 export function getMockAnalytics(timeRange: "7d" | "30d" | "90d") {
   const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
   return {
-    followerCount: 312,
+    followerCount: 2598,
     followerGrowth: generateFollowerGrowth(days),
     totalLikes: mockEvents.reduce((sum, e) => sum + e.likes, 0),
     totalAttending: mockEvents.reduce((sum, e) => sum + e.attending, 0),
@@ -404,30 +482,30 @@ export function getMockAnalytics(timeRange: "7d" | "30d" | "90d") {
       date: e.date,
     })),
     audienceByUniversity: [
-      { name: "University of Manchester", count: 312 },
-      { name: "Manchester Metropolitan University", count: 89 },
-      { name: "University of Salford", count: 47 },
-      { name: "University of Bolton", count: 18 },
-      { name: "Other", count: 16 },
+      { name: "University of Manchester", count: 2598 },
+      { name: "Manchester Metropolitan University", count: 312 },
+      { name: "University of Salford", count: 89 },
+      { name: "University of Bolton", count: 34 },
+      { name: "Other", count: 21 },
     ],
     audienceByStudyLevel: [
-      { name: "Undergraduate", count: 298 },
-      { name: "Postgraduate", count: 112 },
-      { name: "PhD", count: 42 },
-      { name: "Foundation", count: 18 },
-      { name: "Other", count: 12 },
+      { name: "Undergraduate", count: 1842 },
+      { name: "Postgraduate", count: 534 },
+      { name: "PhD", count: 156 },
+      { name: "Foundation", count: 42 },
+      { name: "Other", count: 24 },
     ],
   };
 }
 
 export function getMockPostHogAnalytics() {
   return {
-    totalViews: 1847,
-    profileViews: 623,
+    totalViews: 4823,
+    profileViews: 1647,
     viewsByEvent: mockEvents.map((e) => ({
       eventId: e.id,
       views: Math.floor(Math.random() * 200) + 30,
     })),
-    registrationClicks: 156,
+    registrationClicks: 412,
   };
 }

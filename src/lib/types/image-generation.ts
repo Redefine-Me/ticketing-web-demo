@@ -76,18 +76,32 @@ function uniqueId(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-export function fileToEventImage(file: File): EventImage {
+type ImageItem = File | { url: string; name: string };
+
+function isUrlImage(item: ImageItem): item is { url: string; name: string } {
+  return !(item instanceof File);
+}
+
+export function fileToEventImage(item: ImageItem): EventImage {
+  if (isUrlImage(item)) {
+    return {
+      id: uniqueId("manual"),
+      source: "manual",
+      url: item.url,
+      name: item.name,
+    };
+  }
   return {
     id: uniqueId("manual"),
     source: "manual",
-    url: URL.createObjectURL(file),
-    name: file.name,
-    file,
+    url: URL.createObjectURL(item),
+    name: item.name,
+    file: item,
   };
 }
 
-export function filesToEventImages(files: File[]): EventImage[] {
-  return files.map(fileToEventImage);
+export function filesToEventImages(items: ImageItem[]): EventImage[] {
+  return items.map(fileToEventImage);
 }
 
 export async function eventImagesToFiles(images: EventImage[]): Promise<File[]> {

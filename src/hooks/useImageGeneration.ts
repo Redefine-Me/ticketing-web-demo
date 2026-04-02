@@ -139,10 +139,16 @@ export function useImageGeneration({ initialOutputImages, formData, categories, 
   }, []);
 
   const removeInfluenceImage = useCallback((image: InfluenceImage) => {
-    setRemovedInfluenceByEvent((previous) => ({
-      ...previous,
-      [image.eventId]: [...(previous[image.eventId] ?? []), image.id],
-    }));
+    setRemovedInfluenceByEvent((previous) => {
+      const updatedRemoved = [...(previous[image.eventId] ?? []), image.id];
+      const totalForEvent = mockEventInfluenceImages.filter((img) => img.eventId === image.eventId).length;
+
+      if (updatedRemoved.length >= totalForEvent) {
+        setSelectedEventIds((ids) => ids.filter((id) => id !== image.eventId));
+      }
+
+      return { ...previous, [image.eventId]: updatedRemoved };
+    });
   }, []);
 
   const addReferenceImages = useCallback((files: FileList | null) => {

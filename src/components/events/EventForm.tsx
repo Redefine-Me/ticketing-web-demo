@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScheduleBuilder, type ScheduleEntry } from "@/components/events/ScheduleBuilder";
-import { ImageUploader } from "@/components/events/ImageUploader";
+import { ImageUploader, type ImageItem } from "@/components/events/ImageUploader";
 import { CategorySelector } from "@/components/events/CategorySelector";
 import { TicketConfigPanel } from "@/components/ticketing/TicketConfigPanel";
 import type { TicketTypeFormData } from "@/components/ticketing/TicketTypeCard";
@@ -63,13 +63,13 @@ interface EventFormProps {
     schedules: ScheduleEntry[];
     isOnline: boolean;
     registrationUrl?: string;
-    images?: File[];
+    images?: ImageItem[];
     isTicketed?: boolean;
     ticketTypes?: TicketType[];
     purchases?: TicketPurchase[];
   };
   isScraped?: boolean;
-  onSubmit: (data: EventFormData & { images: File[] }) => Promise<void>;
+  onSubmit: (data: EventFormData & { images: ImageItem[] }) => Promise<void>;
   submitLabel?: string;
   categories: Category[];
   categoriesLoading?: boolean;
@@ -95,7 +95,7 @@ export function EventForm({
   categoriesLoading,
   society,
 }: EventFormProps) {
-  const [images, setImages] = useState<File[]>(initialData?.images ?? []);
+  const [images, setImages] = useState<ImageItem[]>(initialData?.images ?? []);
   const [submitting, setSubmitting] = useState(false);
   const [aiModalOpen, setAiModalOpen] = useState(false);
 
@@ -202,7 +202,7 @@ export function EventForm({
 
     setSubmitting(true);
     try {
-      const payload: EventFormData & { images: File[] } = {
+      const payload: EventFormData & { images: ImageItem[] } = {
         ...data,
         images,
         isTicketed,

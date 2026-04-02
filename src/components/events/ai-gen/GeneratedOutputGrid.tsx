@@ -36,9 +36,9 @@ export function GeneratedOutputGrid({
   const skeletonCount = Math.max(variantCount - generatedImages.length, 0);
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-2">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold">Generated images</h3>
+        <h3 className="text-xs font-semibold">Generated images</h3>
         {generationPhase === "done" && (
           <TooltipProvider>
             <Tooltip>
@@ -58,7 +58,7 @@ export function GeneratedOutputGrid({
         </p>
       )}
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
         {generatedImages.map((image) => {
           const selected = selectedGeneratedIds.includes(image.id);
           return (

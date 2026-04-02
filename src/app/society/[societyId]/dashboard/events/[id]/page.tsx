@@ -6,12 +6,14 @@ import Link from "next/link";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
 import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
-import { formatDateTime } from "@/lib/utils";
+import { useBookingsContext } from "@/contexts/BookingsContext";
+import { BookingStatusBadge } from "@/components/bookings/BookingStatusBadge";
+import { cn, formatDateTime } from "@/lib/utils";
 import { EventSourceBadge } from "@/components/dashboard/EventSourceBadge";
 import { TicketedBadge } from "@/components/ticketing/TicketedBadge";
 import { ManageAttendeesModal } from "@/components/ticketing/ManageAttendeesModal";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -60,6 +62,7 @@ export default function EventDetailPage() {
     unmarkAttended,
     refundPurchase,
   } = useEvents(society?.id);
+  const bookingsCtx = useBookingsContext();
   const [deleting, setDeleting] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
 
@@ -105,9 +108,9 @@ export default function EventDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
         <p className="text-muted-foreground">Event not found.</p>
-        <Button variant="outline" render={<Link href={nav.href("/events")} />}>
+        <Link href={nav.href("/events")} className={cn(buttonVariants({ variant: "outline" }))}>
           Back to events
-        </Button>
+        </Link>
       </div>
     );
   }
@@ -146,10 +149,10 @@ export default function EventDetailPage() {
               Manage Tickets
             </Button>
           )}
-          <Button variant="outline" render={<Link href={nav.href(`/events/${params.id}/edit`)} />}>
+          <Link href={nav.href(`/events/${params.id}/edit`)} className={cn(buttonVariants({ variant: "outline" }))}>
             <Pencil className="mr-2 h-4 w-4" />
             Edit
-          </Button>
+          </Link>
           <Dialog>
             <DialogTrigger
               render={
@@ -275,46 +278,61 @@ export default function EventDetailPage() {
             {event.schedules.length > 0 && (
               <div className="space-y-3">
                 <h3 className="text-sm font-medium">Schedule</h3>
-                {event.schedules.map((entry, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3 rounded-lg border p-3"
-                  >
-                    <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">
-                        {formatDateTime(entry.scheduledAt)}
-                        {entry.isEnd && (
-                          <span className="ml-2 text-xs text-muted-foreground">
-                            (end)
-                          </span>
-                        )}
-                      </p>
-                      {(entry.buildingName || entry.locationName) && (
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          <span>
-                            {entry.buildingName ?? entry.locationName}
-                            {entry.roomName && ` — ${entry.roomName}`}
-                          </span>
-                          {(entry.buildingGoogleMapsUrl || entry.locationGoogleMapsUrl) && (
-                            <a
-                              href={(entry.buildingGoogleMapsUrl ?? entry.locationGoogleMapsUrl)!}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline"
+                {event.schedules.map((entry, i) => {
+                  const booking = bookingsCtx.getBookingForSchedule(event.id, i);
+                  return (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 rounded-lg border p-3"
+                    >
+                      <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-medium">
+                            {formatDateTime(entry.scheduledAt)}
+                            {entry.isEnd && (
+                              <span className="ml-2 text-xs text-muted-foreground">
+                                (end)
+                              </span>
+                            )}
+                          </p>
+                          {booking && !entry.isEnd && (
+                            <Link
+                              href={nav.href("/bookings")}
+                              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "h-7 gap-1.5 text-xs shrink-0")}
                             >
-                              <ExternalLink className="h-3 w-3" />
-                            </a>
+                              <CalendarCheck className="h-3 w-3" />
+                              Manage Booking
+                              <BookingStatusBadge status={booking.status} className="ml-0.5" />
+                            </Link>
                           )}
                         </div>
-                      )}
-                      {entry.description && (
-                        <p className="text-sm text-muted-foreground italic">{entry.description}</p>
-                      )}
+                        {(entry.buildingName || entry.locationName) && (
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            <span>
+                              {entry.buildingName ?? entry.locationName}
+                              {entry.roomName && ` — ${entry.roomName}`}
+                            </span>
+                            {(entry.buildingGoogleMapsUrl || entry.locationGoogleMapsUrl) && (
+                              <a
+                                href={(entry.buildingGoogleMapsUrl ?? entry.locationGoogleMapsUrl)!}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            )}
+                          </div>
+                        )}
+                        {entry.description && (
+                          <p className="text-sm text-muted-foreground italic">{entry.description}</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
@@ -376,15 +394,23 @@ export default function EventDetailPage() {
           </CardContent>
         </Card>
 
-        {/* Images placeholder */}
+        {/* Images */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Images</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              No images attached
-            </p>
+            {event.imageUrl ? (
+              <img
+                src={event.imageUrl}
+                alt={event.title}
+                className="w-full rounded-lg object-cover"
+              />
+            ) : (
+              <p className="py-8 text-center text-sm text-muted-foreground">
+                No images attached
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>

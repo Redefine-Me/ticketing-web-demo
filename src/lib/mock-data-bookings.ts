@@ -148,6 +148,14 @@ export const nonUniversityVenues: NonUniversityVenue[] = [
     website: "https://www.kimptonclocktowerhotel.com",
     description: "Upscale hotel in the city centre. Ballroom capacity 500. Formal dining and event packages.",
   },
+  {
+    id: "v-008",
+    name: "Impossible Manchester",
+    address: "36 Peter Street, Manchester M2 5QR",
+    phone: "0161 835 2526",
+    website: "https://www.impossiblemanchester.com",
+    description: "Multi-level bar, restaurant and live entertainment venue in the city centre. Capacity 600 across multiple floors.",
+  },
 ];
 
 // ── Lookup helpers ───────────────────────────────────────────

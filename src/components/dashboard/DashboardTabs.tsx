@@ -28,16 +28,16 @@ export function DashboardTabs({ children }: { children: React.ReactNode }) {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors",
+                  "relative flex items-center gap-2 px-5 py-3 text-sm font-medium rounded-lg transition-colors",
                   isActive
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "text-dashboard-cta"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >
                 <tab.icon className="h-4 w-4" />
                 {tab.label}
                 {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-dashboard-cta rounded-t-full" />
                 )}
               </button>
             );

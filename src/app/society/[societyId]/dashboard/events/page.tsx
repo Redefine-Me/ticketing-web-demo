@@ -7,7 +7,8 @@ import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { EventTable } from "@/components/events/EventTable";
 import { ManageAttendeesModal } from "@/components/ticketing/ManageAttendeesModal";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { DashboardPageHeader, DashboardSection } from "@/components/dashboard/DashboardMotion";
 import type { DashboardEvent } from "@/lib/supabase/types";
@@ -47,20 +48,20 @@ export default function EventsPage() {
       <DashboardPageHeader>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Events</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl font-bold tracking-tight">Events</h1>
+            <p className="text-sm text-muted-foreground">
               Manage and track all your society events
             </p>
           </div>
-          <Button className="bg-dashboard-cta hover:bg-dashboard-cta/90 text-white" render={<Link href={nav.href("/events/new")} />}>
+          <Link href={nav.href("/events/new")} className={cn(buttonVariants(), "bg-dashboard-cta hover:bg-dashboard-cta/90 text-white")}>
             <Plus className="mr-2 h-4 w-4" />
             Create Event
-          </Button>
+          </Link>
         </div>
       </DashboardPageHeader>
 
       {error && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="rounded-xl border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
         </div>
       )}

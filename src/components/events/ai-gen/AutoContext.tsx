@@ -22,10 +22,10 @@ export function AutoContext({ context }: AutoContextProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="rounded-lg border bg-muted/20 p-3">
+    <div className="rounded-lg border bg-muted/20 p-2">
       <button
         type="button"
-        className="flex w-full items-center justify-between text-left text-sm font-medium"
+        className="flex w-full items-center justify-between text-left text-xs font-medium"
         onClick={() => setOpen((prev) => !prev)}
       >
         <span>Auto-detected context from your event</span>

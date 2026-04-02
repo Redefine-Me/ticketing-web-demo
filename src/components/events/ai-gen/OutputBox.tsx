@@ -69,12 +69,12 @@ export function OutputBox({ images, onRemove, onReorder, onDone }: OutputBoxProp
 
   return (
     <div className="flex h-full flex-col border-l bg-card">
-      <div className="border-b p-4">
-        <h3 className="text-sm font-semibold">Event Images</h3>
-        <p className="mt-1 text-xs text-muted-foreground">Drag and drop to reorder your event images</p>
+      <div className="border-b p-2.5">
+        <h3 className="text-xs font-semibold">Event Images</h3>
+        <p className="mt-0.5 text-[11px] text-muted-foreground">Drag to reorder</p>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-3">
+      <div className="min-h-0 flex-1 overflow-y-auto p-2">
         {images.length === 0 ? (
           <div className="flex h-full items-center justify-center px-3 text-center text-sm text-muted-foreground">
             Select generated images or upload images to add them here
@@ -92,8 +92,8 @@ export function OutputBox({ images, onRemove, onReorder, onDone }: OutputBoxProp
         )}
       </div>
 
-      <div className="border-t p-3">
-        <Button type="button" className="w-full bg-dashboard-cta text-white hover:bg-dashboard-cta/90" onClick={onDone}>
+      <div className="border-t p-2">
+        <Button type="button" size="sm" className="w-full bg-dashboard-cta text-white hover:bg-dashboard-cta/90" onClick={onDone}>
           Done
         </Button>
       </div>
