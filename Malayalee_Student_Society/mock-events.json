@@ -1,0 +1,183 @@
+[
+  {
+    "id": "e-001",
+    "title": "Freshers Chai & Chill",
+    "description": "ayoo freshers!! come thru for our first hangout of the year \ud83e\udee8\ud83e\udef6\ud83c\udffd free chai, snacks from back home and good vibes only. this is where the Mallu Soc MCR fam starts so don\u2019t be shy, just pull up \ud83d\udcab",
+    "date": "2025-09-25T18:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 187,
+    "attending": 94,
+    "categories": ["social"],
+    "imageUrl": "/event-images/freshers-chai-and-chill.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "18:00", "end": "20:30", "venue": "Students' Union", "room": "Room 1 (ground floor)" }
+    ]
+  },
+  {
+    "id": "e-002",
+    "title": "Onam Sadhya Night",
+    "description": "it\u2019s ONAM season and Mallu Soc MCR is doing it proper \ud83d\udd25\ud83e\udeb7 full traditional sadhya feast on banana leaves \u2014 avial, sambar, payasam, the whole lot. if you know, you know. veggie heaven fr. get your tickets before they sell out\u203c\ufe0f",
+    "date": "2025-10-11T18:30:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 312,
+    "attending": 120,
+    "categories": ["social", "arts"],
+    "imageUrl": "/event-images/onam-sadhya-night.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": true,
+    "schedule": [
+      { "start": "18:30", "end": "22:00", "venue": "Samuel Alexander Building", "room": "Room A101" }
+    ]
+  },
+  {
+    "id": "e-003",
+    "title": "Militants vs Medics \u2014 Football",
+    "description": "MATCHDAY \ud83d\udfe3\u26bd the Manchester Militants are back and we\u2019re taking on the Medics lot this Saturday. come support the boys from Mallu Soc MCR, it\u2019s gonna be kinda hardd \ud83d\ude0f\ud83e\udd81",
+    "date": "2025-10-25T14:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 145,
+    "attending": 65,
+    "categories": ["sports"],
+    "imageUrl": "/event-images/militants-vs-medics-football.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "14:00", "end": "16:00", "venue": "Armitage Sports Centre", "room": null }
+    ]
+  },
+  {
+    "id": "e-004",
+    "title": "Diwali Rave",
+    "description": "DIWALI BUT MAKE IT MANCHESTER \ud83e\udea9\u2728\ud83d\udd25 Mallu Soc MCR x Tamil Soc MCR are going all out \u2014 desi beats, LED sparklers, and way too many fairy lights. dress to impress, this one\u2019s gonna be different \ud83d\udcab\ud83d\udcab",
+    "date": "2025-11-01T21:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 278,
+    "attending": 180,
+    "categories": ["social", "arts"],
+    "imageUrl": "/event-images/diwali-rave.png",
+    "registrationUrl": "https://fixr.co/event/mallusoc-diwali-rave",
+    "isOnline": false,
+    "isTicketed": true,
+    "schedule": [
+      { "start": "21:00", "end": "02:00", "venue": "256 Wilmslow Road", "room": null }
+    ]
+  },
+  {
+    "id": "e-005",
+    "title": "Kerala Film Screening",
+    "description": "movie night innit \ud83c\udfac\ud83c\udf7f Mallu Soc MCR is screening a proper Kerala classic with subtitles so everyone can vibe. free popcorn, comfy seats, no spoilers in the gc pls \ud83e\udd37\ud83c\udffd\u200d\u2640\ufe0f",
+    "date": "2025-11-20T19:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 98,
+    "attending": 52,
+    "categories": ["arts"],
+    "imageUrl": "/event-images/kerala-film-screening.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "19:00", "end": "21:30", "venue": "University Place", "room": "Lecture Theatre A" }
+    ]
+  },
+  {
+    "id": "e-006",
+    "title": "Mallu Soc MCR x Gujju Soc Christmas Mixer",
+    "description": "COLLAB ALERT \ud83d\udea8\ud83c\udf84 Mallu Soc MCR is linking up with Gujju Soc for the ultimate christmas mixer before everyone dips for the holidays. ugly jumpers encouraged, festive chaos guaranteed \ud83e\udef6\ud83c\udffd\ud83d\udd25",
+    "date": "2025-12-06T20:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 203,
+    "attending": 140,
+    "categories": ["social"],
+    "imageUrl": "/event-images/christmas-mixer.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": true,
+    "schedule": [
+      { "start": "20:00", "end": "23:30", "venue": "Bierkeller Manchester", "room": null }
+    ]
+  },
+  {
+    "id": "e-007",
+    "title": "New Year New Soc \u2014 Welcome Back",
+    "description": "WE\u2019RE BACKKK \ud83d\udde3\ufe0f\ud83d\udcab first Mallu Soc MCR event of sem 2 and we missed you lot fr. come say hi, meet the new faces, and grab some free food before lectures ruin everything \ud83d\ude2d\ud83e\udef6\ud83c\udffd",
+    "date": "2026-01-22T18:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 156,
+    "attending": 88,
+    "categories": ["social"],
+    "imageUrl": "/event-images/new-year-welcome-back.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "18:00", "end": "20:00", "venue": "Students' Union", "room": "Room 4" }
+    ]
+  },
+  {
+    "id": "e-008",
+    "title": "Blind Date Night",
+    "description": "ok hear us out \ud83d\ude0f\ud83d\udc98 Mallu Soc MCR x Tamil Soc MCR x Gujju Soc are doing a blind date matchmaking thing and it\u2019s gonna be SO jokes. sign up with your mates, answer some unhinged questions, and see who you match with. no pressure just vibes\u203c\ufe0f",
+    "date": "2026-02-13T19:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 267,
+    "attending": 110,
+    "categories": ["social"],
+    "imageUrl": "/event-images/blind-date-night.png",
+    "registrationUrl": "https://forms.gle/mallusoc-blinddate",
+    "isOnline": false,
+    "isTicketed": true,
+    "schedule": [
+      { "start": "19:00", "end": "22:00", "venue": "University Place", "room": "Lecture Theatre B" }
+    ]
+  },
+  {
+    "id": "e-009",
+    "title": "Militants Cricket Tournament",
+    "description": "CRICKET SZN IS HERE \ud83c\udfd1\ud83d\udfe3\ud83e\udd81 the Manchester Militants from Mallu Soc MCR are hosting a full tournament and we need YOU on the pitch. sign up as a team or solo \u2014 we\u2019ll sort the rest. let\u2019s get this W \ud83d\udd25",
+    "date": "2026-03-07T11:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 134,
+    "attending": 72,
+    "categories": ["sports"],
+    "imageUrl": "/event-images/militants-cricket-tournament.png",
+    "registrationUrl": "https://forms.gle/mallusoc-cricket",
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "11:00", "end": "17:00", "venue": "Platt Fields Park", "room": null }
+    ]
+  },
+  {
+    "id": "e-010",
+    "title": "VAJRAM \u2014 Annual Gala Night",
+    "description": "THE ONE YOU\u2019VE ALL BEEN WAITING FOR \ud83d\udc51\u2728 VAJRAM 2026 by Manchester Malayalee Student Society is coming and it\u2019s going to be OUR biggest night yet. think chandeliers, traditional fits, live performances and a whole lot of Kerala culture. black tie x desi elegance \u2014 you already know the vibe \ud83d\udd25\ud83e\udef6\ud83c\udffd\ud83d\udcab",
+    "date": "2026-03-21T18:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 456,
+    "attending": 250,
+    "categories": ["social", "arts"],
+    "imageUrl": "/event-images/vajram-annual-gala-night.png",
+    "registrationUrl": "https://fixr.co/event/vajram-2026",
+    "isOnline": false,
+    "isTicketed": true,
+    "schedule": [
+      { "start": "18:00", "end": "19:00", "venue": "Whitworth Hall", "room": "Main Hall \u2014 Drinks Reception" },
+      { "start": "19:00", "end": "23:30", "venue": "Whitworth Hall", "room": "Main Hall \u2014 Gala Dinner & Performances" }
+    ]
+  }
+]
