@@ -39,6 +39,7 @@ export function Sidebar() {
             width={320}
             height={72}
             className="h-10 w-auto"
+            style={{ width: "auto" }}
             priority
           />
         </Link>
@@ -70,7 +71,7 @@ export function Sidebar() {
         })}
       </nav>
       <div className="border-t border-border/60 px-6 py-4">
-        <p className="text-xs font-medium text-muted-foreground tracking-wide">Society Dashboard</p>
+        <p className="text-xs font-medium text-muted-foreground tracking-wide truncate">Society Dashboard</p>
       </div>
     </aside>
   );

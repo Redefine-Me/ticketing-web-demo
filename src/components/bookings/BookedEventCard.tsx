@@ -24,7 +24,10 @@ export function BookedEventCard({
   const { pending, accepted, rejected } = summary.statusCounts;
 
   return (
-    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm">
+    <div
+      className="rounded-xl border border-border bg-card/80 backdrop-blur-sm transition-shadow duration-[120ms] hover:shadow-[0_6px_24px_rgba(15,23,42,0.08)]"
+      style={{ boxShadow: "0 4px 14px rgba(15,23,42,0.06)" }}
+    >
       {/* Header */}
       <button
         type="button"
@@ -58,7 +61,7 @@ export function BookedEventCard({
             transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-border px-4 py-3 space-y-2">
+            <div className="border-t border-border px-4 py-3 divide-y divide-border/60">
               {summary.schedules.map((sched, idx) => {
                 const booking =
                   summary.bookings.find((b) => b.scheduleIndex === idx) ?? null;

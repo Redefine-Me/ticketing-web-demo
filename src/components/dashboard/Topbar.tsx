@@ -82,6 +82,7 @@ export function Topbar() {
             width={160}
             height={36}
             className="h-10 w-auto md:hidden"
+            style={{ width: "auto" }}
             priority
           />
         </div>

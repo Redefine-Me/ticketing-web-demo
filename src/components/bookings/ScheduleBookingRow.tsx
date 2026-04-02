@@ -32,12 +32,12 @@ export function ScheduleBookingRow({
   }
 
   return (
-    <div className="border border-border/50 rounded-lg">
+    <div>
       <button
         type="button"
         onClick={() => booking && setExpanded(!expanded)}
         className={cn(
-          "flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm transition-colors",
+          "flex w-full items-center justify-between gap-2 px-4 py-3 text-left text-sm transition-colors",
           booking && "hover:bg-muted/50 cursor-pointer",
           !booking && "cursor-default",
         )}

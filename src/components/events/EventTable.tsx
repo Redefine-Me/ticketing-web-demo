@@ -240,7 +240,7 @@ export function EventTable({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-border bg-card p-4">
+      <div className="rounded-xl border border-border bg-card p-4" suppressHydrationWarning>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Input
             placeholder="Search events..."

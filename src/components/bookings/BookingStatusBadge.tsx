@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 import type { BookingStatus } from "@/lib/supabase/types";
 
 const statusStyles: Record<BookingStatus, string> = {
-  pending: "bg-amber-100 text-amber-800 border-amber-200",
-  accepted: "bg-emerald-100 text-emerald-800 border-emerald-200",
-  rejected: "bg-red-100 text-red-800 border-red-200",
+  pending: "bg-amber-50 text-amber-700 border-amber-200",
+  accepted: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  rejected: "bg-red-50 text-red-700 border-red-200",
 };
 
 const statusLabels: Record<BookingStatus, string> = {
