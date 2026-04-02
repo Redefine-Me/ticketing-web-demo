@@ -30,7 +30,7 @@ export const categories: Category[] = [
 
 // ── Societies ────────────────────────────────────────────────
 export const societies: Society[] = [
-  { id: 's1', name: 'UoM American Studies Society', instagram_handle: 'uom_assoc', description: 'Land of the free, home of the brave\u2026source of widespread geopolitical tension.', image_url: null, university: universities[0], follower_count: 356 },
+  { id: 's1', name: 'Manchester Malayalee Student Society', instagram_handle: 'mallusocmcr', description: 'PHOTOS/ TICKETS \ud83d\udc47\ud83d\udcab', image_url: null, university: universities[0], follower_count: 2598 },
 ];
 
 // ── Lookup helpers ───────────────────────────────────────────
@@ -43,18 +43,22 @@ const LOCATIONS: Record<string, Location> = {
   'b-002': { id: 'l2', name: 'University Place', street: 'Oxford Road', postcode: 'M13 9GP', google_maps_url: null },
   'b-003': { id: 'l3', name: 'Samuel Alexander Building', street: 'Oxford Road', postcode: 'M13 9PL', google_maps_url: null },
   'b-004': { id: 'l4', name: '256 Wilmslow Road', street: 'Wilmslow Road', postcode: 'M14 6LB', google_maps_url: null },
-  'b-005': { id: 'l5', name: 'Roscoe Building', street: 'Oxford Road', postcode: 'M13 9PL', google_maps_url: null },
-  'b-006': { id: 'l6', name: 'Kimpton Clocktower Hotel', street: 'Oxford Street', postcode: 'M60 7HA', google_maps_url: null },
+  'b-008': { id: 'l8', name: 'Armitage Sports Centre', street: 'Fallowfield', postcode: 'M14 6PA', google_maps_url: null },
+  'b-009': { id: 'l9', name: 'Bierkeller Manchester', street: 'Printworks', postcode: 'M4 2BS', google_maps_url: null },
+  'b-010': { id: 'l10', name: 'Platt Fields Park', street: 'Fallowfield', postcode: 'M14 6LA', google_maps_url: null },
+  'b-011': { id: 'l11', name: 'Whitworth Hall', street: 'Oxford Road', postcode: 'M13 9PL', google_maps_url: null },
+  'b-012': { id: 'l12', name: 'Impossible Manchester', street: '36 Peter St', postcode: 'M2 5GP', google_maps_url: null },
 };
 
 // User interaction state per event (web-only, not in dashboard)
 const USER_STATE: Record<string, { isLiked: boolean; isAttending: boolean }> = {
   'e-001': { isLiked: false, isAttending: true },
-  'e-002': { isLiked: true, isAttending: false },
-  'e-003': { isLiked: true, isAttending: true },
-  'e-006': { isLiked: false, isAttending: true },
-  'e-008': { isLiked: true, isAttending: false },
-  'e-009': { isLiked: false, isAttending: true },
+  'e-002': { isLiked: true, isAttending: true },
+  'e-004': { isLiked: true, isAttending: false },
+  'e-007': { isLiked: false, isAttending: true },
+  'e-009': { isLiked: true, isAttending: false },
+  'e-010': { isLiked: true, isAttending: true },
+  'e-011': { isLiked: false, isAttending: true },
 };
 
 // ── Events — derived from dashboard source of truth ──────────
