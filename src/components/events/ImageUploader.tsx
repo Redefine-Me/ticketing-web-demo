@@ -89,11 +89,12 @@ function SortableImageItem({
 
       {/* Order badge + drag handle */}
       <div
-        className="absolute left-1 top-1 flex items-center gap-0.5 rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm cursor-grab active:cursor-grabbing"
+        title="Drag and drop to change order"
+        className="absolute left-1 top-1 flex items-center gap-1 rounded-md bg-black/60 px-1.5 py-1 text-xs font-semibold text-white backdrop-blur-sm cursor-grab active:cursor-grabbing"
         {...attributes}
         {...listeners}
       >
-        <GripVertical className="h-3 w-3" />
+        <GripVertical className="h-4 w-4" />
         {index + 1}
       </div>
 

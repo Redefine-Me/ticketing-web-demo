@@ -12,7 +12,7 @@ export function InfluenceGrid({ images, onRemove }: InfluenceGridProps) {
   return (
     <section className="space-y-2">
       <h3 className="text-sm font-bold text-red-500">Influence images: use your past event images to influence your new images</h3>
-      <div className="h-[180px] overflow-y-auto rounded-lg border bg-muted/10 p-1.5">
+      <div className="h-[270px] overflow-y-auto rounded-lg border bg-muted/10 p-1.5">
         {images.length === 0 ? (
           <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
             Select events above to add influence images
