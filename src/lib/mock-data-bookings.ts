@@ -212,6 +212,36 @@ export function resolveVenueFromBuildingId(buildingId: string) {
 // ── Mock Bookings ────────────────────────────────────────────
 
 export const mockBookings: Booking[] = [
+  // e-001: Freshers Chai & Chill — university booking at Students' Union, Room 1
+  {
+    id: "bk-008",
+    type: "university",
+    eventId: "e-001",
+    scheduleIndex: 0,
+    buildingId: "b-001",
+    buildingName: "Students' Union",
+    roomId: "r-001",
+    roomName: "B1",
+    expectedAttendees: 94,
+    status: "accepted",
+    createdAt: "2025-09-10T09:00:00Z",
+    messages: [
+      {
+        id: "m-021",
+        sender: "you",
+        senderName: "You",
+        message: "Hi, we'd like to book Room 1 (ground floor) in the SU for our Freshers Chai & Chill on September 25, 6pm-8:30pm. Expecting around 90 freshers.",
+        sentAt: "2025-09-10T09:00:00Z",
+      },
+      {
+        id: "m-022",
+        sender: "university",
+        senderName: "SU Room Bookings",
+        message: "Room 1 is confirmed for September 25, 18:00-20:30. Ref: SU-2025-0134. Tea/coffee facilities available in the kitchen next door.",
+        sentAt: "2025-09-11T10:00:00Z",
+      },
+    ],
+  },
   // e-002: The Simpsons Movie Screening — university booking at University Place Theatre A
   {
     id: "bk-001",
@@ -353,6 +383,66 @@ export const mockBookings: Booking[] = [
       },
     ],
   },
+  // e-005: Kerala Film Screening — university booking at University Place, Theatre A
+  {
+    id: "bk-007",
+    type: "university",
+    eventId: "e-005",
+    scheduleIndex: 0,
+    buildingId: "b-002",
+    buildingName: "University Place",
+    roomId: "r-004",
+    roomName: "Theatre A",
+    expectedAttendees: 52,
+    status: "pending",
+    createdAt: "2025-10-28T11:00:00Z",
+    messages: [
+      {
+        id: "m-019",
+        sender: "you",
+        senderName: "You",
+        message: "Hi, could we book Theatre A in University Place for November 20, 7pm-9:30pm? We're screening a Kerala film with subtitles — expecting around 50 students.",
+        sentAt: "2025-10-28T11:00:00Z",
+      },
+      {
+        id: "m-020",
+        sender: "university",
+        senderName: "University Timetabling",
+        message: "Theatre A has a provisional hold for a departmental event that evening. I'll confirm availability by end of week.",
+        sentAt: "2025-10-29T09:30:00Z",
+      },
+    ],
+  },
+  // e-008: Blind Date Night — university booking at University Place, Theatre B
+  {
+    id: "bk-009",
+    type: "university",
+    eventId: "e-008",
+    scheduleIndex: 0,
+    buildingId: "b-002",
+    buildingName: "University Place",
+    roomId: "r-005",
+    roomName: "Theatre B",
+    expectedAttendees: 110,
+    status: "accepted",
+    createdAt: "2026-01-20T14:00:00Z",
+    messages: [
+      {
+        id: "m-023",
+        sender: "you",
+        senderName: "You",
+        message: "Hi, we'd like to book Theatre B in University Place for February 13, 7pm-10pm. It's a collab blind date event — expecting around 110 people. We'll need a mic and the projector.",
+        sentAt: "2026-01-20T14:00:00Z",
+      },
+      {
+        id: "m-024",
+        sender: "university",
+        senderName: "University Timetabling",
+        message: "Theatre B is available. Booking confirmed for Feb 13, 19:00-22:00. Ref: TB-2026-0102. AV equipment included as standard.",
+        sentAt: "2026-01-21T11:30:00Z",
+      },
+    ],
+  },
   // e-007: Simpsons vs Family Guy Debate Night — university booking at Roscoe Building, pending
   {
     id: "bk-005",
@@ -380,6 +470,43 @@ export const mockBookings: Booking[] = [
         senderName: "University Timetabling",
         message: "Room 1.009 has a provisional booking for that slot. I'll check if it can be moved and get back to you by end of week.",
         sentAt: "2026-01-06T11:00:00Z",
+      },
+    ],
+  },
+  // e-011: THEYYAM — university booking at University Place, Theatre A (schedule 0 only)
+  {
+    id: "bk-010",
+    type: "university",
+    eventId: "e-011",
+    scheduleIndex: 0,
+    buildingId: "b-002",
+    buildingName: "University Place",
+    roomId: "r-004",
+    roomName: "Theatre A",
+    expectedAttendees: 200,
+    status: "pending",
+    createdAt: "2026-03-20T10:00:00Z",
+    messages: [
+      {
+        id: "m-025",
+        sender: "you",
+        senderName: "You",
+        message: "Hi, we'd like to book Theatre A in University Place for April 11, 7pm-9:30pm for our THEYYAM cultural showcase. Expecting around 200 attendees. We'll need the full AV setup and stage lighting.",
+        sentAt: "2026-03-20T10:00:00Z",
+      },
+      {
+        id: "m-026",
+        sender: "university",
+        senderName: "University Timetabling",
+        message: "I can see Theatre A is free that evening. For events over 150 attendees we need a risk assessment form — could you submit one via the events portal? I'll provisionally hold the slot.",
+        sentAt: "2026-03-21T09:15:00Z",
+      },
+      {
+        id: "m-027",
+        sender: "you",
+        senderName: "You",
+        message: "Risk assessment submitted via the portal just now. Ref: RA-2026-0087. Let us know once it's reviewed!",
+        sentAt: "2026-03-22T11:00:00Z",
       },
     ],
   },
