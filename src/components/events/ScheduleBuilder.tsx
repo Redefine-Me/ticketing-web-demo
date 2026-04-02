@@ -198,7 +198,7 @@ export function ScheduleBuilder({ value, onChange, eventId }: ScheduleBuilderPro
                     return (
                       <Button type="button" variant="outline" size="sm" disabled className="whitespace-nowrap">
                         <CalendarCheck className="mr-1.5 h-3.5 w-3.5" />
-                        Manage Booking
+                        Add Booking
                       </Button>
                     );
                   }
@@ -220,7 +220,7 @@ export function ScheduleBuilder({ value, onChange, eventId }: ScheduleBuilderPro
                         }}
                       >
                         <CalendarCheck className="mr-1.5 h-3.5 w-3.5" />
-                        {isUni ? "Remove Booking" : "Remove from Booking"}
+                        Remove Booking
                       </Button>
                     );
                   }
@@ -237,7 +237,7 @@ export function ScheduleBuilder({ value, onChange, eventId }: ScheduleBuilderPro
                       }}
                     >
                       <CalendarCheck className="mr-1.5 h-3.5 w-3.5" />
-                      {isUni ? "Manage Booking" : "Add to Bookings"}
+                      Add Booking
                     </Button>
                   );
                 })()}
