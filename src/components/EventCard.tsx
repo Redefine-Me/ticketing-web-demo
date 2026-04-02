@@ -22,7 +22,7 @@ export default function EventCard({ event, onClick, priority }: EventCardProps) 
           onClick?.();
         }
       }}
-      className="group bg-surface border border-border rounded-[var(--radius)] overflow-hidden shadow-[var(--shadowSoft)] transition-all duration-[0.12s] cursor-pointer hover:-translate-y-0.5 hover:shadow-[var(--shadow)] focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2"
+      className="group bg-surface border border-border rounded-[var(--radius)] overflow-hidden shadow-[var(--shadow)] transition-all duration-[0.12s] cursor-pointer hover:-translate-y-0.5 hover:shadow-[var(--shadow-hover)] focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2"
     >
       {/* Cover Image */}
       <div className="relative w-full h-[120px] bg-gradient-to-br from-[rgba(99,102,241,0.08)] via-transparent to-[rgba(239,68,68,0.06)] border-b border-border">

@@ -46,10 +46,10 @@ interface EventTableProps {
 }
 
 const statusColors: Record<string, string> = {
-  live: "bg-green-100 text-green-800",
-  approved: "bg-green-100 text-green-800",
-  ingested: "bg-yellow-100 text-yellow-800",
-  rejected: "bg-red-100 text-red-800",
+  live: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  approved: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  ingested: "bg-amber-50 text-amber-700 border border-amber-200",
+  rejected: "bg-red-50 text-red-700 border border-red-200",
 };
 
 function getColumns(
@@ -240,59 +240,61 @@ export function EventTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <Input
-          placeholder="Search events..."
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-xs"
-        />
-        <Select
-          value={statusFilter}
-          onValueChange={(val) =>
-            table
-              .getColumn("status")
-              ?.setFilterValue(val === "All" ? undefined : val)
-          }
-        >
-          <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All statuses</SelectItem>
-            <SelectItem value="live">Live</SelectItem>
-            <SelectItem value="ingested">Pending</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select
-          value={sourceFilter}
-          onValueChange={(val) =>
-            table
-              .getColumn("source")
-              ?.setFilterValue(val === "All" ? undefined : val)
-          }
-        >
-          <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="Source" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">All sources</SelectItem>
-            <SelectItem value="scraped">Scraped</SelectItem>
-            <SelectItem value="manual">Manual</SelectItem>
-          </SelectContent>
-        </Select>
-        <TicketedFilter value={ticketFilter} onChange={setTicketFilter} />
+      <div className="rounded-xl border border-border bg-card p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Input
+            placeholder="Search events..."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="max-w-xs"
+          />
+          <Select
+            value={statusFilter}
+            onValueChange={(val) =>
+              table
+                .getColumn("status")
+                ?.setFilterValue(val === "All" ? undefined : val)
+            }
+          >
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All statuses</SelectItem>
+              <SelectItem value="live">Live</SelectItem>
+              <SelectItem value="ingested">Pending</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={sourceFilter}
+            onValueChange={(val) =>
+              table
+                .getColumn("source")
+                ?.setFilterValue(val === "All" ? undefined : val)
+            }
+          >
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Source" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All sources</SelectItem>
+              <SelectItem value="scraped">Scraped</SelectItem>
+              <SelectItem value="manual">Manual</SelectItem>
+            </SelectContent>
+          </Select>
+          <TicketedFilter value={ticketFilter} onChange={setTicketFilter} />
+        </div>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-xl border shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -339,6 +341,7 @@ export function EventTable({
             <Button
               variant="outline"
               size="sm"
+              className="rounded-lg"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -347,6 +350,7 @@ export function EventTable({
             <Button
               variant="outline"
               size="sm"
+              className="rounded-lg"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >

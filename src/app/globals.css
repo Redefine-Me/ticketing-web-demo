@@ -92,8 +92,8 @@
   --redGlow: rgba(239, 68, 68, 0.4);
   --redSoft: rgba(239, 68, 68, 0.1);
   --radius: 16px;
-  --shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
-  --shadowSoft: 0 4px 14px rgba(15, 23, 42, 0.06);
+  --shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  --shadow-hover: 0 6px 24px rgba(15, 23, 42, 0.08);
 }
 
 /* ── shadcn/ui variables (dashboard uses these) ── */
@@ -161,14 +161,21 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3 {
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-space-grotesk), 'Space Grotesk', sans-serif;
     letter-spacing: -0.02em;
     font-weight: 600;
     line-height: 1.2;
     text-wrap: balance;
   }
+
+  h1 {
+    font-weight: 700;
+  }
 }
+
+/* Tabular numbers for data-heavy dashboard */
+.tabular-nums { font-variant-numeric: tabular-nums; }
 
 /* ── Dashboard scope: apply shadcn base styles only inside dashboard ── */
 .dashboard-scope * {
@@ -178,6 +185,11 @@
 .dashboard-scope {
   background: transparent;
   color: var(--foreground);
+}
+
+.dashboard-scope h1,
+.dashboard-scope h2 {
+  letter-spacing: -0.02em;
 }
 
 /* ── Logo crossfade: 6s total cycle ── */

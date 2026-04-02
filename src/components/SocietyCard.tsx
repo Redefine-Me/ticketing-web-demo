@@ -9,7 +9,7 @@ interface SocietyCardProps {
 
 export default function SocietyCard({ name, category, eventCount, initials, imageUrl, instagramHandle }: SocietyCardProps) {
   const content = (
-    <div className="bg-surface border border-border rounded-[var(--radius)] p-4 flex items-center gap-3 cursor-pointer transition-all duration-[0.12s] shadow-[var(--shadowSoft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow)] hover:border-text">
+    <div className="bg-surface border border-border rounded-[var(--radius)] p-4 flex items-center gap-3 cursor-pointer transition-all duration-[0.12s] shadow-[var(--shadow)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-hover)] hover:border-text">
       {imageUrl ? (
         <img
           src={imageUrl}

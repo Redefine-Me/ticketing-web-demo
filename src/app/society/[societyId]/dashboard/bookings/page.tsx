@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Building2, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type TypeFilter = "all" | "university" | "non-university";
 
@@ -59,10 +60,10 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6">
       <DashboardPageHeader>
         <div>
-          <h1 className="text-xl font-semibold">Bookings</h1>
+          <h1 className="text-2xl font-bold tracking-tight" style={{ letterSpacing: '-0.02em' }}>Bookings</h1>
           <p className="text-sm text-muted-foreground">
             Track and manage venue bookings for your events
           </p>
@@ -72,29 +73,35 @@ export default function BookingsPage() {
       {/* Filters */}
       {hasBookings && (
         <DashboardSection delay={0.05}>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Input
-              placeholder="Search buildings or venues..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="max-w-xs"
-            />
-            <div className="flex gap-1">
-              {typeOptions.map((opt) => {
-                const Icon = opt.icon;
-                return (
-                  <Button
-                    key={opt.value}
-                    variant={typeFilter === opt.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setTypeFilter(opt.value)}
-                    className="text-xs"
-                  >
-                    {Icon && <Icon className="mr-1.5 h-3 w-3" />}
-                    {opt.label}
-                  </Button>
-                );
-              })}
+          <div className="rounded-xl border border-border bg-card p-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Input
+                placeholder="Search buildings or venues..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="max-w-xs"
+              />
+              <div className="flex gap-1">
+                {typeOptions.map((opt) => {
+                  const Icon = opt.icon;
+                  const isActive = typeFilter === opt.value;
+                  return (
+                    <Button
+                      key={opt.value}
+                      variant={isActive ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setTypeFilter(opt.value)}
+                      className={cn(
+                        "text-xs",
+                        isActive && "bg-dashboard-cta text-white hover:bg-dashboard-cta/90"
+                      )}
+                    >
+                      {Icon && <Icon className="mr-1.5 h-3 w-3" />}
+                      {opt.label}
+                    </Button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </DashboardSection>
