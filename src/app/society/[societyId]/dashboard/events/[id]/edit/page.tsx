@@ -8,6 +8,7 @@ import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { useCategories } from "@/hooks/useCategories";
 import { EventForm, type EventFormData } from "@/components/events/EventForm";
+import type { ImageItem } from "@/components/events/ImageUploader";
 import { dashboardScheduleToForm } from "@/utils/scheduleTransform";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -66,9 +67,12 @@ export default function EditEventPage() {
     isTicketed: event.isTicketed,
     ticketTypes: event.ticketTypes,
     purchases: event.purchases,
+    images: event.imageUrl
+      ? [{ url: event.imageUrl, name: event.title }]
+      : [],
   };
 
-  const handleSubmit = async (formData: EventFormData & { images: File[] }) => {
+  const handleSubmit = async (formData: EventFormData & { images: ImageItem[] }) => {
     if (!params.id) return;
 
     try {

@@ -5,9 +5,24 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ImagePlus, X } from "lucide-react";
 
+/** An image that's either a local File or a remote/public URL. */
+export type ImageItem = File | { url: string; name: string };
+
+export function isUrlImage(item: ImageItem): item is { url: string; name: string } {
+  return !(item instanceof File);
+}
+
+function imageSrc(item: ImageItem): string {
+  return isUrlImage(item) ? item.url : URL.createObjectURL(item);
+}
+
+function imageName(item: ImageItem): string {
+  return isUrlImage(item) ? item.name : item.name;
+}
+
 interface ImageUploaderProps {
-  images: File[];
-  onChange: (files: File[]) => void;
+  images: ImageItem[];
+  onChange: (files: ImageItem[]) => void;
   maxImages?: number;
 }
 
@@ -95,11 +110,11 @@ export function ImageUploader({ images, onChange, maxImages = 10 }: ImageUploade
 
       {images.length > 0 && (
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
-          {images.map((file, index) => (
-            <div key={`${file.name}-${index}`} className="group relative aspect-square">
+          {images.map((item, index) => (
+            <div key={`${imageName(item)}-${index}`} className="group relative aspect-square">
               <img
-                src={URL.createObjectURL(file)}
-                alt={file.name}
+                src={imageSrc(item)}
+                alt={imageName(item)}
                 className="h-full w-full rounded-lg object-cover"
               />
               <Button

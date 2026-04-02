@@ -376,15 +376,23 @@ export default function EventDetailPage() {
           </CardContent>
         </Card>
 
-        {/* Images placeholder */}
+        {/* Images */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Images</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              No images attached
-            </p>
+            {event.imageUrl ? (
+              <img
+                src={event.imageUrl}
+                alt={event.title}
+                className="w-full rounded-lg object-cover"
+              />
+            ) : (
+              <p className="py-8 text-center text-sm text-muted-foreground">
+                No images attached
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -93,28 +93,27 @@ export function AIImageGenModal({
       >
         <DialogContent
           showCloseButton={false}
-          className="h-[92vh] max-w-[96vw] overflow-hidden p-0 sm:max-w-[96vw]"
+          className="h-[92vh] max-w-[96vw] overflow-y-auto p-0 !gap-0 sm:max-w-[96vw]"
         >
-          <div className="relative flex h-full flex-col">
-            <header className="sticky top-0 z-20 flex items-center justify-between border-b bg-card px-4 py-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-dashboard-cta" />
-                <h2 className="text-sm font-semibold">AI Image Generator</h2>
+          <div className="relative">
+            <header className="sticky top-0 z-20 flex items-center justify-between border-b bg-card px-3 py-1.5">
+              <div className="flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-dashboard-cta" />
+                <h2 className="text-xs font-semibold">AI Image Generator</h2>
               </div>
               <Button type="button" size="icon-sm" variant="ghost" onClick={() => onOpenChange(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </header>
 
-            <div className="relative min-h-0 flex-1 overflow-hidden">
-              <OutputBoxToggle
-                visible={state.isOutputPanelVisible}
-                onClick={() => state.setIsOutputPanelVisible(state.isOutputPanelVisible ? false : true)}
-              />
+            <OutputBoxToggle
+              visible={state.isOutputPanelVisible}
+              onClick={() => state.setIsOutputPanelVisible(state.isOutputPanelVisible ? false : true)}
+            />
 
-              <div className="flex h-full">
-                <div className="min-h-0 flex-1 overflow-y-auto">
-                  <div className="space-y-6 p-4">
+            <div className="flex">
+              <div className="flex-1">
+                <div className="space-y-3 p-3">
                     <Controls
                       creativeDirection={state.controls.creativeDirection}
                       imageDescription={state.controls.imageDescription}
@@ -161,9 +160,9 @@ export function AIImageGenModal({
                 </div>
 
                 <motion.div
-                  animate={{ width: state.isOutputPanelVisible ? 300 : 0 }}
+                  animate={{ width: state.isOutputPanelVisible ? 220 : 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="h-full overflow-hidden"
+                  className="overflow-hidden"
                 >
                   <OutputBox
                     images={state.outputImages}
@@ -173,7 +172,6 @@ export function AIImageGenModal({
                   />
                 </motion.div>
               </div>
-            </div>
           </div>
         </DialogContent>
       </Dialog>
