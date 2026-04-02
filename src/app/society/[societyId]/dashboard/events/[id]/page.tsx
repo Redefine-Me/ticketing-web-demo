@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
 import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
+import { useCategories } from "@/hooks/useCategories";
 import { useBookingsContext } from "@/contexts/BookingsContext";
 import { BookingStatusBadge } from "@/components/bookings/BookingStatusBadge";
 import { cn, formatDateTime } from "@/lib/utils";
@@ -63,6 +64,11 @@ export default function EventDetailPage() {
     refundPurchase,
   } = useEvents(society?.id);
   const bookingsCtx = useBookingsContext();
+  const { categories: allCategories } = useCategories();
+  const categoryNameById = useMemo(
+    () => new Map(allCategories.map((c) => [c.id, c.name])),
+    [allCategories],
+  );
   const [deleting, setDeleting] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
 
@@ -383,7 +389,7 @@ export default function EventDetailPage() {
                   <div className="flex flex-wrap gap-2">
                     {event.categories.map((cat) => (
                       <Badge key={cat} variant="secondary">
-                        {cat}
+                        {categoryNameById.get(cat) ?? cat}
                       </Badge>
                     ))}
                   </div>
@@ -399,12 +405,17 @@ export default function EventDetailPage() {
             <CardTitle className="text-base">Images</CardTitle>
           </CardHeader>
           <CardContent>
-            {event.imageUrl ? (
-              <img
-                src={event.imageUrl}
-                alt={event.title}
-                className="w-full rounded-lg object-cover"
-              />
+            {event.imageUrls.length > 0 ? (
+              <div className="grid grid-cols-2 gap-2">
+                {event.imageUrls.map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt={`${event.title} image ${i + 1}`}
+                    className="w-full rounded-lg object-cover"
+                  />
+                ))}
+              </div>
             ) : (
               <p className="py-8 text-center text-sm text-muted-foreground">
                 No images attached
