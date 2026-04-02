@@ -17,8 +17,8 @@
   --foreground: #F5F5F7;
 }
 
-html {
-  scroll-behavior: smooth;
+html, body {
+  overflow: clip;
 }
 
 body {
@@ -33,7 +33,7 @@ body {
   align-items: center;
   justify-content: center;
   background: #ffffff;
-  overflow: hidden;
+  overflow: clip;
   padding: 20px 16px;
 }
 
