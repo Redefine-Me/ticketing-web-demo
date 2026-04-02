@@ -297,14 +297,15 @@ export default function EventDetailPage() {
                             )}
                           </p>
                           {booking && !entry.isEnd && (
-                            <Link
-                              href={`${nav.href("/bookings")}?event=${event.id}`}
-                              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "h-7 gap-1.5 text-xs shrink-0")}
-                            >
-                              <CalendarCheck className="h-3 w-3" />
-                              Manage Booking
-                              <BookingStatusBadge status={booking.status} className="ml-0.5" />
-                            </Link>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Link
+                                href={`${nav.href("/bookings")}?event=${event.id}`}
+                                className={cn(buttonVariants({ size: "sm" }), "h-7 text-xs bg-red-600 text-white hover:bg-red-700")}
+                              >
+                                Manage Booking
+                              </Link>
+                              <BookingStatusBadge status={booking.status} />
+                            </div>
                           )}
                         </div>
                         {(entry.buildingName || entry.locationName) && (
