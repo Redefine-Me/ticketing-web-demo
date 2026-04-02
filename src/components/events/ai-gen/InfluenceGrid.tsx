@@ -12,14 +12,14 @@ interface InfluenceGridProps {
 export function InfluenceGrid({ images, onRemove }: InfluenceGridProps) {
   return (
     <section className="space-y-2">
-      <h3 className="text-sm font-semibold">Influence images: use your past event images to influence your new images</h3>
-      <div className="h-[1000px] overflow-y-auto rounded-lg border bg-muted/10 p-3">
+      <h3 className="text-sm font-bold text-red-500">Influence images: use your past event images to influence your new images</h3>
+      <div className="h-[180px] overflow-y-auto rounded-lg border bg-muted/10 p-1.5">
         {images.length === 0 ? (
           <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
             Select events above to add influence images
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
             {images.map((image) => (
               <div key={image.id} className="group relative overflow-hidden rounded-md border">
                 <img src={image.url} alt={image.summary ?? "Influence image"} className="h-full w-full object-cover" loading="lazy" />
