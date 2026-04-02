@@ -418,7 +418,7 @@ export const prefillNewEventForm = {
       startTime: "21:30",
       endTime: "00:00",
       buildingName: "Impossible Manchester",
-      buildingId: "",
+      buildingId: "v-008",
       buildingGoogleMapsUrl: null,
       roomName: "",
       roomId: "",
