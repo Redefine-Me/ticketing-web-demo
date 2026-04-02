@@ -402,66 +402,6 @@ export const mockEvents: DashboardEvent[] = [
       },
     ],
   },
-  {
-    id: "e-011",
-    title: "THEYYAM \u2014 A Night of Kerala",
-    description:
-      "THE WAIT IS OVER \ud83d\udd25\ud83d\udd25\ud83d\udd25\n\nTHEYYAM \u2014 A Night of Kerala is pulling up and it\u2019s going to be UNREAL \ud83e\udef6\ud83c\udffd\ud83d\udcab\n\nwe\u2019re starting things off at Uni Place with live performances, traditional dance, spoken word and a whole cultural showcase that\u2019s gonna leave you speechless fr \ud83d\ude2d\u2728 then we\u2019re moving the vibes to Impossible for food, drinks and the afterparty because why would we stop there \ud83d\ude0f\ud83c\udf5b\ud83e\udea9\n\nMEMBERS: \u00a33 (you already know the perks \ud83e\udd37\ud83c\udffd\u200d\u2640\ufe0f)\nNON-MEMBERS: \u00a36\n\ntickets selling FAST so don\u2019t sleep on this one\u203c\ufe0f\u203c\ufe0f",
-    date: "2026-04-11T19:00:00Z",
-    status: "live",
-    source: "scraped",
-    likes: 41,
-    attending: 35,
-    categories: ["social", "arts"],
-    imageUrl: null,
-    registrationUrl: null,
-    isOnline: false,
-    isTicketed: true,
-    schedules: [
-      {
-        scheduledAt: "2026-04-11T19:00:00Z",
-        isEnd: false,
-        order: 0,
-        locationName: "University Place",
-        locationId: "b-002",
-        locationGoogleMapsUrl: null,
-        buildingName: "University Place",
-        buildingId: "b-002",
-        buildingGoogleMapsUrl: null,
-        roomName: "Lecture Theatre A",
-        roomId: null,
-        description: "Cultural showcase \u2014 live performances, traditional dance, spoken word, and music",
-      },
-      {
-        scheduledAt: "2026-04-11T21:30:00Z",
-        isEnd: false,
-        order: 1,
-        locationName: "Impossible Manchester",
-        locationId: "b-012",
-        locationGoogleMapsUrl: null,
-        buildingName: "Impossible Manchester",
-        buildingId: "b-012",
-        buildingGoogleMapsUrl: null,
-        roomName: null,
-        roomId: null,
-        description: "Afterparty \u2014 Kerala street food, drinks, music, and dancing",
-      },
-      {
-        scheduledAt: "2026-04-12T00:00:00Z",
-        isEnd: true,
-        order: 2,
-        locationName: null,
-        locationId: null,
-        locationGoogleMapsUrl: null,
-        buildingName: null,
-        buildingId: null,
-        buildingGoogleMapsUrl: null,
-        roomName: null,
-        roomId: null,
-        description: null,
-      },
-    ],
-  },
 ];
 
 export const mockCategories = [
@@ -484,45 +424,6 @@ export const mockCategories = [
   { id: "025be260-a98d-4fb1-94d1-8d6241da7e10", name: "wellbeing" },
   { id: "51be78a7-d402-477d-bb0a-f32970614074", name: "workshop" },
 ];
-
-// ── Prefill data for Create Event form (dev convenience) ──
-// To remove: delete this export and the `initialData` prop in events/new/page.tsx
-export const prefillNewEventForm = {
-  title: "THEYYAM \u2014 A Night of Kerala",
-  description:
-    "THE WAIT IS OVER \ud83d\udd25\ud83d\udd25\ud83d\udd25\n\nTHEYYAM \u2014 A Night of Kerala is pulling up and it\u2019s going to be UNREAL \ud83e\udef6\ud83c\udffd\ud83d\udcab\n\nwe\u2019re starting things off at Uni Place with live performances, traditional dance, spoken word and a whole cultural showcase that\u2019s gonna leave you speechless fr \ud83d\ude2d\u2728 then we\u2019re moving the vibes to Impossible for food, drinks and the afterparty because why would we stop there \ud83d\ude0f\ud83c\udf5b\ud83e\udea9\n\nMEMBERS: \u00a33 (you already know the perks \ud83e\udd37\ud83c\udffd\u200d\u2640\ufe0f)\nNON-MEMBERS: \u00a36\n\ntickets selling FAST so don\u2019t sleep on this one\u203c\ufe0f\u203c\ufe0f",
-  categoryIds: [
-    "13c25d72-1dcf-4417-9d74-ce94ac17805e", // social
-    "6d505488-e511-45b2-b6c0-b35e75485cd4", // arts
-  ],
-  schedules: [
-    {
-      date: "2026-04-11",
-      startTime: "19:00",
-      endTime: "21:30",
-      buildingName: "University Place",
-      buildingId: "b-002",
-      roomName: "Lecture Theatre A",
-      description: "Cultural showcase \u2014 live performances, traditional dance, spoken word, and music",
-    },
-    {
-      date: "2026-04-11",
-      startTime: "21:30",
-      endTime: "00:00",
-      buildingName: "Impossible Manchester",
-      buildingId: "b-012",
-      roomName: "",
-      description: "Afterparty \u2014 Kerala street food, drinks, music, and dancing",
-    },
-  ],
-  isOnline: false,
-  registrationUrl: "",
-  isTicketed: true,
-  ticketTypes: [
-    { id: "", eventId: "", name: "Member", price: 3, isMemberTicket: true, totalAvailable: 60 },
-    { id: "", eventId: "", name: "Non-Member", price: 6, isMemberTicket: false, totalAvailable: 40 },
-  ],
-};
 
 export const mockUniversities = [
   { id: "u-001", name: "University of Manchester" },

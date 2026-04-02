@@ -473,43 +473,6 @@ export const mockBookings: Booking[] = [
       },
     ],
   },
-  // e-011: THEYYAM — university booking at University Place, Theatre A (schedule 0 only)
-  {
-    id: "bk-010",
-    type: "university",
-    eventId: "e-011",
-    scheduleIndex: 0,
-    buildingId: "b-002",
-    buildingName: "University Place",
-    roomId: "r-004",
-    roomName: "Theatre A",
-    expectedAttendees: 200,
-    status: "pending",
-    createdAt: "2026-03-20T10:00:00Z",
-    messages: [
-      {
-        id: "m-025",
-        sender: "you",
-        senderName: "You",
-        message: "Hi, we'd like to book Theatre A in University Place for April 11, 7pm-9:30pm for our THEYYAM cultural showcase. Expecting around 200 attendees. We'll need the full AV setup and stage lighting.",
-        sentAt: "2026-03-20T10:00:00Z",
-      },
-      {
-        id: "m-026",
-        sender: "university",
-        senderName: "University Timetabling",
-        message: "I can see Theatre A is free that evening. For events over 150 attendees we need a risk assessment form — could you submit one via the events portal? I'll provisionally hold the slot.",
-        sentAt: "2026-03-21T09:15:00Z",
-      },
-      {
-        id: "m-027",
-        sender: "you",
-        senderName: "You",
-        message: "Risk assessment submitted via the portal just now. Ref: RA-2026-0087. Let us know once it's reviewed!",
-        sentAt: "2026-03-22T11:00:00Z",
-      },
-    ],
-  },
   // e-010: End of Year Simpsons Movie Night — university booking at University Place, rejected
   {
     id: "bk-006",

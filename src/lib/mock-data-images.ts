@@ -1,142 +1,23 @@
 import type { InfluenceImage } from "@/lib/types/image-generation";
 import { mockEvents } from "@/lib/mock-data";
 
-export const mockEventInfluenceImages: InfluenceImage[] = [
-  {
-    id: "inf-e001-1",
-    eventId: "e-001",
-    eventTitle: "Freshers Welcome Social",
-    eventDate: "2025-09-25T18:00:00Z",
-    url: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=900&q=80",
-    summary: "Lively freshers social with students mingling",
-  },
-  {
-    id: "inf-e001-2",
-    eventId: "e-001",
-    eventTitle: "Freshers Welcome Social",
-    eventDate: "2025-09-25T18:00:00Z",
-    url: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=900&q=80",
-    summary: "Pizza and drinks on a table at a university event",
-  },
-  {
-    id: "inf-e002-1",
-    eventId: "e-002",
-    eventTitle: "The Simpsons Movie Screening",
-    eventDate: "2025-10-10T19:00:00Z",
-    url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=900&q=80",
-    summary: "Cinema screen in a dark auditorium",
-  },
-  {
-    id: "inf-e002-2",
-    eventId: "e-002",
-    eventTitle: "The Simpsons Movie Screening",
-    eventDate: "2025-10-10T19:00:00Z",
-    url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80",
-    summary: "Popcorn bucket in front of a movie screen",
-  },
-  {
-    id: "inf-e003-1",
-    eventId: "e-003",
-    eventTitle: "Treehouse of Horror Marathon",
-    eventDate: "2025-10-30T18:30:00Z",
-    url: "https://images.unsplash.com/photo-1509557965875-b88c97052f0e?auto=format&fit=crop&w=900&q=80",
-    summary: "Halloween decorations with spooky orange lighting",
-  },
-  {
-    id: "inf-e003-2",
-    eventId: "e-003",
-    eventTitle: "Treehouse of Horror Marathon",
-    eventDate: "2025-10-30T18:30:00Z",
-    url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=900&q=80",
-    summary: "Film screening setup with warm-toned projection",
-  },
-  {
-    id: "inf-e004-1",
-    eventId: "e-004",
-    eventTitle: "Simpsons Trivia Night",
-    eventDate: "2025-11-14T19:30:00Z",
-    url: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80",
-    summary: "Pub table with quiz sheets and drinks",
-  },
-  {
-    id: "inf-e004-2",
-    eventId: "e-004",
-    eventTitle: "Simpsons Trivia Night",
-    eventDate: "2025-11-14T19:30:00Z",
-    url: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80",
-    summary: "Warm bokeh bar lights and friends",
-  },
-  {
-    id: "inf-e005-1",
-    eventId: "e-005",
-    eventTitle: "Thanksgiving Special Screening",
-    eventDate: "2025-11-27T18:00:00Z",
-    url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=900&q=80",
-    summary: "Cozy screening room with warm lighting",
-  },
-  {
-    id: "inf-e006-1",
-    eventId: "e-006",
-    eventTitle: "Christmas Simpsons Marathon",
-    eventDate: "2025-12-12T17:00:00Z",
-    url: "https://images.unsplash.com/photo-1482517967863-00e15c9b44be?auto=format&fit=crop&w=900&q=80",
-    summary: "Christmas decorations and fairy lights",
-  },
-  {
-    id: "inf-e007-1",
-    eventId: "e-007",
-    eventTitle: "Simpsons vs Family Guy Debate Night",
-    eventDate: "2026-01-22T19:00:00Z",
-    url: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=900&q=80",
-    summary: "Audience in lecture theatre for a debate",
-  },
-  {
-    id: "inf-e008-1",
-    eventId: "e-008",
-    eventTitle: "Springfield Film Festival",
-    eventDate: "2026-02-20T14:00:00Z",
-    url: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=900&q=80",
-    summary: "Cinema entrance with film festival posters",
-  },
-  {
-    id: "inf-e009-1",
-    eventId: "e-009",
-    eventTitle: "American Studies Spring Ball",
-    eventDate: "2026-03-14T19:00:00Z",
-    url: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80",
-    summary: "Formal event with warm dance-floor lights",
-  },
-  {
-    id: "inf-e009-2",
-    eventId: "e-009",
-    eventTitle: "American Studies Spring Ball",
-    eventDate: "2026-03-14T19:00:00Z",
-    url: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=900&q=80",
-    summary: "Elegant dinner tables and decor",
-  },
-  {
-    id: "inf-e010-1",
-    eventId: "e-010",
-    eventTitle: "End of Year Simpsons Movie Night",
-    eventDate: "2026-04-03T19:00:00Z",
-    url: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=900&q=80",
-    summary: "Cinema auditorium with projected film",
-  },
-];
+export const mockEventInfluenceImages: InfluenceImage[] = mockEvents
+  .filter((e) => e.imageUrl != null)
+  .map((e) => ({
+    id: `inf-${e.id}-1`,
+    eventId: e.id,
+    eventTitle: e.title,
+    eventDate: e.date,
+    url: e.imageUrl!,
+    summary: e.description.slice(0, 60),
+  }));
 
 export const mockGeneratedImagePool: string[] = mockEvents
   .map((e) => e.imageUrl)
   .filter((url): url is string => url != null);
 
-export const mockPrimaryEventImages: Record<string, string> = {
-  "e-001": "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=800&q=80",
-  "e-002": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80",
-  "e-003": "https://images.unsplash.com/photo-1509557965875-b88c97052f0e?auto=format&fit=crop&w=800&q=80",
-  "e-004": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=800&q=80",
-  "e-005": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80",
-  "e-006": "https://images.unsplash.com/photo-1482517967863-00e15c9b44be?auto=format&fit=crop&w=800&q=80",
-  "e-007": "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80",
-  "e-008": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80",
-  "e-009": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80",
-  "e-010": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80",
-};
+export const mockPrimaryEventImages: Record<string, string> = Object.fromEntries(
+  mockEvents
+    .filter((e) => e.imageUrl != null)
+    .map((e) => [e.id, e.imageUrl!]),
+);

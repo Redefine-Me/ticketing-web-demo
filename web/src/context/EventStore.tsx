@@ -197,10 +197,13 @@ function hydrateEvents(base: EventWithDetails[]): EventWithDetails[] {
 }
 
 export function EventStoreProvider({ children }: { children: React.ReactNode }) {
-  // Seed from shared dashboard localStorage if available, else mock data
-  const [events, setEvents] = useState<EventWithDetails[]>(() =>
-    hydrateEvents(loadSharedEvents(mockEvents))
-  );
+  // Start with mock data (server-safe), then hydrate from localStorage in useEffect
+  const [events, setEvents] = useState<EventWithDetails[]>(mockEvents);
+
+  // Hydrate from localStorage after mount to avoid SSR/client mismatch
+  useEffect(() => {
+    setEvents(hydrateEvents(loadSharedEvents(mockEvents)));
+  }, []);
 
   useEffect(() => {
     saveInteractions(events);

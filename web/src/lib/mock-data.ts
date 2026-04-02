@@ -58,7 +58,6 @@ const USER_STATE: Record<string, { isLiked: boolean; isAttending: boolean }> = {
   'e-007': { isLiked: false, isAttending: true },
   'e-009': { isLiked: true, isAttending: false },
   'e-010': { isLiked: true, isAttending: true },
-  'e-011': { isLiked: false, isAttending: true },
 };
 
 // ── Events — derived from dashboard source of truth ──────────

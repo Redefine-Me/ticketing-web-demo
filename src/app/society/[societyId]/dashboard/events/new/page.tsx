@@ -7,7 +7,6 @@ import { useEvents } from "@/hooks/useEvents";
 import { useCategories } from "@/hooks/useCategories";
 import { EventForm, type EventFormData } from "@/components/events/EventForm";
 import type { ImageItem } from "@/components/events/ImageUploader";
-import { prefillNewEventForm } from "@/lib/mock-data";
 import { toast } from "sonner";
 
 export default function CreateEventPage() {
@@ -39,7 +38,7 @@ export default function CreateEventPage() {
         </p>
       </div>
 
-      <EventForm initialData={prefillNewEventForm} onSubmit={handleSubmit} categories={categories} categoriesLoading={categoriesLoading} society={society} />
+      <EventForm onSubmit={handleSubmit} categories={categories} categoriesLoading={categoriesLoading} society={society} />
     </div>
   );
 }

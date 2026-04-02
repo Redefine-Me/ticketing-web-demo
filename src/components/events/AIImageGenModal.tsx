@@ -90,102 +90,100 @@ export function AIImageGenModal({
       >
         <DialogContent
           showCloseButton={false}
-          className="h-[92vh] max-w-[96vw] overflow-y-auto p-0 !gap-0 sm:max-w-[96vw]"
+          className="w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] h-[92vh] max-h-[92vh] flex flex-col overflow-hidden p-0 !gap-0 sm:max-w-[calc(100vw-2rem)]"
         >
-          <div className="relative">
-            <header className="sticky top-0 z-20 flex items-center justify-between border-b bg-card px-3 py-1.5">
-              <div className="flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-dashboard-cta" />
-                <h2 className="text-xs font-semibold">AI Image Generator</h2>
-              </div>
+          <header className="flex shrink-0 items-center justify-between border-b bg-card px-3 py-1.5">
+            <div className="flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-dashboard-cta" />
+              <h2 className="text-xs font-semibold">AI Image Generator</h2>
+            </div>
+            <div className="flex items-center gap-1">
+              <OutputBoxToggle
+                visible={state.isOutputPanelVisible}
+                onClick={() => state.setIsOutputPanelVisible(!state.isOutputPanelVisible)}
+              />
               <Button type="button" size="icon-sm" variant="ghost" onClick={() => onOpenChange(false)}>
                 <X className="h-4 w-4" />
               </Button>
-            </header>
+            </div>
+          </header>
 
-            <OutputBoxToggle
-              visible={state.isOutputPanelVisible}
-              onClick={() => state.setIsOutputPanelVisible(state.isOutputPanelVisible ? false : true)}
-            />
+          <div className="flex min-h-0 flex-1 overflow-hidden">
+            <div className="min-w-0 flex-1 overflow-y-auto">
+              <div className="space-y-3 p-3">
+                <Controls
+                  creativeDirection={state.controls.creativeDirection}
+                  imageDescription={state.controls.imageDescription}
+                  styleInfluence={state.controls.styleInfluence}
+                  aspectRatio={state.controls.aspectRatio}
+                  variantCount={state.controls.variantCount}
+                  referenceImages={state.controls.referenceImages}
+                  onCreativeDirectionChange={state.setCreativeDirection}
+                  onImageDescriptionChange={state.setImageDescription}
+                  onStyleInfluenceChange={state.setStyleInfluence}
+                  onAspectRatioChange={state.setAspectRatio}
+                  onVariantCountChange={state.setVariantCount}
+                  onAddReferenceImages={state.addReferenceImages}
+                  onRemoveReferenceImage={state.removeReferenceImage}
+                />
 
-            <div className="flex">
-              <div className="flex-1">
-                <div className="space-y-3 p-3">
-                    <Controls
-                      creativeDirection={state.controls.creativeDirection}
-                      imageDescription={state.controls.imageDescription}
-                      styleInfluence={state.controls.styleInfluence}
-                      aspectRatio={state.controls.aspectRatio}
-                      variantCount={state.controls.variantCount}
-                      referenceImages={state.controls.referenceImages}
-                      onCreativeDirectionChange={state.setCreativeDirection}
-                      onImageDescriptionChange={state.setImageDescription}
-                      onStyleInfluenceChange={state.setStyleInfluence}
-                      onAspectRatioChange={state.setAspectRatio}
-                      onVariantCountChange={state.setVariantCount}
-                      onAddReferenceImages={state.addReferenceImages}
-                      onRemoveReferenceImage={state.removeReferenceImage}
-                    />
+                <AutoContext context={state.autoContext} />
 
-                    <AutoContext context={state.autoContext} />
+                <PastEventsScroll
+                  events={state.eventsForScroll}
+                  selectedEventIds={state.selectedEventIds}
+                  onToggle={state.toggleEventSelection}
+                />
 
-                    <PastEventsScroll
-                      events={state.eventsForScroll}
-                      selectedEventIds={state.selectedEventIds}
-                      onToggle={state.toggleEventSelection}
-                    />
+                <InfluenceGrid images={state.selectedInfluenceImages} onRemove={state.removeInfluenceImage} />
 
-                    <InfluenceGrid images={state.selectedInfluenceImages} onRemove={state.removeInfluenceImage} />
-
-                    <GeneratedOutputGrid
-                      generatedImages={state.generatedImages}
-                      selectedGeneratedIds={state.selectedGeneratedIds}
-                      generationPhase={state.generationPhase}
-                      generationStep={state.generationStep}
-                      variantCount={state.controls.variantCount}
-                      aspectRatio={state.controls.aspectRatio}
-                      onSelect={state.addGeneratedToOutput}
-                      onRegenerateHint={() => toast.info("Coming soon")}
-                    />
-                  </div>
-
-                </div>
-
-                <motion.div
-                  animate={{ width: state.isOutputPanelVisible ? 220 : 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="overflow-hidden"
-                >
-                  <OutputBox
-                    images={state.outputImages}
-                    onRemove={state.removeOutputImage}
-                    onReorder={state.reorderOutputImages}
-                  />
-                </motion.div>
+                <GeneratedOutputGrid
+                  generatedImages={state.generatedImages}
+                  selectedGeneratedIds={state.selectedGeneratedIds}
+                  generationPhase={state.generationPhase}
+                  generationStep={state.generationStep}
+                  variantCount={state.controls.variantCount}
+                  aspectRatio={state.controls.aspectRatio}
+                  onSelect={state.addGeneratedToOutput}
+                  onRegenerateHint={() => toast.info("Coming soon")}
+                />
               </div>
+            </div>
 
-              <div className="sticky bottom-0 z-20 flex items-center gap-2 border-t bg-card p-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="shrink-0"
-                  onClick={handleDone}
-                >
-                  <Check className="h-3.5 w-3.5" />
-                  Done
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="flex-1 bg-dashboard-cta text-white hover:bg-dashboard-cta/90"
-                  onClick={state.startGeneration}
-                  disabled={!canGenerate || state.generationPhase === "generating"}
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Generate {state.controls.variantCount} image{state.controls.variantCount === 1 ? "" : "s"}
-                </Button>
-              </div>
+            <motion.div
+              animate={{ width: state.isOutputPanelVisible ? 220 : 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="shrink-0 overflow-hidden"
+            >
+              <OutputBox
+                images={state.outputImages}
+                onRemove={state.removeOutputImage}
+                onReorder={state.reorderOutputImages}
+              />
+            </motion.div>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2 border-t bg-card p-2">
+            <Button
+              type="button"
+              size="sm"
+              className="flex-1 bg-dashboard-cta text-white hover:bg-dashboard-cta/90"
+              onClick={state.startGeneration}
+              disabled={!canGenerate || state.generationPhase === "generating"}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Generate {state.controls.variantCount} image{state.controls.variantCount === 1 ? "" : "s"}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="shrink-0"
+              onClick={handleDone}
+            >
+              <Check className="h-3.5 w-3.5" />
+              Done
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

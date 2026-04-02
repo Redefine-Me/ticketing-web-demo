@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
+
   type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
@@ -35,7 +35,7 @@ import { EventSourceBadge } from "@/components/dashboard/EventSourceBadge";
 import { TicketedBadge } from "@/components/ticketing/TicketedBadge";
 import { TicketedFilter, type TicketFilterValue } from "@/components/ticketing/TicketedFilter";
 import { formatDate } from "@/lib/utils";
-import { ArrowUpDown, ChevronLeft, ChevronRight, Ticket } from "lucide-react";
+import { ArrowUpDown, Ticket, Loader2 } from "lucide-react";
 import type { DashboardEvent } from "@/lib/supabase/types";
 
 interface EventTableProps {
@@ -209,19 +209,49 @@ export function EventTable({
     return events.filter((e) => !e.isTicketed);
   }, [events, ticketFilter]);
 
+  const PAGE_SIZE = 10;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
   const table = useReactTable({
     data: filteredEvents,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     state: { sorting, columnFilters, globalFilter },
-    initialState: { pagination: { pageSize: 10 } },
   });
+
+  const allRows = table.getRowModel().rows;
+  const hasMore = visibleCount < allRows.length;
+
+  // Reset visible count when filters/sorting change the row set
+  const rowCount = allRows.length;
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [rowCount, globalFilter, columnFilters, sorting, ticketFilter]);
+
+  // IntersectionObserver to load more rows on scroll
+  const loadMore = useCallback(() => {
+    setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, allRows.length));
+  }, [allRows.length]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore();
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   const statusFilter =
     (table.getColumn("status")?.getFilterValue() as string) ?? "All";
@@ -307,8 +337,8 @@ export function EventTable({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
+            {allRows.length ? (
+              allRows.slice(0, visibleCount).map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -331,32 +361,11 @@ export function EventTable({
         </Table>
       </div>
 
-      {table.getPageCount() > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-lg"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-lg"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+      {/* Sentinel for infinite scroll */}
+      <div ref={sentinelRef} />
+      {hasMore && (
+        <div className="flex justify-center py-4">
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
       )}
     </div>

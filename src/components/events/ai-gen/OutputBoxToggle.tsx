@@ -14,7 +14,7 @@ export function OutputBoxToggle({ visible, onClick }: OutputBoxToggleProps) {
       type="button"
       size="icon-sm"
       variant="outline"
-      className="absolute right-2 top-20 z-30"
+      className=""
       aria-label={visible ? "Hide output panel" : "Show output panel"}
       onClick={onClick}
     >
