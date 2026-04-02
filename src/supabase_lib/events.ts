@@ -230,7 +230,7 @@ function toDashboardEvent(row: any): DashboardEvent {
         roomName: e.rooms?.name ?? null,
         roomId: e.room_id ?? null,
         description: e.description ?? null,
-        isUniversityVenue: e.is_university_venue ?? false,
+        isUniversityVenue: false,
       })
     ),
   };
