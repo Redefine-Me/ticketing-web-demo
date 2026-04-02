@@ -210,14 +210,25 @@ export function EventStoreProvider({ children }: { children: React.ReactNode }) 
   }, [events]);
 
   useEffect(() => {
+    // Cross-tab sync (storage event only fires in other tabs)
     const onStorage = (evt: StorageEvent) => {
       if (evt.key !== SHARED_EVENTS_STORAGE_KEY) return;
       const nextBase = loadSharedEvents(mockEvents);
       setEvents(hydrateEvents(nextBase));
     };
 
+    // Same-tab sync (custom event dispatched by dashboard's useEvents)
+    const onSameTab = () => {
+      const nextBase = loadSharedEvents(mockEvents);
+      setEvents(hydrateEvents(nextBase));
+    };
+
     window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    window.addEventListener('rm_shared_events_changed', onSameTab);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('rm_shared_events_changed', onSameTab);
+    };
   }, []);
 
   const toggleLike = useCallback((id: string) => {

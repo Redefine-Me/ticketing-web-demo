@@ -9,7 +9,7 @@ import { EventTable } from "@/components/events/EventTable";
 import { ManageAttendeesModal } from "@/components/ticketing/ManageAttendeesModal";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Plus, RotateCcw } from "lucide-react";
 import { DashboardPageHeader, DashboardSection } from "@/components/dashboard/DashboardMotion";
 import type { DashboardEvent } from "@/lib/supabase/types";
 
@@ -21,6 +21,7 @@ export default function EventsPage() {
     loading,
     error,
     fetchEvents,
+    resetEvents,
     markAttended,
     unmarkAttended,
     refundPurchase,
@@ -53,10 +54,19 @@ export default function EventsPage() {
               Manage and track all your society events
             </p>
           </div>
-          <Link href={nav.href("/events/new")} className={cn(buttonVariants(), "bg-dashboard-cta hover:bg-dashboard-cta/90 text-white")}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Event
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href={nav.href("/events/new")} className={cn(buttonVariants(), "bg-dashboard-cta hover:bg-dashboard-cta/90 text-white")}>
+              <Plus className="mr-2 h-4 w-4" />
+              Create Event
+            </Link>
+            <button
+              onClick={resetEvents}
+              className={cn(buttonVariants(), "bg-dashboard-cta hover:bg-dashboard-cta/90 text-white")}
+            >
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Reset Events
+            </button>
+          </div>
         </div>
       </DashboardPageHeader>
 

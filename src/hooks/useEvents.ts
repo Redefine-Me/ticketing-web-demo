@@ -33,6 +33,8 @@ function loadSharedEvents(): DashboardEvent[] | null {
 function saveSharedEvents(events: DashboardEvent[]) {
   if (typeof window === "undefined") return;
   localStorage.setItem(SHARED_EVENTS_STORAGE_KEY, JSON.stringify(events));
+  // Notify same-tab listeners (storage event only fires cross-tab)
+  window.dispatchEvent(new Event("rm_shared_events_changed"));
 }
 
 function toIsoDate(date?: string, time?: string) {
@@ -126,9 +128,14 @@ export function useEvents(societyId: string | undefined) {
     // Simulate network delay
     await new Promise((r) => setTimeout(r, 200));
 
-    // Mock data is the source of truth — always seed from it
-    setEvents(sharedSeedEvents);
-    saveSharedEvents(sharedSeedEvents);
+    // Use localStorage if available (preserves creates/deletes), otherwise seed from mock data
+    const stored = loadSharedEvents();
+    if (stored && stored.length > 0) {
+      setEvents(stored);
+    } else {
+      setEvents(sharedSeedEvents);
+      saveSharedEvents(sharedSeedEvents);
+    }
     setLoading(false);
   }, [societyId]);
 
@@ -337,11 +344,17 @@ export function useEvents(societyId: string | undefined) {
     });
   };
 
+  const resetEvents = () => {
+    setEvents(sharedSeedEvents);
+    saveSharedEvents(sharedSeedEvents);
+  };
+
   return {
     events: eventsWithTotals,
     loading,
     error,
     fetchEvents,
+    resetEvents,
     createEvent,
     updateEvent,
     deleteEvent,
