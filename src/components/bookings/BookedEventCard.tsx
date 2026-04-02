@@ -5,16 +5,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import type { EventBookingSummary } from "@/lib/supabase/types";
+import type { EventBookingSummary, BookingStatus } from "@/lib/supabase/types";
 import { BookingStatusBadge } from "./BookingStatusBadge";
 import { ScheduleBookingRow } from "./ScheduleBookingRow";
 
 export function BookedEventCard({
   summary,
   onSendMessage,
+  onStatusChange,
 }: {
   summary: EventBookingSummary;
   onSendMessage: (bookingId: string, message: string) => void;
+  onStatusChange: (bookingId: string, status: BookingStatus) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const dateStr = summary.eventDate
@@ -71,6 +73,7 @@ export function BookedEventCard({
                     schedule={sched}
                     booking={booking}
                     onSendMessage={onSendMessage}
+                    onStatusChange={onStatusChange}
                   />
                 );
               })}

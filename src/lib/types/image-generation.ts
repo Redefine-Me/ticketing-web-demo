@@ -40,8 +40,6 @@ export interface AutoDetectedContext {
   categories: string[];
   categoryVisualDirections: string[];
   isOnline: boolean;
-  isFree: boolean;
-  price: string | null;
   dateTime: string | null;
   venueName: string | null;
   buildingName: string | null;

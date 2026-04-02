@@ -214,8 +214,6 @@ function toDashboardEvent(row: any): DashboardEvent {
     imageUrl: sortedImages[0]?.post_images?.full_url ?? null,
     registrationUrl: row.registration_url,
     isOnline: row.is_online ?? false,
-    isFree: row.is_free ?? true,
-    price: row.price,
     isTicketed: false,
     schedules: sortedEntries.map(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,16 +1,18 @@
 "use client";
 
-import type { NonUniversityBooking } from "@/lib/supabase/types";
-import { BookingStatusBadge } from "./BookingStatusBadge";
-import { CommunicationHistory } from "./CommunicationHistory";
+import type { NonUniversityBooking, BookingStatus } from "@/lib/supabase/types";
+import { BookingStatusDropdown } from "./BookingStatusDropdown";
+import { BookingJournal } from "./BookingJournal";
 import { MapPin, Phone, ExternalLink } from "lucide-react";
 
 export function NonUniversityBookingCard({
   booking,
   onSendMessage,
+  onStatusChange,
 }: {
   booking: NonUniversityBooking;
   onSendMessage: (message: string) => void;
+  onStatusChange: (status: BookingStatus) => void;
 }) {
   return (
     <div className="space-y-3">
@@ -42,11 +44,14 @@ export function NonUniversityBookingCard({
             {booking.description}
           </p>
         </div>
-        <BookingStatusBadge status={booking.status} />
+        <BookingStatusDropdown
+          status={booking.status}
+          onChange={onStatusChange}
+        />
       </div>
-      <CommunicationHistory
-        messages={booking.messages}
-        onSend={onSendMessage}
+      <BookingJournal
+        entries={booking.messages}
+        onAddEntry={onSendMessage}
       />
     </div>
   );

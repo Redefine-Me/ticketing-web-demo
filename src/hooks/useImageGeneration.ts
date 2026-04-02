@@ -35,8 +35,6 @@ interface EventFormSnapshot {
     roomName?: string;
   }>;
   isOnline?: boolean;
-  isFree?: boolean;
-  price?: string;
 }
 
 interface UseImageGenerationArgs {
@@ -70,6 +68,7 @@ export function useImageGeneration({ initialOutputImages, formData, categories, 
   const [showEmptyConfirm, setShowEmptyConfirm] = useState(false);
 
   const generationIntervalRef = useRef<number | null>(null);
+  const stepRef = useRef(0);
 
   useEffect(() => {
     return () => {
@@ -111,8 +110,6 @@ export function useImageGeneration({ initialOutputImages, formData, categories, 
       categories: categoryNames,
       categoryVisualDirections: categoryNames.map((name) => CATEGORY_STYLE_MAP[name] ?? "Default visual style"),
       isOnline: Boolean(formData.isOnline),
-      isFree: formData.isFree !== false,
-      price: formData.price?.trim() || null,
       dateTime: dateParts.length > 0 ? dateParts.join(" • ") : null,
       venueName: schedule?.buildingName?.trim() || null,
       buildingName: schedule?.buildingName?.trim() || null,
@@ -122,7 +119,7 @@ export function useImageGeneration({ initialOutputImages, formData, categories, 
       instagramHandle: society?.instagram_handle?.trim() || null,
       universityName,
     };
-  }, [categories, formData.categoryIds, formData.description, formData.isFree, formData.isOnline, formData.price, formData.schedules, formData.title, society?.description, society?.instagram_handle, society?.name, society?.university_id]);
+  }, [categories, formData.categoryIds, formData.description, formData.isOnline, formData.schedules, formData.title, society?.description, society?.instagram_handle, society?.name, society?.university_id]);
 
   const toggleEventSelection = useCallback((eventId: string) => {
     setSelectedEventIds((previous) => {
@@ -221,31 +218,30 @@ export function useImageGeneration({ initialOutputImages, formData, categories, 
     setGenerationPhase("generating");
     setGenerationStep(0);
     setGeneratedImages([]);
+    stepRef.current = 0;
 
     generationIntervalRef.current = window.setInterval(() => {
-      setGenerationStep((previous) => {
-        const nextStep = previous + 1;
+      stepRef.current += 1;
+      const step = stepRef.current;
 
-        const url = mockGeneratedImagePool[(nextStep - 1) % mockGeneratedImagePool.length];
-        setGeneratedImages((prev) => [
-          ...prev,
-          {
-            id: `gen-${startedAt}-${nextStep}`,
-            url,
-            aspectRatio,
-          },
-        ]);
+      const url = mockGeneratedImagePool[(step - 1) % mockGeneratedImagePool.length];
+      setGeneratedImages((prev) => [
+        ...prev,
+        {
+          id: `gen-${startedAt}-${step}`,
+          url,
+          aspectRatio,
+        },
+      ]);
+      setGenerationStep(step);
 
-        if (nextStep >= normalizedVariantCount) {
-          if (generationIntervalRef.current !== null) {
-            window.clearInterval(generationIntervalRef.current);
-          }
-          generationIntervalRef.current = null;
-          setGenerationPhase("done");
+      if (step >= normalizedVariantCount) {
+        if (generationIntervalRef.current !== null) {
+          window.clearInterval(generationIntervalRef.current);
         }
-
-        return nextStep;
-      });
+        generationIntervalRef.current = null;
+        setGenerationPhase("done");
+      }
     }, 1000);
   }, [aspectRatio, creativeDirection, variantCount]);
 

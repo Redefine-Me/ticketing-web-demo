@@ -111,8 +111,8 @@ export function TicketConfigForm({ mode, event, eventSummary, onClose }: TicketC
       }
 
       const price = parseFloat(t.price);
-      if (isNaN(price) || price < 1) {
-        fieldErrors.price = 'Price must be at least 1.00';
+      if (isNaN(price) || price < 0) {
+        fieldErrors.price = 'Price cannot be negative';
         valid = false;
       }
 
@@ -309,8 +309,8 @@ function TicketTypeCard({ data, errors, canRemove, onUpdate, onRemove }: {
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">£</span>
             <input
               type="number"
-              min="1"
-              step="0.01"
+              min="0"
+              step="1"
               value={data.price}
               onChange={e => onUpdate('price', e.target.value)}
               placeholder="1.00"

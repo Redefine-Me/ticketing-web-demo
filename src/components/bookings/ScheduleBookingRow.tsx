@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import type { Booking, DashboardEvent } from "@/lib/supabase/types";
+import type { Booking, BookingStatus, DashboardEvent } from "@/lib/supabase/types";
 import { BookingStatusBadge } from "./BookingStatusBadge";
 import { UniversityBookingCard } from "./UniversityBookingCard";
 import { NonUniversityBookingCard } from "./NonUniversityBookingCard";
@@ -14,10 +14,12 @@ export function ScheduleBookingRow({
   schedule,
   booking,
   onSendMessage,
+  onStatusChange,
 }: {
   schedule: DashboardEvent["schedules"][number];
   booking: Booking | null;
   onSendMessage: (bookingId: string, message: string) => void;
+  onStatusChange: (bookingId: string, status: BookingStatus) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const dateStr = format(new Date(schedule.scheduledAt), "EEE d MMM, h:mm a");
@@ -90,6 +92,7 @@ export function ScheduleBookingRow({
                 <NonUniversityBookingCard
                   booking={booking}
                   onSendMessage={(msg) => onSendMessage(booking.id, msg)}
+                  onStatusChange={(status) => onStatusChange(booking.id, status)}
                 />
               )}
             </div>

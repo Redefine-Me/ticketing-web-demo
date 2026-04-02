@@ -12,7 +12,6 @@ interface OutputBoxProps {
   images: EventImage[];
   onRemove: (id: string) => void;
   onReorder: (images: EventImage[]) => void;
-  onDone: () => void;
 }
 
 function SortableOutputItem({
@@ -48,7 +47,7 @@ function SortableOutputItem({
   );
 }
 
-export function OutputBox({ images, onRemove, onReorder, onDone }: OutputBoxProps) {
+export function OutputBox({ images, onRemove, onReorder }: OutputBoxProps) {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -92,11 +91,6 @@ export function OutputBox({ images, onRemove, onReorder, onDone }: OutputBoxProp
         )}
       </div>
 
-      <div className="border-t p-2">
-        <Button type="button" size="sm" className="w-full bg-dashboard-cta text-white hover:bg-dashboard-cta/90" onClick={onDone}>
-          Done
-        </Button>
-      </div>
     </div>
   );
 }

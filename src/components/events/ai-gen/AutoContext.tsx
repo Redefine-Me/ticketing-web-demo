@@ -38,8 +38,6 @@ export function AutoContext({ context }: AutoContextProps) {
           <Row label="Category" value={context.categories.join(", ") || null} />
           <Row label="Visual direction" value={context.categoryVisualDirections.join(" | ") || null} />
           <Row label="Is online" value={context.isOnline ? "Yes" : "No"} />
-          <Row label="Is free" value={context.isFree ? "Yes" : "No"} />
-          <Row label="Price" value={context.price} />
           <Row label="Date and time" value={context.dateTime} />
           <Row label="Venue" value={context.venueName} />
           <Row label="Building" value={context.buildingName} />

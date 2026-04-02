@@ -159,10 +159,6 @@ export function useEvents(societyId: string | undefined) {
       imageUrl: null,
       registrationUrl: (formData.registrationUrl as string) || null,
       isOnline: Boolean(formData.isOnline),
-      isFree: Boolean(formData.isFree),
-      price: Boolean(formData.isFree)
-        ? null
-        : ((formData.price as string) || null),
       schedules,
       isTicketed,
       ticketTypes: ticketTypes
@@ -230,14 +226,6 @@ export function useEvents(societyId: string | undefined) {
             ((formData.registrationUrl as string) || null) ?? e.registrationUrl,
           isOnline:
             formData.isOnline == null ? e.isOnline : Boolean(formData.isOnline),
-          isFree:
-            formData.isFree == null ? e.isFree : Boolean(formData.isFree),
-          price:
-            formData.isFree == null
-              ? e.price
-              : Boolean(formData.isFree)
-                ? null
-                : ((formData.price as string) || null),
           schedules: schedules.length > 0 ? schedules : e.schedules,
           isTicketed: updatedTicketed,
           ticketTypes: updatedTicketTypes,

@@ -27,10 +27,8 @@ export function generateSlug(title: string): string {
     .replace(/^-|-$/g, '');
 }
 
-function formatPriceLabel(isFree: boolean, price: string | null): string {
-  if (isFree) return 'Free';
-  if (price) return price;
-  return 'See event page';
+function formatPriceLabel(isFree: boolean): string {
+  return isFree ? 'Free' : 'See event page';
 }
 
 function capitalizeCategory(name: string): string {
@@ -94,7 +92,7 @@ export function transformEvent(row: EventWithRelations): Event {
     interestedCount: row.likes,
     attendingCount: row.attending,
     createdAt: row.created_at,
-    priceLabel: formatPriceLabel(row.is_free, row.price),
+    priceLabel: formatPriceLabel(row.is_free),
   };
 }
 

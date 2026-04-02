@@ -1,6 +1,6 @@
 "use client";
 
-import type { EventBookingSummary } from "@/lib/supabase/types";
+import type { EventBookingSummary, BookingStatus } from "@/lib/supabase/types";
 import { BookedEventCard } from "./BookedEventCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarCheck } from "lucide-react";
@@ -9,11 +9,13 @@ export function BookedEventsList({
   eventBookings,
   loading,
   onSendMessage,
+  onStatusChange,
   emptyMessage,
 }: {
   eventBookings: EventBookingSummary[];
   loading: boolean;
   onSendMessage: (bookingId: string, message: string) => void;
+  onStatusChange: (bookingId: string, status: BookingStatus) => void;
   emptyMessage?: string;
 }) {
   if (loading) {
@@ -47,6 +49,7 @@ export function BookedEventsList({
           key={summary.eventId}
           summary={summary}
           onSendMessage={onSendMessage}
+          onStatusChange={onStatusChange}
         />
       ))}
     </div>

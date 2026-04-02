@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, X } from "lucide-react";
+import { Check, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -14,7 +14,6 @@ import { Controls } from "@/components/events/ai-gen/Controls";
 import { PastEventsScroll } from "@/components/events/ai-gen/PastEventsScroll";
 import { InfluenceGrid } from "@/components/events/ai-gen/InfluenceGrid";
 import { GeneratedOutputGrid } from "@/components/events/ai-gen/GeneratedOutputGrid";
-import { GenerateButton } from "@/components/events/ai-gen/GenerateButton";
 import { OutputBox } from "@/components/events/ai-gen/OutputBox";
 import { OutputBoxToggle } from "@/components/events/ai-gen/OutputBoxToggle";
 import { DoneWarningDialog } from "@/components/events/ai-gen/DoneWarningDialog";
@@ -31,8 +30,6 @@ interface EventFormSnapshot {
     roomName?: string;
   }>;
   isOnline?: boolean;
-  isFree?: boolean;
-  price?: string;
 }
 
 interface AIImageGenModalProps {
@@ -152,11 +149,6 @@ export function AIImageGenModal({
                     />
                   </div>
 
-                  <GenerateButton
-                    disabled={!canGenerate || state.generationPhase === "generating"}
-                    variantCount={state.controls.variantCount}
-                    onClick={state.startGeneration}
-                  />
                 </div>
 
                 <motion.div
@@ -168,9 +160,31 @@ export function AIImageGenModal({
                     images={state.outputImages}
                     onRemove={state.removeOutputImage}
                     onReorder={state.reorderOutputImages}
-                    onDone={handleDone}
                   />
                 </motion.div>
+              </div>
+
+              <div className="sticky bottom-0 z-20 flex items-center gap-2 border-t bg-card p-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="shrink-0"
+                  onClick={handleDone}
+                >
+                  <Check className="h-3.5 w-3.5" />
+                  Done
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="flex-1 bg-dashboard-cta text-white hover:bg-dashboard-cta/90"
+                  onClick={state.startGeneration}
+                  disabled={!canGenerate || state.generationPhase === "generating"}
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Generate {state.controls.variantCount} image{state.controls.variantCount === 1 ? "" : "s"}
+                </Button>
               </div>
           </div>
         </DialogContent>

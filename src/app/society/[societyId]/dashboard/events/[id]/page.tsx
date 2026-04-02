@@ -350,16 +350,14 @@ export default function EventDetailPage() {
               <div className="space-y-1">
                 <p className="text-sm font-medium">Price</p>
                 <p className="text-sm text-muted-foreground">
-                  {event.isFree
-                    ? "Free"
-                    : event.isTicketed
-                    ? `${event.price ?? "Ticketed"} (see ticketing above)`
-                    : event.price
-                    ? `${event.price}`
-                    : "Paid"}
+                  {event.isTicketed && event.ticketTypes
+                    ? event.ticketTypes.every((t) => t.price === 0)
+                      ? "Free (ticketed)"
+                      : `From £${Math.min(...event.ticketTypes.map((t) => t.price)).toFixed(2)}`
+                    : "Free"}
                 </p>
               </div>
-              {event.registrationUrl && (
+              {!event.isTicketed && event.registrationUrl && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Registration</p>
                   <a

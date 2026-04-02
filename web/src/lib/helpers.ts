@@ -38,13 +38,14 @@ export function getEventImageUrls(event: EventWithDetails): string[] {
 }
 
 export function isEventFree(event: EventWithDetails): boolean {
-  return event.is_free;
+  return !event.ticketTypes || event.ticketTypes.length === 0 || event.ticketTypes.every(t => t.price === 0);
 }
 
 export function getEventPrice(event: EventWithDetails): string {
-  if (event.is_free) return 'Free';
-  if (event.price) return `£${event.price}`;
-  return 'Paid';
+  if (!event.ticketTypes || event.ticketTypes.length === 0) return 'Free';
+  if (event.ticketTypes.every(t => t.price === 0)) return 'Free';
+  const minPrice = Math.min(...event.ticketTypes.map(t => t.price));
+  return `From £${minPrice.toFixed(2)}`;
 }
 
 export function capitalizeCategoryName(name: string): string {

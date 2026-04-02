@@ -42,7 +42,7 @@ export function EventCard({ event }: { event: EventWithDetails }) {
             <CalendarOutlineIcon className="w-8 h-8" />
           </div>
         )}
-        {!event.is_free && (
+        {price !== 'Free' && (
           <span className="absolute top-1.5 left-1.5 bg-black/70 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-md">
             {price}
           </span>

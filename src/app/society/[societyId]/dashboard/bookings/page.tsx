@@ -10,6 +10,7 @@ import { useBookingsContext } from "@/contexts/BookingsContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Building2, MapPin } from "lucide-react";
+import type { BookingStatus } from "@/lib/supabase/types";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +23,7 @@ const typeOptions: { label: string; value: TypeFilter; icon?: React.ElementType 
 ];
 
 export default function BookingsPage() {
-  const { eventBookings, loading, sendMessage } = useBookingsContext();
+  const { eventBookings, loading, sendMessage, updateBookingStatus } = useBookingsContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
 
@@ -56,7 +57,12 @@ export default function BookingsPage() {
 
   function handleSendMessage(bookingId: string, message: string) {
     sendMessage(bookingId, message);
-    toast.success("Message sent");
+    toast.success("Note added");
+  }
+
+  function handleStatusChange(bookingId: string, status: BookingStatus) {
+    updateBookingStatus(bookingId, status);
+    toast.success(`Status updated to ${status}`);
   }
 
   return (
@@ -112,6 +118,7 @@ export default function BookingsPage() {
           eventBookings={filteredBookings}
           loading={loading}
           onSendMessage={handleSendMessage}
+          onStatusChange={handleStatusChange}
           emptyMessage={
             isFiltered && hasBookings
               ? "No bookings match your filters."

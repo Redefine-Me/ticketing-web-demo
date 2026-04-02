@@ -117,7 +117,7 @@ export default function EventDetailPage() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{event.name}</h1>
             <span
               className={`flex-shrink-0 px-3 py-1 rounded-full text-sm font-semibold ${
-                event.is_free
+                price === 'Free'
                   ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
                   : 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
               }`}
@@ -225,7 +225,7 @@ export default function EventDetailPage() {
 
         {/* Action buttons */}
         <div className="flex gap-3 pt-2">
-          {event.registration_url && (
+          {!event.ticketTypes?.length && event.registration_url && (
             <a
               href={event.registration_url}
               target="_blank"

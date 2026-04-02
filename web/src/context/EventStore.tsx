@@ -37,16 +37,7 @@ interface SharedDashboardEvent {
   categories: string[];
   imageUrl: string | null;
   registrationUrl: string | null;
-  isFree: boolean;
-  price: string | null;
   schedules: SharedDashboardSchedule[];
-}
-
-function parseDashboardPrice(value: string | null): number | null {
-  if (!value) return null;
-  const cleaned = value.replace(/[^\d.]/g, '');
-  const parsed = Number.parseFloat(cleaned);
-  return Number.isFinite(parsed) ? parsed : null;
 }
 
 function makeCategory(name: string) {
@@ -116,8 +107,6 @@ function dashboardToMobileEvents(
       id: event.id,
       name: event.title,
       description: event.description ?? '',
-      is_free: event.isFree,
-      price: event.isFree ? null : parseDashboardPrice(event.price),
       registration_url: event.registrationUrl,
       source_post_url: fallback?.source_post_url ?? null,
       like_count: event.likes,

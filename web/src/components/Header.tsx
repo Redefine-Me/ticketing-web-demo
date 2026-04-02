@@ -12,9 +12,9 @@ export function Header() {
       <div className="px-4 h-14 flex items-center justify-between">
         <div className="flex items-center">
           <img
-            src={isDark ? "/logos/Redefine Me logo wno bg white.png" : "/logos/Redefine Me logo wno bg.png"}
+            src="/logos/Redefine Me logo wno bg.png"
             alt="Redefine Me"
-            className="w-36"
+            className="w-36 dark:brightness-0 dark:invert"
           />
         </div>
 

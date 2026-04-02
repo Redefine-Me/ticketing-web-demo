@@ -117,8 +117,8 @@ export function TicketTypeCard({
           </Label>
           <Input
             type="number"
-            min={1}
-            step={0.01}
+            min={0}
+            step={1}
             placeholder="0.00"
             value={value.price || ""}
             onChange={(e) =>

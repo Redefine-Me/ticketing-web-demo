@@ -53,8 +53,6 @@ export interface EventWithDetails {
   id: string;
   name: string;
   description: string | null;
-  is_free: boolean;
-  price: number | null;
   registration_url: string | null;
   source_post_url: string | null;
   like_count: number;
@@ -65,6 +63,7 @@ export interface EventWithDetails {
   societies: Society[];
   images: PostImage[];
   schedule_entries: ScheduleEntry[];
+  ticketTypes?: TicketType[];
   isLiked: boolean;
   isAttending: boolean;
 }
@@ -91,7 +90,7 @@ export interface TicketType {
   id: string;
   eventId: string;
   name: string;
-  price: number;          // GBP, minimum 1.00
+  price: number;          // GBP, 0 = free
   isMemberTicket: boolean;
   totalAvailable: number;
 }
