@@ -2,13 +2,13 @@ import type { InfluenceImage } from "@/lib/types/image-generation";
 import { mockEvents } from "@/lib/mock-data";
 
 export const mockEventInfluenceImages: InfluenceImage[] = mockEvents
-  .filter((e) => e.imageUrl != null)
+  .filter((e) => e.imageUrls.length > 0)
   .map((e) => ({
     id: `inf-${e.id}-1`,
     eventId: e.id,
     eventTitle: e.title,
     eventDate: e.date,
-    url: e.imageUrl!,
+    url: e.imageUrls[0],
     summary: e.description.slice(0, 60),
   }));
 
@@ -27,6 +27,6 @@ export const mockGeneratedImagePool: string[] = [
 
 export const mockPrimaryEventImages: Record<string, string> = Object.fromEntries(
   mockEvents
-    .filter((e) => e.imageUrl != null)
-    .map((e) => [e.id, e.imageUrl!]),
+    .filter((e) => e.imageUrls.length > 0)
+    .map((e) => [e.id, e.imageUrls[0]]),
 );

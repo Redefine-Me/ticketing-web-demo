@@ -184,7 +184,7 @@ export interface DashboardEvent {
   likes: number;
   attending: number;
   categories: string[];
-  imageUrl: string | null;
+  imageUrls: string[];
   registrationUrl: string | null;
   isOnline: boolean;
   schedules: Array<{
@@ -200,6 +200,8 @@ export interface DashboardEvent {
     roomName: string | null;
     roomId: string | null;
     description: string | null;
+    /** Whether this venue is a university-managed building (true) or an external venue (false). */
+    isUniversityVenue: boolean;
   }>;
 
   // Ticketing (optional — only present if "Ticket Event" toggle is on)

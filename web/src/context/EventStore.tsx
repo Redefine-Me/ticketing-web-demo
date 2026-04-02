@@ -31,6 +31,7 @@ interface SharedDashboardSchedule {
   roomName: string | null;
   roomId: string | null;
   description: string | null;
+  isUniversityVenue: boolean;
 }
 
 interface SharedDashboardEvent {
@@ -41,7 +42,7 @@ interface SharedDashboardEvent {
   likes: number;
   attending: number;
   categories: string[];
-  imageUrl: string | null;
+  imageUrls: string[];
   registrationUrl: string | null;
   schedules: SharedDashboardSchedule[];
   isTicketed?: boolean;
@@ -140,8 +141,8 @@ function dashboardToMobileEvents(
       images:
         fallback?.images && fallback.images.length > 0
           ? fallback.images
-          : event.imageUrl
-            ? [{ id: `${event.id}-image-0`, full_url: event.imageUrl, small_url: event.imageUrl }]
+          : (event.imageUrls ?? []).length > 0
+            ? (event.imageUrls ?? []).map((url, i) => ({ id: `${event.id}-image-${i}`, full_url: url, small_url: url }))
             : [],
       schedule_entries: mapSchedules(event, fallback),
       ticketTypes: event.isTicketed ? event.ticketTypes : undefined,

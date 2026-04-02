@@ -68,9 +68,7 @@ export default function EditEventPage() {
     isTicketed: event.isTicketed,
     ticketTypes: event.ticketTypes,
     purchases: event.purchases,
-    images: event.imageUrl
-      ? [{ url: event.imageUrl, name: event.title }]
-      : [],
+    images: event.imageUrls.map((url, i) => ({ url, name: `${event.title} ${i + 1}` })),
   };
 
   const handleSubmit = async (formData: EventFormData & { images: ImageItem[] }) => {

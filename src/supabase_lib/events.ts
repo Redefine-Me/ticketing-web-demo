@@ -211,7 +211,7 @@ function toDashboardEvent(row: any): DashboardEvent {
     likes: row.likes ?? 0,
     attending: row.attending ?? 0,
     categories,
-    imageUrl: sortedImages[0]?.post_images?.full_url ?? null,
+    imageUrls: sortedImages.map((img: { post_images: { full_url: string } | null }) => img.post_images?.full_url).filter(Boolean) as string[],
     registrationUrl: row.registration_url,
     isOnline: row.is_online ?? false,
     isTicketed: false,
@@ -230,6 +230,7 @@ function toDashboardEvent(row: any): DashboardEvent {
         roomName: e.rooms?.name ?? null,
         roomId: e.room_id ?? null,
         description: e.description ?? null,
+        isUniversityVenue: e.is_university_venue ?? false,
       })
     ),
   };

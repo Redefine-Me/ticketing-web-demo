@@ -3,8 +3,32 @@
 import { useState, useCallback, useMemo } from "react";
 import type { DashboardEvent, TicketType, TicketPurchase } from "@/lib/supabase/types";
 import { mockEvents } from "@/lib/mock-data";
+import { isUniversityBuilding } from "@/lib/mock-data-bookings";
 
 const SHARED_EVENTS_STORAGE_KEY = "rm_shared_dashboard_events_v2";
+
+/** Convert a File to a base64 data URL for localStorage persistence. */
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/** Extract persistable URL strings from the form's ImageItem array. */
+async function resolveImageUrls(images: unknown[]): Promise<string[]> {
+  const results: string[] = [];
+  for (const item of images) {
+    if (item instanceof File) {
+      results.push(await fileToDataUrl(item));
+    } else if (item && typeof item === "object" && "url" in item) {
+      results.push((item as { url: string }).url);
+    }
+  }
+  return results;
+}
 
 type FormSchedule = {
   date?: string;
@@ -49,6 +73,8 @@ function toDashboardSchedules(input: unknown) {
 
   schedules.forEach((entry, idx) => {
     const startIso = toIsoDate(entry.date, entry.startTime);
+    const isUniVenue = entry.buildingId ? isUniversityBuilding(entry.buildingId) : false;
+
     if (startIso) {
       mapped.push({
         scheduledAt: startIso,
@@ -63,6 +89,7 @@ function toDashboardSchedules(input: unknown) {
         roomName: entry.roomName || null,
         roomId: entry.roomId || null,
         description: entry.description || null,
+        isUniversityVenue: isUniVenue,
       });
     }
 
@@ -81,6 +108,7 @@ function toDashboardSchedules(input: unknown) {
         roomName: null,
         roomId: null,
         description: null,
+        isUniversityVenue: isUniVenue,
       });
     }
   });
@@ -153,6 +181,11 @@ export function useEvents(societyId: string | undefined) {
         }))
       : undefined;
 
+    // Convert uploaded Files to data URLs, pass URL items through
+    const imageUrls = Array.isArray(formData.images)
+      ? await resolveImageUrls(formData.images)
+      : [];
+
     const newEvent: DashboardEvent = {
       id: `e-${Date.now()}`,
       title: (formData.title as string) ?? "New Event",
@@ -163,7 +196,7 @@ export function useEvents(societyId: string | undefined) {
       likes: 0,
       attending: 0,
       categories: categoryIds ?? [],
-      imageUrl: null,
+      imageUrls,
       registrationUrl: (formData.registrationUrl as string) || null,
       isOnline: Boolean(formData.isOnline),
       schedules,
@@ -182,11 +215,11 @@ export function useEvents(societyId: string | undefined) {
       }));
     }
 
-    setEvents((prev) => {
-      const next = [newEvent, ...prev];
-      saveSharedEvents(next);
-      return next;
-    });
+    // Read existing events outside the updater so it stays pure (StrictMode-safe)
+    const base = events.length > 0 ? events : (loadSharedEvents() ?? sharedSeedEvents);
+    const next = [newEvent, ...base];
+    saveSharedEvents(next);
+    setEvents(next);
     return { event_id: newEvent.id, status: "ingested" };
   };
 
@@ -200,6 +233,11 @@ export function useEvents(societyId: string | undefined) {
 
     const isTicketed = formData.isTicketed != null ? Boolean(formData.isTicketed) : undefined;
     const rawTicketTypes = Array.isArray(formData.ticketTypes) ? formData.ticketTypes as TicketType[] : undefined;
+
+    // Resolve images before the state updater (keeps it pure)
+    const updatedImageUrls = Array.isArray(formData.images)
+      ? await resolveImageUrls(formData.images)
+      : undefined;
 
     setEvents((prev) => {
       const next = prev.map((e) => {
@@ -229,6 +267,7 @@ export function useEvents(societyId: string | undefined) {
           description: (formData.description as string) ?? e.description,
           date: firstStart ?? e.date,
           categories: categoryIds ?? e.categories,
+          imageUrls: updatedImageUrls ?? e.imageUrls,
           registrationUrl:
             ((formData.registrationUrl as string) || null) ?? e.registrationUrl,
           isOnline:

@@ -48,7 +48,7 @@ export const universityBuildings: UniversityBuilding[] = [
     ],
   },
   {
-    id: "b-008",
+    id: "b-020",
     name: "Kilburn Building",
     address: "Oxford Road, Manchester M13 9PL",
     rooms: [
@@ -60,7 +60,7 @@ export const universityBuildings: UniversityBuilding[] = [
     ],
   },
   {
-    id: "b-009",
+    id: "b-021",
     name: "Alan Turing Building",
     address: "Oxford Road, Manchester M13 9PL",
     rooms: [
@@ -70,7 +70,7 @@ export const universityBuildings: UniversityBuilding[] = [
     ],
   },
   {
-    id: "b-010",
+    id: "b-022",
     name: "Engineering Building A",
     address: "Booth Street East, Manchester M13 9QS",
     rooms: [
@@ -79,7 +79,7 @@ export const universityBuildings: UniversityBuilding[] = [
     ],
   },
   {
-    id: "b-011",
+    id: "b-023",
     name: "Stopford Building",
     address: "Oxford Road, Manchester M13 9PT",
     rooms: [
@@ -156,6 +156,30 @@ export const nonUniversityVenues: NonUniversityVenue[] = [
     website: "https://www.impossiblemanchester.com",
     description: "Multi-level bar, restaurant and live entertainment venue in the city centre. Capacity 600 across multiple floors.",
   },
+  {
+    id: "v-009",
+    name: "Armitage Sports Centre",
+    address: "Fallowfield, Manchester M14 6FS",
+    phone: "0161 275 4960",
+    website: "https://www.sport.manchester.ac.uk",
+    description: "UoM sports centre in Fallowfield with outdoor pitches, gym, and sports halls. Pitch hire available for student societies.",
+  },
+  {
+    id: "v-010",
+    name: "Bierkeller Manchester",
+    address: "The Printworks, 27 Withy Grove, Manchester M4 2BS",
+    phone: "0161 839 0845",
+    website: "https://www.bierkeller.com/manchester",
+    description: "Bavarian-themed bar in The Printworks with long tables, live music, and private event hire. Capacity 300.",
+  },
+  {
+    id: "v-011",
+    name: "Platt Fields Park",
+    address: "Wilmslow Road, Fallowfield, Manchester M14 6LA",
+    phone: "0161 224 2902",
+    website: "https://www.manchester.gov.uk/plattfields",
+    description: "Public park in Fallowfield with cricket pitches, football pitches, and a lake. Free to use for informal events, permit required for large gatherings.",
+  },
 ];
 
 // ── Lookup helpers ───────────────────────────────────────────
@@ -196,12 +220,15 @@ export function isUniversityBuilding(id: string): boolean {
   return universityBuildings.some((b) => b.id === id);
 }
 
-// Also map existing mock-data building IDs to the venue list
-// b-004 = "256 Wilmslow Road", b-006 = "Kimpton Clocktower Hotel", b-007 = "Kro Bar"
+// Map event building IDs (from mock-data.ts) to the correct non-university venue
 const legacyVenueMap: Record<string, string> = {
   "b-004": "v-006", // 256 Wilmslow Road
   "b-006": "v-007", // Kimpton Clocktower Hotel
   "b-007": "v-001", // Kro Bar
+  "b-008": "v-009", // Armitage Sports Centre
+  "b-009": "v-010", // Bierkeller Manchester
+  "b-010": "v-011", // Platt Fields Park
+  "b-011": "v-005", // Whitworth Hall
 };
 
 export function resolveVenueFromBuildingId(buildingId: string) {
@@ -212,9 +239,11 @@ export function resolveVenueFromBuildingId(buildingId: string) {
 // ── Mock Bookings ────────────────────────────────────────────
 
 export const mockBookings: Booking[] = [
-  // e-001: Freshers Chai & Chill — university booking at Students' Union, Room 1
+  // ── University venue bookings ──────────────────────────────
+
+  // e-001: Freshers Chai & Chill — Students' Union
   {
-    id: "bk-008",
+    id: "bk-001",
     type: "university",
     eventId: "e-001",
     scheduleIndex: 0,
@@ -227,14 +256,14 @@ export const mockBookings: Booking[] = [
     createdAt: "2025-09-10T09:00:00Z",
     messages: [
       {
-        id: "m-021",
+        id: "m-001",
         sender: "you",
         senderName: "You",
         message: "Hi, we'd like to book Room 1 (ground floor) in the SU for our Freshers Chai & Chill on September 25, 6pm-8:30pm. Expecting around 90 freshers.",
         sentAt: "2025-09-10T09:00:00Z",
       },
       {
-        id: "m-022",
+        id: "m-002",
         sender: "university",
         senderName: "SU Room Bookings",
         message: "Room 1 is confirmed for September 25, 18:00-20:30. Ref: SU-2025-0134. Tea/coffee facilities available in the kitchen next door.",
@@ -242,150 +271,39 @@ export const mockBookings: Booking[] = [
       },
     ],
   },
-  // e-002: The Simpsons Movie Screening — university booking at University Place Theatre A
-  {
-    id: "bk-001",
-    type: "university",
-    eventId: "e-002",
-    scheduleIndex: 0,
-    buildingId: "b-002",
-    buildingName: "University Place",
-    roomId: "r-004",
-    roomName: "Theatre A",
-    expectedAttendees: 64,
-    status: "accepted",
-    createdAt: "2025-09-20T10:00:00Z",
-    messages: [
-      {
-        id: "m-001",
-        sender: "you",
-        senderName: "You",
-        message: "Hi, we'd like to book Theatre A in University Place for our Simpsons Movie Screening on October 10, 7pm-9:30pm. Expecting around 64 attendees. We'll need the projector and sound system.",
-        sentAt: "2025-09-20T10:30:00Z",
-      },
-      {
-        id: "m-002",
-        sender: "university",
-        senderName: "University Timetabling",
-        message: "Hello, Theatre A is available for that date. I've confirmed the booking. Ref: TB-2025-0891. AV equipment included.",
-        sentAt: "2025-09-21T14:15:00Z",
-      },
-    ],
-  },
-  // e-003: Treehouse of Horror Marathon — university booking at Samuel Alexander
+  // e-002: Onam Sadhya Night — Samuel Alexander Building
   {
     id: "bk-002",
     type: "university",
-    eventId: "e-003",
+    eventId: "e-002",
     scheduleIndex: 0,
     buildingId: "b-003",
     buildingName: "Samuel Alexander Building",
-    roomId: "r-008",
-    roomName: "Lecture Theatre A",
-    expectedAttendees: 73,
+    roomId: "r-009",
+    roomName: "Room A113",
+    expectedAttendees: 120,
     status: "accepted",
-    createdAt: "2025-10-05T09:00:00Z",
+    createdAt: "2025-09-20T10:00:00Z",
     messages: [
       {
         id: "m-003",
         sender: "you",
         senderName: "You",
-        message: "Could we book Lecture Theatre A in Samuel Alexander for October 30, 6:30pm-11pm? It's our Treehouse of Horror marathon — expecting around 73 people.",
-        sentAt: "2025-10-05T09:30:00Z",
+        message: "Hi, we'd like to book Room A101 in the Samuel Alexander Building for our Onam Sadhya Night on October 11, 6:30pm-10pm. It's a traditional feast so we'll need table space for 120 people.",
+        sentAt: "2025-09-20T10:30:00Z",
       },
       {
         id: "m-004",
         sender: "university",
         senderName: "University Timetabling",
-        message: "Confirmed for October 30, 18:30-23:00. Booking ref: TB-2025-0934. Please note the building closes at 11pm so the room must be cleared by then.",
-        sentAt: "2025-10-06T10:00:00Z",
-      },
-      {
-        id: "m-005",
-        sender: "you",
-        senderName: "You",
-        message: "Perfect, we'll have everyone out by 11. Thanks!",
-        sentAt: "2025-10-06T11:30:00Z",
+        message: "Room A101 is available. Confirmed for October 11, 18:30-22:00. Ref: TB-2025-0891. Please note food preparation must be done off-site — no cooking facilities in this room.",
+        sentAt: "2025-09-21T14:15:00Z",
       },
     ],
   },
-  // e-004: Simpsons Trivia Night — non-university booking at 256 Wilmslow Road
+  // e-005: Kerala Film Screening — University Place, Theatre A
   {
-    id: "bk-003",
-    type: "non-university",
-    eventId: "e-004",
-    scheduleIndex: 0,
-    venueId: "v-006",
-    venueName: "256 Wilmslow Road",
-    phone: "0161 248 0256",
-    website: "https://www.256.com",
-    description: "Student bar and venue in Fallowfield. Main room capacity 200, function room capacity 50.",
-    status: "accepted",
-    createdAt: "2025-10-25T14:00:00Z",
-    messages: [
-      {
-        id: "m-006",
-        sender: "you",
-        senderName: "You",
-        message: "Called 256 to enquire about function room for Nov 14 trivia night. Spoke to manager — room available, capacity 60.",
-        sentAt: "2025-10-25T14:00:00Z",
-      },
-      {
-        id: "m-007",
-        sender: "you",
-        senderName: "You",
-        message: "Confirmed function room booking. 7:30pm start, can access from 7pm for setup. Individual payments at the bar.",
-        sentAt: "2025-10-26T11:15:00Z",
-      },
-      {
-        id: "m-008",
-        sender: "you",
-        senderName: "You",
-        message: "All confirmed. Quiz screens will be set up by venue. We just need to bring the question sheets.",
-        sentAt: "2025-10-27T10:00:00Z",
-      },
-    ],
-  },
-  // e-009: American Studies Spring Ball — non-university booking at Kimpton Clocktower
-  {
-    id: "bk-004",
-    type: "non-university",
-    eventId: "e-009",
-    scheduleIndex: 0,
-    venueId: "v-007",
-    venueName: "Kimpton Clocktower Hotel",
-    phone: "0161 835 9929",
-    website: "https://www.kimptonclocktowerhotel.com",
-    description: "Upscale hotel in the city centre. Ballroom capacity 500. Formal dining and event packages.",
-    status: "pending",
-    createdAt: "2026-01-10T09:00:00Z",
-    messages: [
-      {
-        id: "m-010",
-        sender: "you",
-        senderName: "You",
-        message: "Emailed Kimpton events team to enquire about ballroom hire for Spring Ball on March 14. ~200 guests, formal dinner + DJ.",
-        sentAt: "2026-01-10T09:00:00Z",
-      },
-      {
-        id: "m-011",
-        sender: "you",
-        senderName: "You",
-        message: "Received events brochure from Kimpton. Minimum spend £5,000 for Saturday evening ballroom hire. Within our budget.",
-        sentAt: "2026-01-13T14:30:00Z",
-      },
-      {
-        id: "m-012",
-        sender: "you",
-        senderName: "You",
-        message: "Scheduled a call with their events coordinator for Wed Jan 22 at 2pm to discuss packages and confirm.",
-        sentAt: "2026-01-15T10:15:00Z",
-      },
-    ],
-  },
-  // e-005: Kerala Film Screening — university booking at University Place, Theatre A
-  {
-    id: "bk-007",
+    id: "bk-005",
     type: "university",
     eventId: "e-005",
     scheduleIndex: 0,
@@ -398,14 +316,14 @@ export const mockBookings: Booking[] = [
     createdAt: "2025-10-28T11:00:00Z",
     messages: [
       {
-        id: "m-019",
+        id: "m-011",
         sender: "you",
         senderName: "You",
-        message: "Hi, could we book Theatre A in University Place for November 20, 7pm-9:30pm? We're screening a Kerala film with subtitles — expecting around 50 students.",
+        message: "Hi, could we book Theatre A in University Place for November 20, 7pm-9:30pm? We're screening a Kerala film with subtitles — expecting around 50 students. We'll need the projector and sound system.",
         sentAt: "2025-10-28T11:00:00Z",
       },
       {
-        id: "m-020",
+        id: "m-012",
         sender: "university",
         senderName: "University Timetabling",
         message: "Theatre A has a provisional hold for a departmental event that evening. I'll confirm availability by end of week.",
@@ -413,9 +331,39 @@ export const mockBookings: Booking[] = [
       },
     ],
   },
-  // e-008: Blind Date Night — university booking at University Place, Theatre B
+  // e-007: New Year New Soc — Welcome Back — Students' Union
   {
-    id: "bk-009",
+    id: "bk-007",
+    type: "university",
+    eventId: "e-007",
+    scheduleIndex: 0,
+    buildingId: "b-001",
+    buildingName: "Students' Union",
+    roomId: "r-003",
+    roomName: "Meeting Room 1",
+    expectedAttendees: 88,
+    status: "accepted",
+    createdAt: "2026-01-05T13:00:00Z",
+    messages: [
+      {
+        id: "m-015",
+        sender: "you",
+        senderName: "You",
+        message: "Hi, could we book Room 4 in the SU for January 22, 6pm-8pm? It's our Welcome Back event for semester 2, expecting around 88 people.",
+        sentAt: "2026-01-05T13:00:00Z",
+      },
+      {
+        id: "m-016",
+        sender: "university",
+        senderName: "SU Room Bookings",
+        message: "Room 4 is available. Booking confirmed for Jan 22, 18:00-20:00. Ref: SU-2026-0018.",
+        sentAt: "2026-01-06T11:00:00Z",
+      },
+    ],
+  },
+  // e-008: Blind Date Night — University Place, Theatre B
+  {
+    id: "bk-008",
     type: "university",
     eventId: "e-008",
     scheduleIndex: 0,
@@ -428,14 +376,14 @@ export const mockBookings: Booking[] = [
     createdAt: "2026-01-20T14:00:00Z",
     messages: [
       {
-        id: "m-023",
+        id: "m-017",
         sender: "you",
         senderName: "You",
-        message: "Hi, we'd like to book Theatre B in University Place for February 13, 7pm-10pm. It's a collab blind date event — expecting around 110 people. We'll need a mic and the projector.",
+        message: "Hi, we'd like to book Theatre B in University Place for February 13, 7pm-10pm. It's a collab blind date event with Tamil Soc and Gujju Soc — expecting around 110 people. We'll need a mic and the projector.",
         sentAt: "2026-01-20T14:00:00Z",
       },
       {
-        id: "m-024",
+        id: "m-018",
         sender: "university",
         senderName: "University Timetabling",
         message: "Theatre B is available. Booking confirmed for Feb 13, 19:00-22:00. Ref: TB-2026-0102. AV equipment included as standard.",
@@ -443,77 +391,177 @@ export const mockBookings: Booking[] = [
       },
     ],
   },
-  // e-007: Simpsons vs Family Guy Debate Night — university booking at Roscoe Building, pending
+
+  // ── Non-university venue bookings ──────────────────────────
+
+  // e-003: Militants vs Medics Football — Armitage Sports Centre
   {
-    id: "bk-005",
-    type: "university",
-    eventId: "e-007",
+    id: "bk-003",
+    type: "non-university",
+    eventId: "e-003",
     scheduleIndex: 0,
-    buildingId: "b-005",
-    buildingName: "Roscoe Building",
-    roomId: "r-010",
-    roomName: "Room 1.009",
-    expectedAttendees: 47,
-    status: "pending",
-    createdAt: "2026-01-05T13:00:00Z",
+    venueId: "v-009",
+    venueName: "Armitage Sports Centre",
+    phone: "0161 275 4960",
+    website: "https://www.sport.manchester.ac.uk",
+    description: "UoM sports centre in Fallowfield with outdoor pitches, gym, and sports halls. Pitch hire available for student societies.",
+    status: "accepted",
+    createdAt: "2025-10-10T09:00:00Z",
+    messages: [
+      {
+        id: "m-005",
+        sender: "you",
+        senderName: "You",
+        message: "Booked pitch 2 at Armitage for October 25, 2pm-4pm via the UoM Sport portal. Confirmation email received. No cost for SU-affiliated societies.",
+        sentAt: "2025-10-10T09:00:00Z",
+      },
+      {
+        id: "m-006",
+        sender: "venue",
+        senderName: "UoM Sport",
+        message: "Pitch 2 confirmed for Oct 25, 14:00-16:00. Please bring your own bibs/cones. Changing rooms available from 13:30.",
+        sentAt: "2025-10-11T10:00:00Z",
+      },
+    ],
+  },
+  // e-004: Diwali Rave — 256 Wilmslow Road
+  {
+    id: "bk-004",
+    type: "non-university",
+    eventId: "e-004",
+    scheduleIndex: 0,
+    venueId: "v-006",
+    venueName: "256 Wilmslow Road",
+    phone: "0161 248 0256",
+    website: "https://www.256.com",
+    description: "Student bar and venue in Fallowfield. Main room capacity 200, function room capacity 50.",
+    status: "accepted",
+    createdAt: "2025-10-15T14:00:00Z",
+    messages: [
+      {
+        id: "m-007",
+        sender: "you",
+        senderName: "You",
+        message: "Called 256 to enquire about main room hire for Nov 1 Diwali Rave. Collab with Tamil Soc MCR. Spoke to manager — available, capacity 200.",
+        sentAt: "2025-10-15T14:00:00Z",
+      },
+      {
+        id: "m-008",
+        sender: "venue",
+        senderName: "256 Events",
+        message: "Main room confirmed for Nov 1, 9pm-2am. £500 hire fee, sound system and lighting rig included. Security provided by us.",
+        sentAt: "2025-10-16T11:15:00Z",
+      },
+      {
+        id: "m-009",
+        sender: "you",
+        senderName: "You",
+        message: "Perfect. We'll bring our own LED sparklers and fairy lights for decoration. Setting up from 7pm if possible?",
+        sentAt: "2025-10-17T10:00:00Z",
+      },
+      {
+        id: "m-010",
+        sender: "venue",
+        senderName: "256 Events",
+        message: "Setup from 7pm is fine. Just check in at the bar when you arrive. Looking forward to it!",
+        sentAt: "2025-10-17T15:30:00Z",
+      },
+    ],
+  },
+  // e-006: Christmas Mixer — Bierkeller Manchester
+  {
+    id: "bk-006",
+    type: "non-university",
+    eventId: "e-006",
+    scheduleIndex: 0,
+    venueId: "v-010",
+    venueName: "Bierkeller Manchester",
+    phone: "0161 839 0845",
+    website: "https://www.bierkeller.com/manchester",
+    description: "Bavarian-themed bar in The Printworks with long tables, live music, and private event hire. Capacity 300.",
+    status: "accepted",
+    createdAt: "2025-11-10T10:00:00Z",
     messages: [
       {
         id: "m-013",
         sender: "you",
         senderName: "You",
-        message: "Hi, could we book Room 1.009 in the Roscoe Building for January 22, 7pm-9pm? It's a debate night, expecting about 47 attendees.",
-        sentAt: "2026-01-05T13:00:00Z",
+        message: "Enquiring about private hire for Dec 6, 8pm-11:30pm for our Christmas Mixer collab with Gujju Soc. Expecting around 140 people.",
+        sentAt: "2025-11-10T10:00:00Z",
       },
       {
         id: "m-014",
-        sender: "university",
-        senderName: "University Timetabling",
-        message: "Room 1.009 has a provisional booking for that slot. I'll check if it can be moved and get back to you by end of week.",
-        sentAt: "2026-01-06T11:00:00Z",
+        sender: "venue",
+        senderName: "Bierkeller Events",
+        message: "We can do a reserved section on the mezzanine level for your group — no hire fee with a minimum bar spend of £800. Includes reserved tables and a dedicated bar area.",
+        sentAt: "2025-11-11T14:00:00Z",
       },
     ],
   },
-  // e-010: End of Year Simpsons Movie Night — university booking at University Place, rejected
+  // e-009: Militants Cricket Tournament — Platt Fields Park
   {
-    id: "bk-006",
-    type: "university",
-    eventId: "e-010",
+    id: "bk-009",
+    type: "non-university",
+    eventId: "e-009",
     scheduleIndex: 0,
-    buildingId: "b-002",
-    buildingName: "University Place",
-    roomId: "r-004",
-    roomName: "Theatre A",
-    expectedAttendees: 29,
-    status: "rejected",
-    createdAt: "2026-03-15T09:30:00Z",
+    venueId: "v-011",
+    venueName: "Platt Fields Park",
+    phone: "0161 224 2902",
+    website: "https://www.manchester.gov.uk/plattfields",
+    description: "Public park in Fallowfield with cricket pitches, football pitches, and a lake. Free to use for informal events, permit required for large gatherings.",
+    status: "accepted",
+    createdAt: "2026-02-10T09:00:00Z",
     messages: [
       {
-        id: "m-015",
+        id: "m-019",
         sender: "you",
         senderName: "You",
-        message: "Hi, could we book Theatre A for April 3, 7pm-9:30pm? End of year movie screening for about 30 students.",
-        sentAt: "2026-03-15T09:30:00Z",
+        message: "Applied for a parks permit for the cricket tournament on March 7, 11am-5pm at Platt Fields. Council website says 10 working days for approval.",
+        sentAt: "2026-02-10T09:00:00Z",
       },
       {
-        id: "m-016",
-        sender: "university",
-        senderName: "University Timetabling",
-        message: "Unfortunately Theatre A is booked for a departmental event on April 3 from 5pm-10pm. Would Theatre B work instead? It has capacity for 150.",
-        sentAt: "2026-03-16T15:00:00Z",
+        id: "m-020",
+        sender: "venue",
+        senderName: "Manchester City Council Parks",
+        message: "Your permit for Platt Fields Park cricket pitch has been approved for March 7, 11:00-17:00. Permit ref: PFP-2026-0341. No amplified music without separate licence.",
+        sentAt: "2026-02-21T10:30:00Z",
       },
+    ],
+  },
+  // e-010: VAJRAM Annual Gala Night — Whitworth Hall
+  {
+    id: "bk-010",
+    type: "non-university",
+    eventId: "e-010",
+    scheduleIndex: 0,
+    venueId: "v-005",
+    venueName: "Whitworth Hall",
+    phone: "0161 306 4006",
+    website: "https://www.conference.manchester.ac.uk/venues/whitworth-hall",
+    description: "Historic university hall. Available for large formal events. Capacity 700 standing, 350 seated.",
+    status: "pending",
+    createdAt: "2026-01-15T09:00:00Z",
+    messages: [
       {
-        id: "m-017",
+        id: "m-021",
         sender: "you",
         senderName: "You",
-        message: "Theatre B would work! Can we switch the booking to that?",
-        sentAt: "2026-03-17T10:00:00Z",
+        message: "Emailed UoM Conference & Events team to enquire about Whitworth Hall hire for VAJRAM 2026 on March 21. Expecting 250 guests, formal gala dinner with live performances.",
+        sentAt: "2026-01-15T09:00:00Z",
       },
       {
-        id: "m-018",
-        sender: "university",
-        senderName: "University Timetabling",
-        message: "I'm sorry, Theatre B is also booked that evening for a postgraduate seminar. I'd suggest trying the Samuel Alexander Building — Lecture Theatre A may be available. Please submit a new request for that room.",
-        sentAt: "2026-03-18T09:00:00Z",
+        id: "m-022",
+        sender: "venue",
+        senderName: "UoM Conference & Events",
+        message: "Thank you for your enquiry. Whitworth Hall is provisionally available for March 21. For a student society event of this scale we'd need to discuss catering, AV requirements, and insurance. Can we arrange a site visit?",
+        sentAt: "2026-01-18T14:30:00Z",
+      },
+      {
+        id: "m-023",
+        sender: "you",
+        senderName: "You",
+        message: "That would be great! We're free any afternoon next week. We'll bring our event plan and technical rider.",
+        sentAt: "2026-01-19T10:15:00Z",
       },
     ],
   },
