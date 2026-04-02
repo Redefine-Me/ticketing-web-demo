@@ -25,7 +25,7 @@ export function DateRangeFilter({ value, onChange }: DateRangeFilterProps) {
           variant="ghost"
           size="sm"
           className={cn(
-            "h-8 px-3 text-sm",
+            "min-h-[44px] px-3 text-sm",
             value === range.value &&
               "bg-card text-foreground shadow-sm"
           )}

@@ -10,7 +10,7 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { DateRangeFilter } from "@/components/dashboard/DateRangeFilter";
 import { EngagementChart } from "@/components/charts/EngagementChart";
 import { EventSourceBadge } from "@/components/dashboard/EventSourceBadge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Users, Eye, Heart, CalendarCheck, Plus } from "lucide-react";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { DashboardPageHeader, DashboardSection } from "@/components/dashboard/DashboardMotion";
 
 type TimeRange = "7d" | "30d" | "90d";
@@ -97,10 +97,10 @@ export default function OverviewPage() {
           </div>
           <div className="flex items-center gap-3">
             <DateRangeFilter value={timeRange} onChange={setTimeRange} />
-            <Button className="bg-dashboard-cta hover:bg-dashboard-cta/90 text-white" render={<Link href={nav.href("/events/new")} />}>
+            <Link href={nav.href("/events/new")} className={cn(buttonVariants(), "min-h-[44px] bg-dashboard-cta hover:bg-dashboard-cta/90 text-white")}>
               <Plus className="mr-2 h-4 w-4" />
               Create Event
-            </Button>
+            </Link>
           </div>
         </div>
       </DashboardPageHeader>
@@ -150,9 +150,9 @@ export default function OverviewPage() {
           <CardTitle className="text-base font-semibold" style={{ letterSpacing: "-0.02em" }}>
             Top Events
           </CardTitle>
-          <Button variant="ghost" size="sm" render={<Link href={nav.href("/events")} />}>
+          <Link href={nav.href("/events")} className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "min-h-[44px]")}>
             View all
-          </Button>
+          </Link>
         </CardHeader>
         <CardContent>
           {eventsLoading ? (
@@ -185,7 +185,7 @@ export default function OverviewPage() {
                     <TableCell>
                       <Link
                         href={nav.href(`/events/${event.id}`)}
-                        className="font-medium hover:text-primary"
+                        className="inline-flex items-center min-h-[44px] font-medium hover:text-primary"
                       >
                         {event.title}
                       </Link>

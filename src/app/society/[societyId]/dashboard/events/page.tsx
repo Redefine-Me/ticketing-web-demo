@@ -7,7 +7,8 @@ import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { EventTable } from "@/components/events/EventTable";
 import { ManageAttendeesModal } from "@/components/ticketing/ManageAttendeesModal";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { DashboardPageHeader, DashboardSection } from "@/components/dashboard/DashboardMotion";
 import type { DashboardEvent } from "@/lib/supabase/types";
@@ -52,10 +53,10 @@ export default function EventsPage() {
               Manage and track all your society events
             </p>
           </div>
-          <Button className="bg-dashboard-cta hover:bg-dashboard-cta/90 text-white" render={<Link href={nav.href("/events/new")} />}>
+          <Link href={nav.href("/events/new")} className={cn(buttonVariants(), "bg-dashboard-cta hover:bg-dashboard-cta/90 text-white")}>
             <Plus className="mr-2 h-4 w-4" />
             Create Event
-          </Button>
+          </Link>
         </div>
       </DashboardPageHeader>
 

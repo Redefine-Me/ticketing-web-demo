@@ -10,7 +10,8 @@ import { useCategories } from "@/hooks/useCategories";
 import { EventForm, type EventFormData } from "@/components/events/EventForm";
 import type { ImageItem } from "@/components/events/ImageUploader";
 import { dashboardScheduleToForm } from "@/utils/scheduleTransform";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 export default function EditEventPage() {
@@ -43,9 +44,9 @@ export default function EditEventPage() {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
         <p className="text-muted-foreground">Event not found.</p>
-        <Button variant="outline" render={<Link href={nav.href("/events")} />}>
+        <Link href={nav.href("/events")} className={cn(buttonVariants({ variant: "outline" }))}>
           Back to events
-        </Button>
+        </Link>
       </div>
     );
   }
