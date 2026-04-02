@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { EventWithDetails } from '@/types';
+import { EventWithDetails, TicketType, TicketPurchase } from '@/types';
 import { categories, events as mockEvents, societies } from '@/lib/mock-data';
 
 interface EventStoreContextType {
@@ -25,6 +25,12 @@ interface SharedDashboardSchedule {
   locationName: string | null;
   locationId: string | null;
   locationGoogleMapsUrl: string | null;
+  buildingName: string | null;
+  buildingId: string | null;
+  buildingGoogleMapsUrl: string | null;
+  roomName: string | null;
+  roomId: string | null;
+  description: string | null;
 }
 
 interface SharedDashboardEvent {
@@ -38,6 +44,9 @@ interface SharedDashboardEvent {
   imageUrl: string | null;
   registrationUrl: string | null;
   schedules: SharedDashboardSchedule[];
+  isTicketed?: boolean;
+  ticketTypes?: TicketType[];
+  purchases?: TicketPurchase[];
 }
 
 function makeCategory(name: string) {
@@ -67,25 +76,35 @@ function mapSchedules(event: SharedDashboardEvent, fallback: EventWithDetails | 
     return fallback?.schedule_entries ?? [];
   }
 
+  const locationName = (entry: SharedDashboardSchedule) =>
+    entry.buildingName
+      ? entry.roomName
+        ? `${entry.buildingName} — ${entry.roomName}`
+        : entry.buildingName
+      : entry.locationName;
+
   return [...event.schedules]
     .sort((a, b) => a.order - b.order)
-    .map((entry, index) => ({
-      id: `${event.id}-schedule-${index}`,
-      event_id: event.id,
-      location_id: entry.locationId,
-      scheduled_at: entry.scheduledAt,
-      is_end_schedule: entry.isEnd,
-      schedule_order: entry.order ?? index,
-      location: entry.locationName
-        ? {
-            id: entry.locationId ?? `${event.id}-location-${index}`,
-            name: entry.locationName,
-            street: null,
-            postcode: null,
-            google_maps_url: entry.locationGoogleMapsUrl ?? null,
-          }
-        : null,
-    }));
+    .map((entry, index) => {
+      const name = locationName(entry);
+      return {
+        id: `${event.id}-schedule-${index}`,
+        event_id: event.id,
+        location_id: entry.locationId,
+        scheduled_at: entry.scheduledAt,
+        is_end_schedule: entry.isEnd,
+        schedule_order: entry.order ?? index,
+        location: name
+          ? {
+              id: entry.locationId ?? `${event.id}-location-${index}`,
+              name,
+              street: null,
+              postcode: null,
+              google_maps_url: entry.buildingGoogleMapsUrl ?? entry.locationGoogleMapsUrl ?? null,
+            }
+          : null,
+      };
+    });
 }
 
 function dashboardToMobileEvents(
@@ -125,6 +144,7 @@ function dashboardToMobileEvents(
             ? [{ id: `${event.id}-image-0`, full_url: event.imageUrl, small_url: event.imageUrl }]
             : [],
       schedule_entries: mapSchedules(event, fallback),
+      ticketTypes: event.isTicketed ? event.ticketTypes : undefined,
       isLiked: fallback?.isLiked ?? false,
       isAttending: fallback?.isAttending ?? false,
     };
@@ -177,9 +197,9 @@ function hydrateEvents(base: EventWithDetails[]): EventWithDetails[] {
 }
 
 export function EventStoreProvider({ children }: { children: React.ReactNode }) {
-  // Mock data is the source of truth — always seed from it
+  // Seed from shared dashboard localStorage if available, else mock data
   const [events, setEvents] = useState<EventWithDetails[]>(() =>
-    hydrateEvents(mockEvents)
+    hydrateEvents(loadSharedEvents(mockEvents))
   );
 
   useEffect(() => {

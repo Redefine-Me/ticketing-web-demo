@@ -75,16 +75,44 @@ export function TicketingProvider({ children }: { children: React.ReactNode }) {
   const [configuredMap, setConfiguredMap] = useState<Record<string, boolean>>(buildInitialConfigured);
   const [loading] = useState(false);
 
+  // Merge ticket types from dashboard-synced events into local state
+  const mergedTicketTypes = useMemo(() => {
+    const localByEvent = new Map<string, TicketType[]>();
+    for (const tt of ticketTypes) {
+      const arr = localByEvent.get(tt.eventId) ?? [];
+      arr.push(tt);
+      localByEvent.set(tt.eventId, arr);
+    }
+    const result = [...ticketTypes];
+    for (const event of allEvents) {
+      if (event.ticketTypes?.length && !localByEvent.has(event.id)) {
+        result.push(...event.ticketTypes);
+      }
+    }
+    return result;
+  }, [allEvents, ticketTypes]);
+
+  // Build a combined configured map: local assignments + dashboard-synced events
+  const mergedConfiguredMap = useMemo(() => {
+    const map = { ...configuredMap };
+    for (const event of allEvents) {
+      if (event.ticketTypes?.length) {
+        map[event.id] = true;
+      }
+    }
+    return map;
+  }, [allEvents, configuredMap]);
+
   const ticketedEvents = useMemo(() =>
     allEvents
-      .filter(e => configuredMap[e.id])
-      .map(e => buildSummary(e, ticketTypes, purchases)),
-    [allEvents, configuredMap, ticketTypes, purchases]
+      .filter(e => mergedConfiguredMap[e.id])
+      .map(e => buildSummary(e, mergedTicketTypes, purchases)),
+    [allEvents, mergedConfiguredMap, mergedTicketTypes, purchases]
   );
 
   const unticketedEvents = useMemo(() =>
-    allEvents.filter(e => !configuredMap[e.id]),
-    [allEvents, configuredMap]
+    allEvents.filter(e => !mergedConfiguredMap[e.id]),
+    [allEvents, mergedConfiguredMap]
   );
 
   const assignTickets = useCallback((eventId: string, newTypes: Omit<TicketType, 'id' | 'eventId'>[]) => {
