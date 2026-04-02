@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   DashboardPageHeader,
   DashboardSection,
@@ -24,6 +25,8 @@ const typeOptions: { label: string; value: TypeFilter; icon?: React.ElementType 
 
 export default function BookingsPage() {
   const { eventBookings, loading, sendMessage, updateBookingStatus } = useBookingsContext();
+  const searchParams = useSearchParams();
+  const expandEventId = searchParams.get("event");
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
 
@@ -119,6 +122,7 @@ export default function BookingsPage() {
           loading={loading}
           onSendMessage={handleSendMessage}
           onStatusChange={handleStatusChange}
+          expandEventId={expandEventId}
           emptyMessage={
             isFiltered && hasBookings
               ? "No bookings match your filters."

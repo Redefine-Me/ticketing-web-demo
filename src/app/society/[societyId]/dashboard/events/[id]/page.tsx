@@ -298,7 +298,7 @@ export default function EventDetailPage() {
                           </p>
                           {booking && !entry.isEnd && (
                             <Link
-                              href={nav.href("/bookings")}
+                              href={`${nav.href("/bookings")}?event=${event.id}`}
                               className={cn(buttonVariants({ variant: "outline", size: "sm" }), "h-7 gap-1.5 text-xs shrink-0")}
                             >
                               <CalendarCheck className="h-3 w-3" />

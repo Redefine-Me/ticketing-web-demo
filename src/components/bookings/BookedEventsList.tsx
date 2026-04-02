@@ -10,12 +10,14 @@ export function BookedEventsList({
   loading,
   onSendMessage,
   onStatusChange,
+  expandEventId,
   emptyMessage,
 }: {
   eventBookings: EventBookingSummary[];
   loading: boolean;
   onSendMessage: (bookingId: string, message: string) => void;
   onStatusChange: (bookingId: string, status: BookingStatus) => void;
+  expandEventId?: string | null;
   emptyMessage?: string;
 }) {
   if (loading) {
@@ -50,6 +52,7 @@ export function BookedEventsList({
           summary={summary}
           onSendMessage={onSendMessage}
           onStatusChange={onStatusChange}
+          defaultExpanded={summary.eventId === expandEventId}
         />
       ))}
     </div>

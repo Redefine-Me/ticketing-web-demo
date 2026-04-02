@@ -13,12 +13,14 @@ export function BookedEventCard({
   summary,
   onSendMessage,
   onStatusChange,
+  defaultExpanded = false,
 }: {
   summary: EventBookingSummary;
   onSendMessage: (bookingId: string, message: string) => void;
   onStatusChange: (bookingId: string, status: BookingStatus) => void;
+  defaultExpanded?: boolean;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const dateStr = summary.eventDate
     ? format(new Date(summary.eventDate), "EEE d MMM yyyy, h:mm a")
     : "Date TBC";
