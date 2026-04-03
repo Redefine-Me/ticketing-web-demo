@@ -16,67 +16,54 @@ interface SocietyAuth {
   refresh: () => Promise<void>;
 }
 
-function getCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
-function clearSocietyCookies() {
-  document.cookie = "rm_demo_society_id=; path=/; max-age=0";
-  document.cookie = "rm_demo_society=; path=/; max-age=0";
-}
-
-function getSocietyFromCookie(): { id: string; name: string; imageUrl: string; university: string; instagram: string } | null {
-  const raw = getCookie("rm_demo_society");
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
+function getSocietyDirName(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("rm_demo_society");
 }
 
 export function useSocietyAuth(): SocietyAuth {
   const router = useRouter();
 
-  const cookieData = useMemo(() => getSocietyFromCookie(), []);
+  const dirName = useMemo(() => getSocietyDirName(), []);
+  const displayName = useMemo(
+    () => (dirName ? dirName.replace(/_/g, " ") : null),
+    [dirName]
+  );
 
   const society: SocietyRow | null = useMemo(() => {
-    if (!cookieData) return null;
+    if (!dirName || !displayName) return null;
     return {
-      id: cookieData.id,
-      name: cookieData.name,
-      instagram_handle: cookieData.instagram || "",
+      id: dirName,
+      name: displayName,
+      instagram_handle: "",
       description: null,
       bio_url: null,
       university_id: "u-001",
-      image_url: cookieData.imageUrl || null,
+      image_url: null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-  }, [cookieData]);
+  }, [dirName, displayName]);
 
   const profile: SocietyProfileRow | null = useMemo(() => {
-    if (!cookieData) return null;
+    if (!dirName || !displayName) return null;
     return {
-      id: `sp-${cookieData.id}`,
-      society_id: cookieData.id,
-      name: cookieData.name,
-      handle: cookieData.instagram || "",
+      id: `sp-${dirName}`,
+      society_id: dirName,
+      name: displayName,
+      handle: "",
       description: null,
-      image_url: cookieData.imageUrl || null,
+      image_url: null,
       follow_count: 0,
       event_count: 0,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-  }, [cookieData]);
+  }, [dirName, displayName]);
 
   const signOut = useCallback(async () => {
-    clearSocietyCookies();
-    // Also clear cached events so next society starts fresh
     if (typeof window !== "undefined") {
+      localStorage.removeItem("rm_demo_society");
       localStorage.removeItem("rm_shared_dashboard_events_v2");
     }
     router.push("/society");

@@ -1,43 +1,47 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import Image from 'next/image';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import type { Society } from '@/supabase_lib/types';
 
-function setSocietyCookie(society: Society) {
-  const payload = JSON.stringify({
-    id: society.id,
-    name: society.name,
-    imageUrl: society.imageUrl,
-    university: society.university,
-    instagram: society.instagram,
-  });
-  // Set cookie for 30 days
-  document.cookie = `rm_demo_society_id=${society.id}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
-  document.cookie = `rm_demo_society=${encodeURIComponent(payload)}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
+interface MockSociety {
+  dirName: string;
+  displayName: string;
+  handle: string;
 }
 
-export function SocietySelectionClient({ societies }: { societies: Society[] }) {
+export function SocietySelectionClient({ societies }: { societies: MockSociety[] }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [checking, setChecking] = useState(true);
+
+  // Check localStorage on mount — redirect if society already selected
+  useEffect(() => {
+    const saved = localStorage.getItem('rm_demo_society');
+    if (saved) {
+      router.replace(`/society/${saved}/dashboard`);
+    } else {
+      setChecking(false);
+    }
+  }, [router]);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return societies;
     const q = search.toLowerCase();
     return societies.filter(
-      s =>
-        s.name.toLowerCase().includes(q) ||
-        s.university.toLowerCase().includes(q) ||
-        s.instagram.toLowerCase().includes(q)
+      (s) =>
+        s.displayName.toLowerCase().includes(q) ||
+        s.handle.toLowerCase().includes(q)
     );
   }, [societies, search]);
 
-  const handleSelect = (society: Society) => {
-    setSocietyCookie(society);
-    router.push(`/society/${society.id}/dashboard`);
+  const handleSelect = (society: MockSociety) => {
+    localStorage.setItem('rm_demo_society', society.dirName);
+    router.push(`/society/${society.dirName}/dashboard`);
   };
+
+  // Don't flash the picker while checking localStorage
+  if (checking) return null;
 
   return (
     <div>
@@ -55,7 +59,7 @@ export function SocietySelectionClient({ societies }: { societies: Society[] }) 
         <input
           type="text"
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           placeholder="Search societies..."
           className="w-full pl-10 pr-4 py-3 text-sm bg-[var(--surface)] border border-[var(--border)] rounded-xl text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[#DC2626]/30 focus:border-[#DC2626] transition-all"
         />
@@ -85,23 +89,26 @@ export function SocietySelectionClient({ societies }: { societies: Society[] }) 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((society, index) => (
             <motion.button
-              key={society.id}
+              key={society.dirName}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.3), ease: 'easeOut' }}
               onClick={() => handleSelect(society)}
               className="flex items-center gap-3 p-3.5 bg-[var(--surface)] rounded-[var(--radius)] border border-[var(--border)] text-left transition-all duration-[120ms] hover:-translate-y-0.5 hover:shadow-lg hover:border-[#DC2626] hover:ring-2 hover:ring-[#DC2626]/20 cursor-pointer"
             >
-              <Image
-                src={society.imageUrl || '/logos/rm-dot-logo.png'}
-                alt={society.name}
-                width={44}
-                height={44}
-                className="rounded-full object-cover flex-shrink-0"
-              />
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#DC2626]/10 text-[#DC2626] font-semibold text-sm flex-shrink-0">
+                {society.displayName
+                  .split(' ')
+                  .map((w) => w[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase()}
+              </div>
               <div className="min-w-0">
-                <p className="font-medium text-sm text-[var(--text)] truncate">{society.name}</p>
-                <p className="text-xs text-[var(--muted)] truncate">{society.university}</p>
+                <p className="font-medium text-sm text-[var(--text)] truncate">{society.displayName}</p>
+                {society.handle && (
+                  <p className="text-xs text-[var(--muted)] truncate">@{society.handle}</p>
+                )}
               </div>
             </motion.button>
           ))}

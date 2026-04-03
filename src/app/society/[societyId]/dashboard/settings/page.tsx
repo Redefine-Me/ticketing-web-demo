@@ -151,6 +151,8 @@ export default function SettingsPage() {
   };
 
   const handleSignOut = async () => {
+    localStorage.removeItem("rm_demo_society");
+    localStorage.removeItem("rm_shared_dashboard_events_v2");
     router.push("/society");
   };
 

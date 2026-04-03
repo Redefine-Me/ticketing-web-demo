@@ -1,23 +1,40 @@
+import fs from 'fs';
+import path from 'path';
 import Image from 'next/image';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { GlobalSpotlight } from '@/components/ui/spotlight';
-import { getSocieties } from '@/supabase_lib/societies';
 import { SocietySelectionClient } from './SocietySelectionClient';
 
-export const dynamic = 'force-dynamic';
+interface MockSociety {
+  dirName: string;
+  displayName: string;
+  handle: string;
+}
 
-export default async function SocietyPickerPage() {
-  // If the user already has a society cookie, redirect straight to their dashboard
-  const cookieStore = await cookies();
-  const savedSocietyId = cookieStore.get('rm_demo_society_id')?.value;
-  if (savedSocietyId) {
-    redirect(`/society/${savedSocietyId}/dashboard`);
-  }
+function getMockSocieties(): MockSociety[] {
+  const mockDataDir = path.join(process.cwd(), 'public', 'mock-data');
+  if (!fs.existsSync(mockDataDir)) return [];
 
-  // Fetch all societies from Supabase
-  const societies = await getSocieties();
+  return fs
+    .readdirSync(mockDataDir, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => {
+      const displayName = d.name.replace(/_/g, ' ');
+      let handle = '';
+      try {
+        const details = JSON.parse(
+          fs.readFileSync(path.join(mockDataDir, d.name, 'account-details.json'), 'utf-8')
+        );
+        handle = details.handle ?? '';
+      } catch {
+        // no account-details
+      }
+      return { dirName: d.name, displayName, handle };
+    });
+}
+
+export default function SocietyPickerPage() {
+  const societies = getMockSocieties();
 
   return (
     <AuroraBackground className="min-h-screen">
