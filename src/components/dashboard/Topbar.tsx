@@ -48,6 +48,9 @@ export function Topbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
+    document.cookie = "rm_demo_society_id=; path=/; max-age=0";
+    document.cookie = "rm_demo_society=; path=/; max-age=0";
+    localStorage.removeItem("rm_shared_dashboard_events_v2");
     router.push("/society");
   };
 

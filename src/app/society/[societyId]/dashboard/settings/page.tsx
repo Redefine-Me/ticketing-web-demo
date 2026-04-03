@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Cropper, { type Area } from "react-easy-crop";
 import { useSocietyAuth } from "@/hooks/useSocietyAuth";
-import { mockSociety, mockProfile } from "@/lib/mock-data";
+import { mockSociety } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -92,10 +92,10 @@ export default function SettingsPage() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    setName(mockProfile.name ?? "");
-    setDescription(mockProfile.description ?? "");
-    setImageUrl(mockProfile.image_url);
-  }, []);
+    setName(profile?.name ?? society?.name ?? "");
+    setDescription(profile?.description ?? society?.description ?? "");
+    setImageUrl(profile?.image_url ?? society?.image_url ?? null);
+  }, [profile, society]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();

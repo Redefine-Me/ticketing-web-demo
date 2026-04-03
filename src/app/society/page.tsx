@@ -1,29 +1,30 @@
 import Image from 'next/image';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { GlobalSpotlight } from '@/components/ui/spotlight';
-import { SocietyPickerCards } from './SocietyPickerCards';
-import SocietySignOutButton from './[societyId]/dashboard/SocietySignOutButton';
+import { getSocieties } from '@/supabase_lib/societies';
+import { SocietySelectionClient } from './SocietySelectionClient';
 
-const mockApprovedAccounts = [
-  {
-    id: "sa-001",
-    society_account_approval_status: { name: "trusted" },
-    societies: {
-      id: "s-001",
-      name: "American Studies Society",
-      image_url: null,
-      universities: { name: "University of Manchester" },
-    },
-  },
-];
+export const dynamic = 'force-dynamic';
 
-export default function SocietyPickerPage() {
+export default async function SocietyPickerPage() {
+  // If the user already has a society cookie, redirect straight to their dashboard
+  const cookieStore = await cookies();
+  const savedSocietyId = cookieStore.get('rm_demo_society_id')?.value;
+  if (savedSocietyId) {
+    redirect(`/society/${savedSocietyId}/dashboard`);
+  }
+
+  // Fetch all societies from Supabase
+  const societies = await getSocieties();
+
   return (
     <AuroraBackground className="min-h-screen">
       <GlobalSpotlight size={400} color="rgba(220, 38, 38, 0.06)" />
       <div className="relative z-10">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-[var(--surface)]/80 backdrop-blur-md border-b border-[var(--border)] px-6 py-3 flex items-center justify-between">
+        <header className="sticky top-0 z-30 bg-[var(--surface)]/80 backdrop-blur-md border-b border-[var(--border)] px-6 py-3 flex items-center">
           <div className="flex items-center gap-3">
             <Image
               src="/logos/rm-dot-logo.png"
@@ -32,25 +33,21 @@ export default function SocietyPickerPage() {
               height={30}
             />
             <span className="text-xs font-medium text-[#DC2626] bg-[#DC2626]/10 px-2 py-0.5 rounded-full">
-              Society
+              Society Demo
             </span>
           </div>
-          <SocietySignOutButton />
         </header>
 
         {/* Content */}
-        <main className="max-w-3xl mx-auto px-6 py-10">
+        <main className="max-w-4xl mx-auto px-6 py-10">
           <h1 className="text-2xl font-semibold text-[var(--text)] mb-1">
-            Your Societies
+            Select Your Society
           </h1>
-          <p className="text-[var(--muted)] mb-8">
-            Select a society to manage.
+          <p className="text-[var(--muted)] mb-6">
+            Choose a society to explore the dashboard demo.
           </p>
 
-          <SocietyPickerCards
-            approvedAccounts={mockApprovedAccounts}
-            pendingAccounts={[]}
-          />
+          <SocietySelectionClient societies={societies} />
         </main>
       </div>
     </AuroraBackground>
