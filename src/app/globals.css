@@ -62,6 +62,30 @@
   --radius-xl: calc(var(--radius) * 1.25);
   --radius-2xl: calc(var(--radius) * 1.5);
 
+  /* Mobile view color palette (numbered primary/secondary) */
+  --color-primary-100: #FDEAE8;
+  --color-primary-200: #F9C5C1;
+  --color-primary-300: #F49F99;
+  --color-primary-400: #E06B62;
+  --color-primary-500: #C04138;
+  --color-primary-600: #9C332C;
+  --color-primary-700: #782620;
+  --color-primary-800: #541A16;
+  --color-primary-900: #300F0D;
+  --color-secondary-100: #FFF0E8;
+  --color-secondary-200: #FFD5BC;
+  --color-secondary-300: #FFBA90;
+  --color-secondary-400: #FE9364;
+  --color-secondary-500: #FC6C38;
+  --color-secondary-600: #E0561F;
+  --color-secondary-700: #B84418;
+  --color-secondary-800: #903311;
+  --color-secondary-900: #68230B;
+  --color-card-light: #FFFFFF;
+  --color-card-dark: #2C2C2E;
+  --color-surface-light: #F2F2F7;
+  --color-surface-dark: #1A1A1C;
+
   /* Fonts */
   --font-sans: var(--font-space-grotesk), 'Space Grotesk', system-ui, sans-serif;
 

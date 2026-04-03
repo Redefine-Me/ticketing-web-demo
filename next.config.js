@@ -1,25 +1,5 @@
 /** @type {import('next').NextConfig} */
-const enableMobileProxy = process.env.ENABLE_MOBILE_PROXY === 'true';
-const mobileBasePath = process.env.MOBILE_BASE_PATH || '/mobile';
-const mobileAppOrigin = process.env.MOBILE_APP_ORIGIN || 'http://localhost:3001';
-
 const nextConfig = {
-  async rewrites() {
-    if (!enableMobileProxy) {
-      return [];
-    }
-
-    return [
-      {
-        source: `${mobileBasePath}/:path*`,
-        destination: `${mobileAppOrigin}${mobileBasePath}/:path*`,
-      },
-      {
-        source: mobileBasePath,
-        destination: `${mobileAppOrigin}${mobileBasePath}`,
-      },
-    ];
-  },
   async headers() {
     const sharedHeaders = [
       "default-src 'self'",
@@ -41,7 +21,7 @@ const nextConfig = {
               ...sharedHeaders,
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://prod.spline.design https://unpkg.com https://www.ameportal.com",
               "connect-src 'self' https://redefine-me.supabase.co https://prod.spline.design https://unpkg.com https://www.ameportal.com",
-              "frame-src 'self' https://prod.spline.design http://localhost:3001",
+              "frame-src 'self' https://prod.spline.design",
             ].join('; '),
           },
           {
@@ -64,7 +44,7 @@ const nextConfig = {
               ...sharedHeaders,
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.ameportal.com https://maps.googleapis.com",
               "connect-src 'self' https://redefine-me.supabase.co https://www.ameportal.com https://maps.googleapis.com https://maps.gstatic.com https://places.googleapis.com",
-              "frame-src 'self' https://www.google.com https://maps.google.com http://localhost:3001",
+              "frame-src 'self' https://www.google.com https://maps.google.com",
             ].join('; '),
           },
           {
