@@ -48,7 +48,7 @@ export default function EditEventPage() {
         locationId: s.locationId ?? undefined,
       })),
     isOnline: event.isOnline,
-    isFree: event.isFree,
+    isFree: event.isFree ?? true,
     price: event.price ?? "",
     registrationUrl: event.registrationUrl ?? "",
   };

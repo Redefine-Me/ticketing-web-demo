@@ -7,10 +7,36 @@ import { createAuthBrowserClient } from '@/supabase_lib/auth/browser';
 
 export default function AuthForm() {
   const searchParams = useSearchParams();
-  const [loading, setLoading] = useState<'google' | 'apple' | null>(null);
+  const [loading, setLoading] = useState<'google' | 'apple' | 'email' | null>(null);
   const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showEmail, setShowEmail] = useState(false);
 
   const unauthorizedError = searchParams.get('error') === 'unauthorized';
+
+  const handleEmailLogin = async () => {
+    setError('');
+    setLoading('email');
+
+    try {
+      const supabase = createAuthBrowserClient();
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+        setLoading(null);
+      } else {
+        window.location.href = '/auth/callback';
+      }
+    } catch {
+      setError('Something went wrong. Please try again.');
+      setLoading(null);
+    }
+  };
 
   const handleOAuthLogin = async (provider: 'google' | 'apple') => {
     setError('');
@@ -95,6 +121,49 @@ export default function AuthForm() {
               </svg>
               {loading === 'apple' ? 'Signing in…' : 'Continue with Apple'}
             </button>
+
+            <div className="relative my-2">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-[var(--border)]" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-[var(--surface)] px-2 text-[var(--muted)]">or</span>
+              </div>
+            </div>
+
+            {!showEmail ? (
+              <button
+                onClick={() => setShowEmail(true)}
+                className="w-full flex items-center justify-center gap-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--bg)] text-sm font-medium text-[var(--text)] transition-colors"
+              >
+                Continue with Email
+              </button>
+            ) : (
+              <div className="space-y-2">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-sm text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/40"
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleEmailLogin()}
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-sm text-[var(--text)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/40"
+                />
+                <button
+                  onClick={handleEmailLogin}
+                  disabled={loading !== null || !email || !password}
+                  className="w-full py-2.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accentHover)] text-white text-sm font-medium transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {loading === 'email' ? 'Signing in…' : 'Sign In'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

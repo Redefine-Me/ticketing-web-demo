@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import type { DashboardEvent } from "@/lib/supabase/types";
 import { getClient } from "@/supabase_lib/client";
 
@@ -46,6 +46,9 @@ function toDashboardEvent(row: RawRow): DashboardEvent {
   );
 
   const firstStart = sortedSchedules.find((s) => !s.is_end_schedule);
+  const imageUrls = row.event_images
+    .map((img) => img.post_images?.full_url)
+    .filter((url): url is string => !!url);
 
   return {
     id: row.id,
@@ -57,7 +60,8 @@ function toDashboardEvent(row: RawRow): DashboardEvent {
     likes: row.likes,
     attending: row.attending,
     categories: row.categories ? [row.categories.name] : [],
-    imageUrl: row.event_images[0]?.post_images?.full_url ?? null,
+    imageUrl: imageUrls[0] ?? null,
+    imageUrls,
     registrationUrl: row.registration_url,
     isOnline: row.is_online,
     isFree: row.is_free,
@@ -69,8 +73,29 @@ function toDashboardEvent(row: RawRow): DashboardEvent {
       locationName: s.locations?.name ?? null,
       locationId: s.location_id,
       locationGoogleMapsUrl: s.locations?.google_maps_url ?? null,
+      buildingName: null,
+      buildingId: null,
+      buildingGoogleMapsUrl: null,
+      roomName: null,
+      roomId: null,
+      description: null,
+      isUniversityVenue: false,
     })),
+    isTicketed: false,
   };
+}
+
+/** Compute derived ticketing totals for a single event. */
+function withTicketingTotals(event: DashboardEvent): DashboardEvent {
+  if (!event.isTicketed || !event.ticketTypes) return event;
+  const purchases = event.purchases ?? [];
+  const totalAvailable = event.ticketTypes.reduce((sum, t) => sum + t.totalAvailable, 0);
+  const totalSold = purchases.length;
+  const totalRevenue = event.ticketTypes.reduce((sum, t) => {
+    const sold = purchases.filter((p) => p.ticketTypeId === t.id).length;
+    return sum + sold * t.price;
+  }, 0);
+  return { ...event, totalAvailable, totalSold, totalRevenue };
 }
 
 // WARNING: All mutations (createEvent, updateEvent, deleteEvent) are currently mock implementations
@@ -82,6 +107,9 @@ export function useEvents(societyId: string | undefined) {
   const [events, setEvents] = useState<DashboardEvent[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Compute ticketing totals on the fly
+  const eventsWithTotals = useMemo(() => events.map(withTicketingTotals), [events]);
 
   const fetchEvents = useCallback(async () => {
     if (!societyId) return;
@@ -113,7 +141,6 @@ export function useEvents(societyId: string | undefined) {
   }, [societyId]);
 
   const createEvent = async (formData: Record<string, unknown>) => {
-    // Mock: add to local state
     const newEvent: DashboardEvent = {
       id: `e-${Date.now()}`,
       title: (formData.title as string) ?? "New Event",
@@ -125,11 +152,13 @@ export function useEvents(societyId: string | undefined) {
       attending: 0,
       categories: [],
       imageUrl: null,
+      imageUrls: [],
       registrationUrl: null,
       isOnline: false,
       isFree: true,
       price: null,
       schedules: [],
+      isTicketed: false,
     };
     setEvents((prev) => [newEvent, ...prev]);
     return { event_id: newEvent.id, status: "ingested" };
@@ -149,5 +178,49 @@ export function useEvents(societyId: string | undefined) {
     setEvents((prev) => prev.filter((e) => e.id !== eventId));
   };
 
-  return { events, loading, error, fetchEvents, createEvent, updateEvent, deleteEvent };
+  // Ticketing actions
+
+  const markAttended = (purchaseId: string) => {
+    setEvents((prev) =>
+      prev.map((e) => ({
+        ...e,
+        purchases: e.purchases?.map((p) =>
+          p.id === purchaseId ? { ...p, attendedAt: new Date().toISOString() } : p,
+        ),
+      }))
+    );
+  };
+
+  const unmarkAttended = (purchaseId: string) => {
+    setEvents((prev) =>
+      prev.map((e) => ({
+        ...e,
+        purchases: e.purchases?.map((p) =>
+          p.id === purchaseId ? { ...p, attendedAt: null } : p,
+        ),
+      }))
+    );
+  };
+
+  const refundPurchase = (purchaseId: string) => {
+    setEvents((prev) =>
+      prev.map((e) => ({
+        ...e,
+        purchases: e.purchases?.filter((p) => p.id !== purchaseId),
+      }))
+    );
+  };
+
+  return {
+    events: eventsWithTotals,
+    loading,
+    error,
+    fetchEvents,
+    createEvent,
+    updateEvent,
+    deleteEvent,
+    markAttended,
+    unmarkAttended,
+    refundPurchase,
+  };
 }

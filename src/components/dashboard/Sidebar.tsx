@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   CalendarDays,
+  CalendarCheck,
   Users,
   PieChart,
   Settings,
@@ -15,6 +16,7 @@ import {
 const navItems = [
   { path: "/overview", label: "Overview", icon: LayoutDashboard },
   { path: "/events", label: "Events", icon: CalendarDays },
+  { path: "/bookings", label: "Bookings", icon: CalendarCheck },
   { path: "/followers", label: "Followers", icon: Users },
   { path: "/audience", label: "Audience", icon: PieChart },
   { path: "/settings", label: "Settings", icon: Settings },

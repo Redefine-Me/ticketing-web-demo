@@ -1,25 +1,45 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
 import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { EventTable } from "@/components/events/EventTable";
+import { ManageAttendeesModal } from "@/components/ticketing/ManageAttendeesModal";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { DashboardPageHeader, DashboardSection } from "@/components/dashboard/DashboardMotion";
+import type { DashboardEvent } from "@/lib/supabase/types";
 
 export default function EventsPage() {
   const nav = useDashboardNav();
   const { society } = useSocietyAuth();
-  const { events, loading, error, fetchEvents } = useEvents(society?.id);
+  const {
+    events,
+    loading,
+    error,
+    fetchEvents,
+    markAttended,
+    unmarkAttended,
+    refundPurchase,
+  } = useEvents(society?.id);
+  const [manageEvent, setManageEvent] = useState<DashboardEvent | null>(null);
 
   useEffect(() => {
     if (society?.id) {
       fetchEvents();
     }
   }, [society?.id, fetchEvents]);
+
+  const handleManageTickets = useCallback(
+    (event: DashboardEvent) => setManageEvent(event),
+    [],
+  );
+
+  const liveManageEvent = manageEvent
+    ? events.find((e) => e.id === manageEvent.id) ?? null
+    : null;
 
   return (
     <div className="space-y-6">
@@ -45,8 +65,26 @@ export default function EventsPage() {
       )}
 
       <DashboardSection delay={0.08}>
-        <EventTable events={events} loading={loading} basePath={nav.basePath} />
+        <EventTable
+          events={events}
+          loading={loading}
+          basePath={nav.basePath}
+          onManageTickets={handleManageTickets}
+        />
       </DashboardSection>
+
+      {liveManageEvent && (
+        <ManageAttendeesModal
+          event={liveManageEvent}
+          open={!!liveManageEvent}
+          onOpenChange={(open) => {
+            if (!open) setManageEvent(null);
+          }}
+          onMarkAttended={markAttended}
+          onUnmarkAttended={unmarkAttended}
+          onRefund={refundPurchase}
+        />
+      )}
     </div>
   );
 }

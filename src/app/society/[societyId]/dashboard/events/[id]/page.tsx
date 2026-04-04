@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
 import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
+import { useBookingsContext } from "@/contexts/BookingsContext";
 import { formatDateTime } from "@/lib/utils";
 import { EventSourceBadge } from "@/components/dashboard/EventSourceBadge";
+import { TicketedBadge } from "@/components/ticketing/TicketedBadge";
+import { ManageAttendeesModal } from "@/components/ticketing/ManageAttendeesModal";
+import { BookingStatusBadge } from "@/components/bookings/BookingStatusBadge";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -33,8 +37,10 @@ import {
   Eye,
   Heart,
   CalendarCheck,
+  Ticket,
 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
   live: "bg-green-100 text-green-800",
@@ -48,8 +54,24 @@ export default function EventDetailPage() {
   const router = useRouter();
   const nav = useDashboardNav();
   const { society } = useSocietyAuth();
-  const { events, deleteEvent } = useEvents(society?.id);
+  const {
+    events,
+    loading,
+    fetchEvents,
+    deleteEvent,
+    markAttended,
+    unmarkAttended,
+    refundPurchase,
+  } = useEvents(society?.id);
+  const bookingsCtx = useBookingsContext();
   const [deleting, setDeleting] = useState(false);
+  const [manageOpen, setManageOpen] = useState(false);
+
+  useEffect(() => {
+    if (society?.id) {
+      fetchEvents();
+    }
+  }, [society?.id, fetchEvents]);
 
   const event = events.find((e) => e.id === params.id);
 
@@ -68,6 +90,20 @@ export default function EventDetailPage() {
       setDeleting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-64 animate-pulse rounded bg-muted" />
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-24 animate-pulse rounded bg-muted" />
+          ))}
+        </div>
+        <div className="h-64 animate-pulse rounded bg-muted" />
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -94,6 +130,12 @@ export default function EventDetailPage() {
               {event.status}
             </Badge>
             <EventSourceBadge source={event.source} />
+            {event.isTicketed && (
+              <TicketedBadge
+                sold={event.totalSold ?? 0}
+                total={event.totalAvailable ?? 0}
+              />
+            )}
           </div>
           {event.description && (
             <p className="max-w-2xl text-muted-foreground">
@@ -102,6 +144,12 @@ export default function EventDetailPage() {
           )}
         </div>
         <div className="flex items-center gap-2">
+          {event.isTicketed && (
+            <Button variant="outline" onClick={() => setManageOpen(true)}>
+              <Ticket className="mr-2 h-4 w-4" />
+              Manage Tickets
+            </Button>
+          )}
           <Button variant="outline" render={<Link href={nav.href(`/events/${params.id}/edit`)} />}>
             <Pencil className="mr-2 h-4 w-4" />
             Edit
@@ -161,6 +209,65 @@ export default function EventDetailPage() {
         />
       </div>
 
+      {/* Ticketing */}
+      {event.isTicketed && event.ticketTypes && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle className="text-base">Ticketing</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                {event.totalSold ?? 0} / {event.totalAvailable ?? 0} tickets sold
+                {" · "}Total revenue: {"\u00A3"}{((event.totalRevenue ?? 0)).toFixed(2)}
+              </p>
+            </div>
+            <Button variant="outline" onClick={() => setManageOpen(true)}>
+              <Ticket className="mr-2 h-4 w-4" />
+              Manage Attendees
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="px-3 py-2 text-left font-medium">Ticket Type</th>
+                    <th className="px-3 py-2 text-left font-medium">Price</th>
+                    <th className="px-3 py-2 text-left font-medium">Sold</th>
+                    <th className="px-3 py-2 text-right font-medium">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {event.ticketTypes.map((tt) => {
+                    const sold = (event.purchases ?? []).filter(
+                      (p) => p.ticketTypeId === tt.id,
+                    ).length;
+                    return (
+                      <tr key={tt.id} className="border-b last:border-0">
+                        <td className="px-3 py-2 font-medium">
+                          {tt.name}
+                          {tt.isMemberTicket && (
+                            <Badge variant="secondary" className="ml-2 text-xs">
+                              Member
+                            </Badge>
+                          )}
+                        </td>
+                        <td className="px-3 py-2">{"\u00A3"}{tt.price.toFixed(2)}</td>
+                        <td className="px-3 py-2">
+                          <TicketedBadge sold={sold} total={tt.totalAvailable} />
+                        </td>
+                        <td className="px-3 py-2 text-right font-medium">
+                          {"\u00A3"}{(sold * tt.price).toFixed(2)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Event details */}
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
@@ -172,40 +279,59 @@ export default function EventDetailPage() {
             {event.schedules.length > 0 && (
               <div className="space-y-3">
                 <h3 className="text-sm font-medium">Schedule</h3>
-                {event.schedules.map((entry, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3 rounded-lg border p-3"
-                  >
-                    <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">
-                        {formatDateTime(entry.scheduledAt)}
-                        {entry.isEnd && (
-                          <span className="ml-2 text-xs text-muted-foreground">
-                            (end)
-                          </span>
-                        )}
-                      </p>
-                      {entry.locationName && (
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          <span>{entry.locationName}</span>
-                          {entry.locationGoogleMapsUrl && (
-                            <a
-                              href={entry.locationGoogleMapsUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline"
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                            </a>
+                {event.schedules.map((entry, i) => {
+                  const booking = bookingsCtx.getBookingForSchedule(event.id, i);
+                  return (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 rounded-lg border p-3"
+                    >
+                      <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-medium">
+                            {formatDateTime(entry.scheduledAt)}
+                            {entry.isEnd && (
+                              <span className="ml-2 text-xs text-muted-foreground">
+                                (end)
+                              </span>
+                            )}
+                          </p>
+                          {booking && !entry.isEnd && (
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Link
+                                href={`${nav.href("/bookings")}?event=${event.id}`}
+                                className={cn(buttonVariants({ size: "sm" }), "h-7 text-xs bg-red-600 text-white hover:bg-red-700")}
+                              >
+                                Manage Booking
+                              </Link>
+                              <BookingStatusBadge status={booking.status} />
+                            </div>
                           )}
                         </div>
-                      )}
+                        {(entry.buildingName || entry.locationName) && (
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            <span>
+                              {entry.buildingName ?? entry.locationName}
+                              {entry.roomName && ` — ${entry.roomName}`}
+                            </span>
+                            {(entry.buildingGoogleMapsUrl || entry.locationGoogleMapsUrl) && (
+                              <a
+                                href={(entry.buildingGoogleMapsUrl ?? entry.locationGoogleMapsUrl)!}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
@@ -223,14 +349,18 @@ export default function EventDetailPage() {
               <div className="space-y-1">
                 <p className="text-sm font-medium">Price</p>
                 <p className="text-sm text-muted-foreground">
-                  {event.isFree
+                  {event.isTicketed && event.ticketTypes
+                    ? event.ticketTypes.every((t) => t.price === 0)
+                      ? "Free (ticketed)"
+                      : `From ${"\u00A3"}${Math.min(...event.ticketTypes.map((t) => t.price)).toFixed(2)}`
+                    : event.isFree
                     ? "Free"
                     : event.price
                     ? `${event.price}`
                     : "Paid"}
                 </p>
               </div>
-              {event.registrationUrl && (
+              {!event.isTicketed && event.registrationUrl && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Registration</p>
                   <a
@@ -265,18 +395,42 @@ export default function EventDetailPage() {
           </CardContent>
         </Card>
 
-        {/* Images placeholder */}
+        {/* Images */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Images</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              No images attached
-            </p>
+            {(event.imageUrls ?? []).length > 0 ? (
+              <div className="grid grid-cols-2 gap-2">
+                {(event.imageUrls ?? []).map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt={`${event.title} image ${i + 1}`}
+                    className="w-full rounded-lg object-cover"
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="py-8 text-center text-sm text-muted-foreground">
+                No images attached
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
+
+      {event.isTicketed && (
+        <ManageAttendeesModal
+          event={event}
+          open={manageOpen}
+          onOpenChange={setManageOpen}
+          onMarkAttended={markAttended}
+          onUnmarkAttended={unmarkAttended}
+          onRefund={refundPurchase}
+        />
+      )}
     </div>
   );
 }
