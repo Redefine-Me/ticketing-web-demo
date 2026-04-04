@@ -2,10 +2,17 @@
 
 import { useState, useCallback, useMemo } from "react";
 import type { DashboardEvent, TicketType, TicketPurchase } from "@/lib/supabase/types";
-import { mockEvents } from "@/lib/mock-data";
+import { mockEvents, fetchMockEventsForSociety } from "@/lib/mock-data";
 import { isUniversityBuilding } from "@/lib/mock-data-bookings";
 
-const SHARED_EVENTS_STORAGE_KEY = "rm_shared_dashboard_events_v2";
+function getStorageKey(): string {
+  const society = typeof window !== "undefined"
+    ? localStorage.getItem("rm_demo_society")
+    : null;
+  return society
+    ? `rm_shared_dashboard_events_v2_${society}`
+    : "rm_shared_dashboard_events_v2";
+}
 
 /** Convert a File to a base64 data URL for localStorage persistence. */
 function fileToDataUrl(file: File): Promise<string> {
@@ -45,7 +52,7 @@ type FormSchedule = {
 function loadSharedEvents(): DashboardEvent[] | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = localStorage.getItem(SHARED_EVENTS_STORAGE_KEY);
+    const raw = localStorage.getItem(getStorageKey());
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? (parsed as DashboardEvent[]) : null;
@@ -56,7 +63,7 @@ function loadSharedEvents(): DashboardEvent[] | null {
 
 function saveSharedEvents(events: DashboardEvent[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(SHARED_EVENTS_STORAGE_KEY, JSON.stringify(events));
+  localStorage.setItem(getStorageKey(), JSON.stringify(events));
   // Notify same-tab listeners (storage event only fires cross-tab)
   window.dispatchEvent(new Event("rm_shared_events_changed"));
 }
@@ -116,7 +123,15 @@ function toDashboardSchedules(input: unknown) {
   return mapped;
 }
 
-const sharedSeedEvents: DashboardEvent[] = mockEvents;
+async function getSeedEvents(): Promise<DashboardEvent[]> {
+  const society = typeof window !== "undefined"
+    ? localStorage.getItem("rm_demo_society")
+    : null;
+  if (society) {
+    return fetchMockEventsForSociety(society);
+  }
+  return [];
+}
 
 /** Compute derived ticketing totals for a single event. */
 function withTicketingTotals(event: DashboardEvent): DashboardEvent {
@@ -153,16 +168,14 @@ export function useEvents(societyId: string | undefined) {
     setLoading(true);
     setError(null);
 
-    // Simulate network delay
-    await new Promise((r) => setTimeout(r, 200));
-
     // Use localStorage if available (preserves creates/deletes), otherwise seed from mock data
     const stored = loadSharedEvents();
     if (stored && stored.length > 0) {
       setEvents(stored);
     } else {
-      setEvents(sharedSeedEvents);
-      saveSharedEvents(sharedSeedEvents);
+      const seed = await getSeedEvents();
+      setEvents(seed);
+      saveSharedEvents(seed);
     }
     setLoading(false);
   }, [societyId]);
@@ -216,7 +229,7 @@ export function useEvents(societyId: string | undefined) {
     }
 
     // Read existing events outside the updater so it stays pure (StrictMode-safe)
-    const base = events.length > 0 ? events : (loadSharedEvents() ?? sharedSeedEvents);
+    const base = events.length > 0 ? events : (loadSharedEvents() ?? []);
     const next = [newEvent, ...base];
     saveSharedEvents(next);
     setEvents(next);
@@ -383,9 +396,10 @@ export function useEvents(societyId: string | undefined) {
     });
   };
 
-  const resetEvents = () => {
-    setEvents(sharedSeedEvents);
-    saveSharedEvents(sharedSeedEvents);
+  const resetEvents = async () => {
+    const seed = await getSeedEvents();
+    setEvents(seed);
+    saveSharedEvents(seed);
   };
 
   return {

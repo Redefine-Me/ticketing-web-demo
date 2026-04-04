@@ -1,7 +1,19 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
-  redirect("/society/s-001/dashboard/settings");
+  const router = useRouter();
+
+  useEffect(() => {
+    const society = localStorage.getItem("rm_demo_society");
+    if (society) {
+      router.replace(`/society/${society}/dashboard/settings`);
+    } else {
+      router.replace("/society");
+    }
+  }, [router]);
+
+  return null;
 }

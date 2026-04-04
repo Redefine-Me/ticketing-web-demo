@@ -1,0 +1,187 @@
+[
+  {
+    "id": "e-001",
+    "title": "Freshers' Welcome: Stars & Stripes Social",
+    "description": "WELCOME TO AMERICAN STUDIES SOC!! 🇺🇸🎉 Come meet the committee, grab some free hot dogs and root beer, and find out what we've got planned this year. No passport required 😎",
+    "date": "2025-09-24T18:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 87,
+    "attending": 42,
+    "categories": ["social"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "18:00", "end": "20:30", "venue": "Students' Union", "room": "Bar" }
+    ]
+  },
+  {
+    "id": "e-002",
+    "title": "Debate Night: Is the American Dream Dead?",
+    "description": "The age-old question 🤔💀 Two teams, one moderator, zero chill. Come argue about whether the American Dream is alive and well or buried under student debt. Pizza provided 🍕",
+    "date": "2025-10-15T18:30:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 64,
+    "attending": 38,
+    "categories": ["academic"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "18:30", "end": "20:30", "venue": "Samuel Alexander Building", "room": "Room A101" }
+    ]
+  },
+  {
+    "id": "e-003",
+    "title": "Halloween Movie Marathon 🎃",
+    "description": "IT'S SPOOKY SZN 👻🍿 We're screening three American horror classics back to back. Costumes strongly encouraged, jumpscares guaranteed. Free candy for anyone who makes it through all three without leaving 😈",
+    "date": "2025-10-30T17:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 134,
+    "attending": 67,
+    "categories": ["social", "arts"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "17:00", "end": "23:00", "venue": "University Place", "room": "Lecture Theatre 1.1" }
+    ]
+  },
+  {
+    "id": "e-004",
+    "title": "Thanksgiving Dinner 🦃",
+    "description": "We're doing Thanksgiving PROPER — turkey, mac & cheese, sweet potato pie, the WORKS 🇺🇸🍽️ Tickets selling fast bc we literally cannot fit more people in the room. Veggie options available dw",
+    "date": "2025-11-27T18:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 178,
+    "attending": 55,
+    "categories": ["social", "cultural"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": true,
+    "ticketPrice": 6,
+    "schedule": [
+      { "start": "18:00", "end": "21:00", "venue": "Students' Union", "room": "Meeting Room 4" }
+    ]
+  },
+  {
+    "id": "e-005",
+    "title": "Christmas Film Night: Home Alone",
+    "description": "KEVIN!! 🏠🎄 It's not Christmas without Home Alone and we will NOT be taking questions on that. Mince pies, hot chocolate, and questionable parenting decisions. Wear your ugliest jumper 🎅",
+    "date": "2025-12-09T19:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 112,
+    "attending": 58,
+    "categories": ["social"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "19:00", "end": "21:30", "venue": "University Place", "room": "Lecture Theatre 1.1" }
+    ]
+  },
+  {
+    "id": "e-006",
+    "title": "Guest Lecture: Civil Rights in the 21st Century",
+    "description": "We've got a visiting professor from Howard University talking about the legacy of the Civil Rights Movement and where we go from here 📚✊ Genuinely unmissable if you care about this stuff. Q&A after",
+    "date": "2026-01-28T16:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 93,
+    "attending": 72,
+    "categories": ["academic"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "16:00", "end": "18:00", "venue": "Samuel Alexander Building", "room": "Theatre A" }
+    ]
+  },
+  {
+    "id": "e-007",
+    "title": "Super Bowl Watch Party 🏈",
+    "description": "IT'S SUPER BOWL SUNDAYYYY (well Monday at 11pm but whatever) 🏈🇺🇸 We've booked out the back room at BrewDog and there WILL be wings. Even if you don't understand American football just come for the halftime show and the ads 😂",
+    "date": "2026-02-09T23:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 201,
+    "attending": 85,
+    "categories": ["social", "sports"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": true,
+    "ticketPrice": 4,
+    "schedule": [
+      { "start": "23:00", "end": "03:00", "venue": "BrewDog, Oxford Road", "room": null }
+    ]
+  },
+  {
+    "id": "e-008",
+    "title": "American Road Trip Pub Quiz 🚗",
+    "description": "Route 66, state capitals, obscure presidential trivia — if you know your stuff this is YOUR night 🧠🇺🇸 Teams of 3-6, winner gets a genuinely incredible prize (mystery). Losers buy the next round 🍺",
+    "date": "2026-02-25T19:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 97,
+    "attending": 63,
+    "categories": ["social", "quiz"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "19:00", "end": "22:00", "venue": "Friendship Inn", "room": null }
+    ]
+  },
+  {
+    "id": "e-009",
+    "title": "The Simpsons Movie Screening + Drinks",
+    "description": "SIMPSONS MOVIE SCREENING + DRINKS!!!! Spider Pig. Spider Pig. Does whatever a Spider Pig does. Come watch Homer doom an entire town then drown your sorrows at BrewDog. Tuesday 31st March, 6pm SU B1 ➡️ 8pm BrewDog Oxford Rd 🇺🇸🍩🍺",
+    "date": "2026-03-31T18:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 156,
+    "attending": 74,
+    "categories": ["social", "arts"],
+    "imageUrl": "/mock-data/American_Studies_Society/ai image generations/Gemini_Generated_Image_vngikyvngikyvngi.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "18:00", "end": "20:00", "venue": "Students' Union", "room": "SU B1" },
+      { "start": "20:00", "end": "22:00", "venue": "BrewDog, Oxford Road", "room": null }
+    ]
+  },
+  {
+    "id": "e-010",
+    "title": "End of Year BBQ: American Cookout 🌭",
+    "description": "WE MADE IT THROUGH THE YEAR 🎓🇺🇸 Celebrating the only way Americans know how — burgers, hot dogs, red solo cups and way too much ketchup. Free for members, £3 for everyone else. Come say bye before summer 🫶",
+    "date": "2026-04-25T13:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 143,
+    "attending": 68,
+    "categories": ["social"],
+    "imageUrl": "",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": true,
+    "memberPrice": 0,
+    "nonMemberPrice": 3,
+    "schedule": [
+      { "start": "13:00", "end": "17:00", "venue": "Samuel Alexander Building", "room": "Courtyard" }
+    ]
+  }
+]

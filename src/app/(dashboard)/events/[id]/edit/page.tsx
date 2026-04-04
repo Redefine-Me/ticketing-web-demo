@@ -1,9 +1,20 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 export default function EditEventPage() {
+  const router = useRouter();
   const { id } = useParams<{ id: string }>();
-  redirect(`/society/s-001/dashboard/events/${id}/edit`);
+
+  useEffect(() => {
+    const society = localStorage.getItem("rm_demo_society");
+    if (society) {
+      router.replace(`/society/${society}/dashboard/events/${id}/edit`);
+    } else {
+      router.replace("/society");
+    }
+  }, [router, id]);
+
+  return null;
 }

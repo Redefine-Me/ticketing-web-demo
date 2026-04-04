@@ -63,8 +63,13 @@ export function useSocietyAuth(): SocietyAuth {
 
   const signOut = useCallback(async () => {
     if (typeof window !== "undefined") {
+      const society = localStorage.getItem("rm_demo_society");
       localStorage.removeItem("rm_demo_society");
+      // Clear both old and society-specific event caches
       localStorage.removeItem("rm_shared_dashboard_events_v2");
+      if (society) {
+        localStorage.removeItem(`rm_shared_dashboard_events_v2_${society}`);
+      }
     }
     router.push("/society");
   }, [router]);

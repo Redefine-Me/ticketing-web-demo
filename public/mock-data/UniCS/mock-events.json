@@ -1,0 +1,188 @@
+[
+  {
+    "id": "e-001",
+    "title": "Freshers' Welcome Hack Night",
+    "description": "Kick off the year with your new CS family!! Come build something cool in a chill no-pressure environment, meet the committee, and grab some free pizza 🍕🎉",
+    "date": "2025-09-25T18:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 342,
+    "attending": 187,
+    "categories": ["social", "workshop"],
+    "imageUrl": "/mock-data/UniCS/event covers/freshers-welcome-hack-night.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "18:00", "end": "22:00", "venue": "Kilburn Building", "room": "LF31" }
+    ]
+  },
+  {
+    "id": "e-002",
+    "title": "Intro to Git Workshop",
+    "description": "Never touched Git before? No worries. We'll walk you through everything from cloning to pull requests 💻 Bring your laptop, we'll provide the vibes 🎶",
+    "date": "2025-10-08T14:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 156,
+    "attending": 89,
+    "categories": ["workshop", "academic"],
+    "imageUrl": "/mock-data/UniCS/event covers/intro-to-git.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "14:00", "end": "16:00", "venue": "Booth Street East", "room": "Theatre B (G.03)" }
+    ]
+  },
+  {
+    "id": "e-003",
+    "title": "24-Hour Hackathon 🏆",
+    "description": "24 HOURS. One theme. Questionable amounts of energy drinks. Build something insane and win prizes 💰💰 Solo or teams of up to 4 — all skill levels welcome!!",
+    "date": "2025-11-08T17:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 428,
+    "attending": 156,
+    "categories": ["workshop", "social"],
+    "imageUrl": "/mock-data/UniCS/event covers/24-hour-hackathon.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "17:00", "end": "17:00", "venue": "Simon Building", "room": "Theatre D" }
+    ]
+  },
+  {
+    "id": "e-004",
+    "title": "Industry Panel: Life After CS",
+    "description": "Hear from alumni working at top tech companies about what uni DOESN'T teach you 👀 Q&A after, networking drinks to follow at Font 🍻",
+    "date": "2025-11-12T17:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 203,
+    "attending": 124,
+    "categories": ["career", "academic"],
+    "imageUrl": "/mock-data/UniCS/event covers/industry-panel.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "17:00", "end": "19:00", "venue": "University Place", "room": "Lecture Theatre 1.1" },
+      { "start": "19:30", "end": "22:00", "venue": "Font Bar", "room": null }
+    ]
+  },
+  {
+    "id": "e-005",
+    "title": "Christmas Pub Quiz 🎄",
+    "description": "It's the most wonderful time of the year and we're celebrating with a MASSIVE pub quiz!! Teams of 4-6, festive jumpers encouraged, prizes for winners AND best dressed 🎅✨",
+    "date": "2025-12-10T19:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 289,
+    "attending": 143,
+    "categories": ["social"],
+    "imageUrl": "/mock-data/UniCS/event covers/christmas-pub-quiz.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": true,
+    "ticketPrice": 3,
+    "schedule": [
+      { "start": "19:00", "end": "22:30", "venue": "Friendship Inn", "room": null }
+    ]
+  },
+  {
+    "id": "e-006",
+    "title": "LeetCode Grind Sessions",
+    "description": "New year, new DSA grind 😤 Weekly sessions every Wednesday — come smash problems together, share approaches, and prep for internship szn 📈",
+    "date": "2026-01-15T13:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 178,
+    "attending": 67,
+    "categories": ["academic", "career"],
+    "imageUrl": "/mock-data/UniCS/event covers/leetcode-grind.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "13:00", "end": "15:00", "venue": "Kilburn Building", "room": "Tootill 1" }
+    ]
+  },
+  {
+    "id": "e-007",
+    "title": "Laser Tag Social ⚡",
+    "description": "PEW PEW PEW!! We're taking over Laser Quest for a night of absolute chaos 🔫 Limited spots so grab tickets FAST",
+    "date": "2026-02-05T19:30:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 312,
+    "attending": 78,
+    "categories": ["social"],
+    "imageUrl": "/mock-data/UniCS/event covers/laser-tag-social.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": true,
+    "ticketPrice": 6,
+    "schedule": [
+      { "start": "19:30", "end": "22:00", "venue": "Laser Quest Manchester", "room": null }
+    ]
+  },
+  {
+    "id": "e-008",
+    "title": "AI/ML Workshop: Build Your First Model",
+    "description": "No ML experience needed!! We'll go from zero to training your first neural network in 2 hours 🧠🤖 Bring your laptop with Python installed",
+    "date": "2026-02-19T15:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 267,
+    "attending": 112,
+    "categories": ["workshop", "academic"],
+    "imageUrl": "/mock-data/UniCS/event covers/ai-ml-workshop.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "15:00", "end": "17:00", "venue": "Booth Street East", "room": "Theatre B (G.03)" }
+    ]
+  },
+  {
+    "id": "e-009",
+    "title": "CTF Competition Night",
+    "description": "Think you can hack it?? 👾 Our annual Capture The Flag competition is HERE. Crypto, web, reverse engineering — test your skills and win prizes 🏆",
+    "date": "2026-03-01T16:00:00Z",
+    "status": "live",
+    "source": "scraped",
+    "likes": 345,
+    "attending": 98,
+    "categories": ["workshop", "academic"],
+    "imageUrl": "/mock-data/UniCS/event covers/ctf-competition.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": false,
+    "schedule": [
+      { "start": "16:00", "end": "22:00", "venue": "Simon Building", "room": "Theatre D" }
+    ]
+  },
+  {
+    "id": "e-010",
+    "title": "End of Year BBQ & Awards 🌞",
+    "description": "We made it through another year!! Come celebrate with burgers, music, and the annual UniCS awards ceremony 🏅 Free for members, £3 for non-members",
+    "date": "2026-04-30T14:00:00Z",
+    "status": "live",
+    "source": "manual",
+    "likes": 401,
+    "attending": 203,
+    "categories": ["social"],
+    "imageUrl": "/mock-data/UniCS/event covers/end-of-year-bbq.png",
+    "registrationUrl": null,
+    "isOnline": false,
+    "isTicketed": true,
+    "ticketPrice": 0,
+    "memberPrice": 0,
+    "nonMemberPrice": 3,
+    "schedule": [
+      { "start": "14:00", "end": "18:00", "venue": "Samuel Alexander Building", "room": "Courtyard" }
+    ]
+  }
+]

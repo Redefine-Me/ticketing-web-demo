@@ -180,8 +180,123 @@ function sched(
   ];
 }
 
+// ── Load events from public/mock-data/{society}/mock-events.json ──────
+
+interface JsonScheduleEntry {
+  start: string;
+  end: string;
+  venue: string;
+  room: string | null;
+}
+
+interface JsonMockEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  status: string;
+  source: "scraped" | "manual";
+  likes: number;
+  attending: number;
+  categories: string[];
+  imageUrl: string;
+  registrationUrl: string | null;
+  isOnline: boolean;
+  isTicketed: boolean;
+  ticketPrice?: number;
+  memberPrice?: number;
+  nonMemberPrice?: number;
+  schedule: JsonScheduleEntry[];
+}
+
+function jsonEventToDashboard(e: JsonMockEvent): DashboardEvent {
+  const datePrefix = e.date.split("T")[0]; // "2025-09-25"
+  const schedules: DashboardEvent["schedules"] = [];
+
+  e.schedule.forEach((s, idx) => {
+    const startIso = `${datePrefix}T${s.start.padStart(5, "0")}:00Z`;
+    // Handle overnight events (end < start means next day)
+    let endDate = datePrefix;
+    if (s.end < s.start) {
+      const d = new Date(datePrefix);
+      d.setDate(d.getDate() + 1);
+      endDate = d.toISOString().split("T")[0];
+    }
+    const endIso = `${endDate}T${s.end.padStart(5, "0")}:00Z`;
+
+    schedules.push({
+      scheduledAt: startIso,
+      isEnd: false,
+      order: idx * 2,
+      locationName: s.venue,
+      locationId: null,
+      locationGoogleMapsUrl: null,
+      buildingName: s.venue,
+      buildingId: null,
+      buildingGoogleMapsUrl: null,
+      roomName: s.room,
+      roomId: null,
+      description: null,
+      isUniversityVenue: false,
+    });
+    schedules.push({
+      scheduledAt: endIso,
+      isEnd: true,
+      order: idx * 2 + 1,
+      locationName: null,
+      locationId: null,
+      locationGoogleMapsUrl: null,
+      buildingName: null,
+      buildingId: null,
+      buildingGoogleMapsUrl: null,
+      roomName: null,
+      roomId: null,
+      description: null,
+      isUniversityVenue: false,
+    });
+  });
+
+  return {
+    id: e.id,
+    title: e.title,
+    description: e.description,
+    date: e.date,
+    status: e.status,
+    source: e.source,
+    likes: e.likes,
+    attending: e.attending,
+    categories: e.categories,
+    imageUrls: e.imageUrl ? [e.imageUrl] : [],
+    registrationUrl: e.registrationUrl,
+    isOnline: e.isOnline,
+    isTicketed: e.isTicketed,
+    schedules,
+  };
+}
+
+let _cachedSociety: string | null = null;
+let _cachedEvents: DashboardEvent[] | null = null;
+
+export async function fetchMockEventsForSociety(
+  societyDirName: string,
+): Promise<DashboardEvent[]> {
+  if (_cachedSociety === societyDirName && _cachedEvents) return _cachedEvents;
+  try {
+    const res = await fetch(`/mock-data/${societyDirName}/mock-events.json`);
+    if (!res.ok) return [];
+    const json: JsonMockEvent[] = await res.json();
+    const events = json.map(jsonEventToDashboard);
+    _cachedSociety = societyDirName;
+    _cachedEvents = events;
+    return events;
+  } catch {
+    return [];
+  }
+}
+
 // Mock events — Manchester Malayalee Student Society, Sep 2025 – Apr 2026
-export const mockEvents: DashboardEvent[] = [
+// Kept as fallback when no society is selected or JSON fetch fails.
+const fallbackMockEvents: DashboardEvent[] = [
   {
     id: "e-001",
     title: "Freshers Chai & Chill",
@@ -409,6 +524,9 @@ export const mockEvents: DashboardEvent[] = [
     ],
   },
 ];
+
+/** @deprecated Use fetchMockEventsForSociety() instead — this always returns Malayalee data */
+export const mockEvents = fallbackMockEvents;
 
 export const mockCategories = [
   { id: "7d503241-5d26-422b-9a84-94d8dc8db85c", name: "academic" },
