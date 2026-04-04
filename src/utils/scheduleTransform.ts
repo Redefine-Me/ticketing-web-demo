@@ -1,5 +1,5 @@
 import type { ScheduleEntry } from '@/components/events/ScheduleBuilder';
-import type { ScheduleEntryInput } from '@/supabase_lib/types';
+import type { ScheduleEntryInput } from '@/types';
 
 /**
  * Convert EventForm schedule entries to the edge function payload format.

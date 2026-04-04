@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AlertCircle } from "lucide-react";
-import type { Category } from "@/supabase_lib/types";
+import type { Category } from "@/types";
 
 interface CategorySelectorProps {
   value: string[];

@@ -11,7 +11,7 @@ import type {
   InfluenceImage,
 } from "@/lib/types/image-generation";
 import { generatedImageToEventImage } from "@/lib/types/image-generation";
-import type { Category } from "@/supabase_lib/types";
+import type { Category } from "@/types";
 
 const CATEGORY_STYLE_MAP: Record<string, string> = {
   social: "Vibrant, warm lighting, energetic, nightlife / casual gathering",
