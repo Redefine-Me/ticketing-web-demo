@@ -16,7 +16,13 @@ interface EventStoreContextType {
 const EventStoreContext = createContext<EventStoreContextType | null>(null);
 
 const STORAGE_KEY = 'rm_event_interactions';
-const SHARED_EVENTS_STORAGE_KEY = 'rm_shared_dashboard_events_v2';
+function getSharedEventsStorageKey(): string {
+  if (typeof window === 'undefined') return 'rm_shared_dashboard_events_v2';
+  const society = localStorage.getItem('rm_demo_society');
+  return society
+    ? `rm_shared_dashboard_events_v2_${society}`
+    : 'rm_shared_dashboard_events_v2';
+}
 
 interface SharedDashboardSchedule {
   scheduledAt: string;
@@ -155,7 +161,7 @@ function dashboardToMobileEvents(
 function loadSharedEvents(fallbackEvents: EventWithDetails[]): EventWithDetails[] {
   if (typeof window === 'undefined') return fallbackEvents;
   try {
-    const raw = localStorage.getItem(SHARED_EVENTS_STORAGE_KEY);
+    const raw = localStorage.getItem(getSharedEventsStorageKey());
     if (!raw) return fallbackEvents;
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return fallbackEvents;
@@ -210,7 +216,7 @@ export function EventStoreProvider({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     const onStorage = (evt: StorageEvent) => {
-      if (evt.key !== SHARED_EVENTS_STORAGE_KEY) return;
+      if (evt.key !== getSharedEventsStorageKey()) return;
       const nextBase = loadSharedEvents(mockEvents);
       setEvents(hydrateEvents(nextBase));
     };
