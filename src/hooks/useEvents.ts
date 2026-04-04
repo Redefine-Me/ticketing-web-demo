@@ -168,12 +168,19 @@ export function useEvents(societyId: string | undefined) {
     setLoading(true);
     setError(null);
 
-    // Use localStorage if available (preserves creates/deletes), otherwise seed from mock data
     const stored = loadSharedEvents();
+    const seed = await getSeedEvents();
+
     if (stored && stored.length > 0) {
-      setEvents(stored);
+      // Refresh imageUrls from mock data so stale localStorage doesn't show broken images
+      const seedImageMap = new Map(seed.map((e) => [e.id, e.imageUrls]));
+      const refreshed = stored.map((e) => {
+        const freshUrls = seedImageMap.get(e.id);
+        return freshUrls ? { ...e, imageUrls: freshUrls } : e;
+      });
+      setEvents(refreshed);
+      saveSharedEvents(refreshed);
     } else {
-      const seed = await getSeedEvents();
       setEvents(seed);
       saveSharedEvents(seed);
     }
