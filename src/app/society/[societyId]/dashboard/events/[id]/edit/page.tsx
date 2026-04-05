@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
@@ -14,9 +15,24 @@ export default function EditEventPage() {
   const router = useRouter();
   const nav = useDashboardNav();
   const { society } = useSocietyAuth();
-  const { events, updateEvent } = useEvents(society?.id);
+  const { events, loading, fetchEvents, updateEvent } = useEvents(society?.id);
+
+  useEffect(() => {
+    if (society?.id) {
+      fetchEvents();
+    }
+  }, [society?.id, fetchEvents]);
 
   const event = events.find((e) => e.id === params.id);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-10 w-48 animate-pulse rounded bg-muted" />
+        <div className="h-96 animate-pulse rounded bg-muted" />
+      </div>
+    );
+  }
 
   if (!event) {
     return (
