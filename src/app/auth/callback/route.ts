@@ -2,30 +2,7 @@ import { createAuthServerClient } from '@/supabase_lib/auth/server';
 import { isAdmin, checkUserProfileExists } from '@/supabase_lib/users';
 import { NextResponse } from 'next/server';
 
-// Simple in-memory rate limiter for the auth callback
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
-const RATE_LIMIT_MAX = 10; // max 10 requests per IP per minute
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
-
 export async function GET(request: Request) {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (isRateLimited(ip)) {
-    return new NextResponse('Too many requests', { status: 429 });
-  }
-
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
 

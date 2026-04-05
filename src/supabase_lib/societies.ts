@@ -7,6 +7,10 @@ import type {
   SocietyAccountWithStatus,
   SocietyAccountWithSociety,
   SocietyAccountApprovalStatusRow,
+  SocietyManagementPermRow,
+  SocietyCommitteePermWithName,
+  CommitteeMemberDetail,
+  CommitteeApplicantDetail,
 } from './types';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -155,9 +159,10 @@ export async function getApprovalStatuses(
  * Checks society_profiles first, falls back to societies table for any null fields.
  */
 export async function getSocietyProfileData(
-  societyId: string
+  societyId: string,
+  supabase?: SupabaseClient
 ): Promise<{ name: string | null; description: string | null; imageUrl: string | null }> {
-  const client = getClient();
+  const client = supabase ?? getClient();
 
   const { data: profileData } = await client
     .from('society_profiles')
@@ -191,8 +196,8 @@ export async function getSocietyProfileData(
  * Fetch the image URL for a society.
  * Checks society_profiles first, falls back to societies table.
  */
-export async function getSocietyImageUrl(societyId: string): Promise<string | null> {
-  const client = getClient();
+export async function getSocietyImageUrl(societyId: string, supabase?: SupabaseClient): Promise<string | null> {
+  const client = supabase ?? getClient();
 
   const { data: profileData } = await client
     .from('society_profiles')
@@ -247,8 +252,11 @@ export async function updateSocietyProfileDetails(
   societyId: string,
   fields: { name?: string; description?: string }
 ): Promise<{ success: boolean; error?: string }> {
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) return { success: false, error: 'Not authenticated' };
+
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return { success: false, error: 'Not authenticated' };
+  if (!session) return { success: false, error: 'Session expired — please sign in again' };
 
   try {
     const res = await fetch(`${SUPABASE_URL}/functions/v1/set-society-profile-details`, {
@@ -281,8 +289,11 @@ export async function updateSocietyProfileImage(
   societyId: string,
   imageBlob: Blob
 ): Promise<{ imageUrl: string | null; error?: string }> {
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) return { imageUrl: null, error: 'Not authenticated' };
+
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return { imageUrl: null, error: 'Not authenticated' };
+  if (!session) return { imageUrl: null, error: 'Session expired — please sign in again' };
 
   try {
     const formData = new FormData();
@@ -307,5 +318,181 @@ export async function updateSocietyProfileImage(
   } catch (err) {
     console.error('[supabase_lib] updateSocietyProfileImage error:', err);
     return { imageUrl: null, error: 'Network error' };
+  }
+}
+
+/**
+ * Fetch all society_accounts for a given society, joined with approval status.
+ * Used by the committee page to list members and pending/rejected requests.
+ */
+export async function getSocietyAccountsForSociety(
+  supabase: SupabaseClient,
+  societyId: string
+): Promise<SocietyAccountWithStatus[]> {
+  const { data, error } = await supabase
+    .from('society_accounts')
+    .select('*, society_account_approval_status(name)')
+    .eq('society_id', societyId)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('[supabase_lib] getSocietyAccountsForSociety error:', error.message);
+    return [];
+  }
+
+  return (data ?? []) as unknown as SocietyAccountWithStatus[];
+}
+
+/**
+ * Fetch all rows from the society_management_perms lookup table.
+ */
+export async function getManagementPermissions(
+  supabase: SupabaseClient
+): Promise<SocietyManagementPermRow[]> {
+  const { data, error } = await supabase
+    .from('society_management_perms')
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) {
+    console.error('[supabase_lib] getManagementPermissions error:', error.message);
+    return [];
+  }
+
+  return (data ?? []) as SocietyManagementPermRow[];
+}
+
+/**
+ * Fetch all granted permissions for a set of society account IDs,
+ * joined with the permission name from society_management_perms.
+ */
+export async function getCommitteePermissions(
+  supabase: SupabaseClient,
+  accountIds: string[]
+): Promise<SocietyCommitteePermWithName[]> {
+  if (accountIds.length === 0) return [];
+
+  const { data, error } = await supabase
+    .from('society_committee_perms')
+    .select('*, society_management_perms(id, name)')
+    .in('society_account_id', accountIds);
+
+  if (error) {
+    console.error('[supabase_lib] getCommitteePermissions error:', error.message);
+    return [];
+  }
+
+  return (data ?? []) as unknown as SocietyCommitteePermWithName[];
+}
+
+/**
+ * Toggle a committee member's permission via the toggle-committee-member-permissions edge function.
+ * Grants the permission if not present, revokes if already granted.
+ */
+export async function toggleCommitteePermission(
+  supabase: SupabaseClient,
+  userId: string,
+  societyId: string,
+  permissionId: string
+): Promise<{ success: boolean; action?: 'granted' | 'revoked'; permissionName?: string; error?: string }> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return { success: false, error: 'Session expired — please sign in again' };
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/toggle-committee-member-permissions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        society_id: societyId,
+        permission_id: permissionId,
+      }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      return { success: false, error: data.error ?? `HTTP ${res.status}` };
+    }
+
+    const data = await res.json();
+    return {
+      success: true,
+      action: data.action,
+      permissionName: data.permission_name,
+    };
+  } catch (err) {
+    console.error('[supabase_lib] toggleCommitteePermission error:', err);
+    return { success: false, error: 'Network error' };
+  }
+}
+
+/**
+ * Fetch committee member details (name, email, role) for a society via edge function.
+ * Returns details for all approved/trusted members.
+ */
+export async function getCommitteeMemberDetails(
+  supabase: SupabaseClient,
+  societyId: string,
+): Promise<CommitteeMemberDetail[]> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return [];
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/get-committee-members-details`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ society_id: societyId }),
+    });
+
+    if (!res.ok) {
+      console.error('[supabase_lib] getCommitteeMemberDetails error: HTTP', res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    return data.members ?? [];
+  } catch (err) {
+    console.error('[supabase_lib] getCommitteeMemberDetails error:', err);
+    return [];
+  }
+}
+
+/**
+ * Fetch applicant details (name, email) for a society via edge function.
+ * Returns details for pending (and rejected) applicants.
+ */
+export async function getCommitteeApplicantDetails(
+  supabase: SupabaseClient,
+  societyId: string,
+): Promise<CommitteeApplicantDetail[]> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return [];
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/get-committee-application-details`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ society_id: societyId }),
+    });
+
+    if (!res.ok) {
+      console.error('[supabase_lib] getCommitteeApplicantDetails error: HTTP', res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    return data.applicants ?? [];
+  } catch (err) {
+    console.error('[supabase_lib] getCommitteeApplicantDetails error:', err);
+    return [];
   }
 }

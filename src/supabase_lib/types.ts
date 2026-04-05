@@ -25,6 +25,9 @@ export interface LocationRow {
   street: string | null;
   postcode: string | null;
   google_maps_url: string | null;
+  google_place_id: string | null;
+  latitude: number | null;
+  longitude: number | null;
   city_id: string | null;
   created_at: string;
 }
@@ -212,6 +215,48 @@ export interface EventWithRelations extends EventRow {
   schedule_entries: ScheduleEntryWithLocation[];
 }
 
+// ---- Event management (edge function) types ----
+
+export interface ScheduleEntryInput {
+  scheduled_at: string;
+  is_end_schedule?: boolean;
+  schedule_order?: number;
+  location_id?: string;
+  building_id?: string;
+  room_id?: string;
+  description?: string;
+}
+
+export interface CreateEventInput {
+  society_id: string;
+  title: string;
+  description: string;
+  /** Category UUIDs */
+  category_ids: string[];
+  schedule: ScheduleEntryInput[];
+  is_online?: boolean;
+  is_free?: boolean;
+  price?: string;
+  registration_url?: string;
+}
+
+export interface UpdateEventInput {
+  event_id: string;
+  title?: string;
+  description?: string;
+  /** Category UUIDs */
+  category_ids?: string[];
+  schedule?: ScheduleEntryInput[];
+  is_online?: boolean;
+  is_free?: boolean;
+  price?: string | null;
+  registration_url?: string | null;
+}
+
+export interface DeleteEventInput {
+  event_id: string;
+}
+
 // Shape returned by getSocieties() — societies with nested university.
 export interface SocietyWithUniversity extends SocietyRow {
   universities: UniversityRow | null;
@@ -296,6 +341,38 @@ export interface UniversityCourse {
   degreeTypeName: string;
   courseLength: number;
   yearInIndustry: boolean;
+}
+
+// ---- Society management permission types ----
+
+/** Row from the society_management_perms lookup table. */
+export interface SocietyManagementPermRow {
+  id: string;
+  name: string;
+}
+
+/** Row from the society_committee_perms junction table, with the permission name joined. */
+export interface SocietyCommitteePermWithName {
+  id: string;
+  society_account_id: string;
+  permission_id: string;
+  society_management_perms: Pick<SocietyManagementPermRow, 'id' | 'name'>;
+}
+
+/** A member record returned by the get-committee-members-details edge function. */
+export interface CommitteeMemberDetail {
+  user_id: string;
+  email: string;
+  name: string;
+  role_name: string | null;
+}
+
+/** An applicant record returned by the get-committee-application-details edge function. */
+export interface CommitteeApplicantDetail {
+  user_id: string;
+  email: string;
+  name: string;
+  status: 'pending' | 'rejected';
 }
 
 // ---- Society account joined types ----

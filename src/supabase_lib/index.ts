@@ -1,4 +1,4 @@
-// supabase_lib — public read-only data access for the RedefineMe web app.
+// supabase_lib — data access layer for the RedefineMe web app.
 // All functions fetch live data from Supabase and return typed frontend objects.
 
 export { getClient } from './client';
@@ -28,6 +28,10 @@ export type {
   SocietyAccountApprovalStatusRow,
   SocietyAccountWithStatus,
   SocietyAccountWithSociety,
+  SocietyManagementPermRow,
+  SocietyCommitteePermWithName,
+  CommitteeMemberDetail,
+  CommitteeApplicantDetail,
   StudyLevelRow,
   InterestRow,
   InteractionTypeRow,
@@ -39,6 +43,10 @@ export type {
   UniversityCourse,
   EventWithRelations,
   SocietyWithUniversity,
+  ScheduleEntryInput,
+  CreateEventInput,
+  UpdateEventInput,
+  DeleteEventInput,
 } from './types';
 
 // Events
@@ -50,6 +58,7 @@ export {
   getEventCities,
   getEventTags,
   getEventUniversities,
+  getEventsForSociety,
 } from './events';
 
 export type { GetEventsOptions } from './events';
@@ -65,6 +74,12 @@ export {
   getApprovalStatuses,
   updateSocietyProfileDetails,
   updateSocietyProfileImage,
+  getSocietyAccountsForSociety,
+  getManagementPermissions,
+  getCommitteePermissions,
+  toggleCommitteePermission,
+  getCommitteeMemberDetails,
+  getCommitteeApplicantDetails,
 } from './societies';
 
 // Universities
@@ -95,8 +110,18 @@ export { getUniversityCourses } from './courses';
 export { getPushTokens, getAllUserDetails } from './notifications';
 export type { PushTokenRow, UserDetails } from './notifications';
 
+// Buildings & Rooms
+export { searchBuildings, getRoomsForBuilding, uploadLocation } from './buildings';
+export type { BuildingOption, RoomOption } from './buildings';
+
 // Onboarding
 export { submitOnboarding, uploadProfilePicture, saveUserInterests } from './onboarding';
+
+// Event management (authenticated — edge functions)
+export { createEvent, updateEvent, deleteEvent } from './event-management';
+
+// Analytics (authenticated — edge functions)
+export { fetchSocietyAnalytics, fetchPostHogAnalytics } from './analytics';
 
 // Transform utilities (useful if callers have raw DB rows)
 export {

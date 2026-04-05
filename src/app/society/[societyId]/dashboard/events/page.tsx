@@ -14,7 +14,7 @@ import type { DashboardEvent } from "@/lib/supabase/types";
 
 export default function EventsPage() {
   const nav = useDashboardNav();
-  const { society } = useSocietyAuth();
+  const { society, permissions } = useSocietyAuth();
   const {
     events,
     loading,

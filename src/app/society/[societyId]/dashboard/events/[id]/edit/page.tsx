@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
 import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
+import { useCategories } from "@/hooks/useCategories";
 import { EventForm, type EventFormData } from "@/components/events/EventForm";
+import { dashboardScheduleToForm } from "@/utils/scheduleTransform";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -16,6 +18,7 @@ export default function EditEventPage() {
   const nav = useDashboardNav();
   const { society } = useSocietyAuth();
   const { events, loading, fetchEvents, updateEvent } = useEvents(society?.id);
+  const { categories, loading: categoriesLoading } = useCategories();
 
   useEffect(() => {
     if (society?.id) {
@@ -27,9 +30,10 @@ export default function EditEventPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-10 w-48 animate-pulse rounded bg-muted" />
-        <div className="h-96 animate-pulse rounded bg-muted" />
+      <div className="space-y-4">
+        <div className="h-8 w-48 animate-pulse rounded bg-muted" />
+        <div className="h-4 w-64 animate-pulse rounded bg-muted" />
+        <div className="h-64 animate-pulse rounded bg-muted" />
       </div>
     );
   }
@@ -47,40 +51,27 @@ export default function EditEventPage() {
 
   const isScraped = event.source === "scraped";
 
+  // Reverse-map category names to real IDs for the form
+  const categoryIds = event.categories
+    .map((name) => categories.find((c) => c.name === name)?.id)
+    .filter((id): id is string => !!id);
+
   const initialData = {
     title: event.title,
     description: event.description,
-    categoryIds: [] as string[],
-    schedules: event.schedules
-      .filter((s) => !s.isEnd)
-      .map((s) => ({
-        date: s.scheduledAt.split("T")[0],
-        startTime: new Date(s.scheduledAt).toLocaleTimeString("en-GB", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        endTime: "",
-        locationName: s.locationName ?? "",
-        locationId: s.locationId ?? undefined,
-      })),
+    categoryIds,
+    schedules: dashboardScheduleToForm(event.schedules),
     isOnline: event.isOnline,
     isFree: event.isFree ?? true,
     price: event.price ?? "",
     registrationUrl: event.registrationUrl ?? "",
   };
 
-  if (initialData.schedules.length === 0) {
-    initialData.schedules = [
-      { date: "", startTime: "", endTime: "", locationName: "", locationId: undefined },
-    ];
-  }
-
   const handleSubmit = async (formData: EventFormData & { images: File[] }) => {
     if (!params.id) return;
 
     try {
-      const { images: _removed, ...eventData } = formData;
-      await updateEvent(params.id, eventData);
+      await updateEvent(params.id, formData, formData.categoryIds);
       toast.success("Event updated successfully.");
       router.push(nav.href(`/events/${params.id}`));
     } catch (err) {
@@ -106,6 +97,8 @@ export default function EditEventPage() {
         isScraped={isScraped}
         onSubmit={handleSubmit}
         submitLabel="Save Changes"
+        categories={categories}
+        categoriesLoading={categoriesLoading}
       />
     </div>
   );

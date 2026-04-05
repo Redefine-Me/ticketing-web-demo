@@ -25,6 +25,9 @@ export interface LocationRow {
   street: string | null;
   postcode: string | null;
   google_maps_url: string | null;
+  google_place_id: string | null;
+  latitude: number | null;
+  longitude: number | null;
   city_id: string | null;
   created_at: string;
 }
@@ -291,12 +294,12 @@ export interface DashboardEvent {
     locationName: string | null;
     locationId: string | null;
     locationGoogleMapsUrl: string | null;
-    buildingName?: string | null;
-    buildingId?: string | null;
-    buildingGoogleMapsUrl?: string | null;
-    roomName?: string | null;
-    roomId?: string | null;
-    description?: string | null;
+    buildingName: string | null;
+    buildingId: string | null;
+    buildingGoogleMapsUrl: string | null;
+    roomName: string | null;
+    roomId: string | null;
+    description: string | null;
     isUniversityVenue?: boolean;
   }>;
 

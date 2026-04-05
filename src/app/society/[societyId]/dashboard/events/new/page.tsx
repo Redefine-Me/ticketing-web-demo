@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
 import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
+import { useCategories } from "@/hooks/useCategories";
 import { EventForm, type EventFormData } from "@/components/events/EventForm";
 import { toast } from "sonner";
 
@@ -12,11 +13,11 @@ export default function CreateEventPage() {
   const nav = useDashboardNav();
   const { society } = useSocietyAuth();
   const { createEvent } = useEvents(society?.id);
+  const { categories, loading: categoriesLoading } = useCategories();
 
   const handleSubmit = async (formData: EventFormData & { images: File[] }) => {
     try {
-      const { images: _removed, ...eventData } = formData;
-      await createEvent(eventData);
+      await createEvent(formData, formData.categoryIds);
 
       toast.success("Event created successfully.");
       router.push(nav.href("/events"));
@@ -36,7 +37,7 @@ export default function CreateEventPage() {
         </p>
       </div>
 
-      <EventForm onSubmit={handleSubmit} />
+      <EventForm onSubmit={handleSubmit} categories={categories} categoriesLoading={categoriesLoading} />
     </div>
   );
 }

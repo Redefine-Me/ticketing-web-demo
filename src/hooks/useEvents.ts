@@ -1,89 +1,16 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
+import { createAuthBrowserClient } from "@/supabase_lib/auth/browser";
+import { getEventsForSociety } from "@/supabase_lib/events";
+import {
+  createEvent as createEventEdge,
+  updateEvent as updateEventEdge,
+  deleteEvent as deleteEventEdge,
+} from "@/supabase_lib/event-management";
+import { formScheduleToPayload } from "@/utils/scheduleTransform";
+import type { EventFormData } from "@/components/events/EventForm";
 import type { DashboardEvent } from "@/lib/supabase/types";
-import { getClient } from "@/supabase_lib/client";
-
-const DASHBOARD_EVENT_SELECT = `
-  *,
-  categories(id, name),
-  event_societies!inner(society_id),
-  event_images(post_id, image_index, post_images(full_url)),
-  schedule_entries(id, scheduled_at, is_end_schedule, schedule_order, location_id, locations(id, name, google_maps_url))
-`.trim();
-
-interface RawScheduleEntry {
-  id: string;
-  scheduled_at: string;
-  is_end_schedule: boolean;
-  schedule_order: number;
-  location_id: string | null;
-  locations: { id: string; name: string; google_maps_url: string | null } | null;
-}
-
-interface RawRow {
-  id: string;
-  title: string;
-  description: string;
-  is_online: boolean;
-  is_free: boolean;
-  price: string | null;
-  registration_url: string | null;
-  likes: number;
-  attending: number;
-  categories: { id: string; name: string } | null;
-  event_images: Array<{
-    post_id: string | null;
-    image_index: number | null;
-    post_images: { full_url: string } | null;
-  }>;
-  schedule_entries: RawScheduleEntry[];
-}
-
-function toDashboardEvent(row: RawRow): DashboardEvent {
-  const sortedSchedules = [...row.schedule_entries].sort(
-    (a, b) => a.schedule_order - b.schedule_order
-  );
-
-  const firstStart = sortedSchedules.find((s) => !s.is_end_schedule);
-  const imageUrls = row.event_images
-    .map((img) => img.post_images?.full_url)
-    .filter((url): url is string => !!url);
-
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description,
-    date: firstStart?.scheduled_at ?? null,
-    status: "live",
-    source: "scraped",
-    likes: row.likes,
-    attending: row.attending,
-    categories: row.categories ? [row.categories.name] : [],
-    imageUrl: imageUrls[0] ?? null,
-    imageUrls,
-    registrationUrl: row.registration_url,
-    isOnline: row.is_online,
-    isFree: row.is_free,
-    price: row.price,
-    schedules: sortedSchedules.map((s) => ({
-      scheduledAt: s.scheduled_at,
-      isEnd: s.is_end_schedule,
-      order: s.schedule_order,
-      locationName: s.locations?.name ?? null,
-      locationId: s.location_id,
-      locationGoogleMapsUrl: s.locations?.google_maps_url ?? null,
-      buildingName: null,
-      buildingId: null,
-      buildingGoogleMapsUrl: null,
-      roomName: null,
-      roomId: null,
-      description: null,
-      isUniversityVenue: false,
-    })),
-    isTicketed: false,
-  };
-}
 
 /** Compute derived ticketing totals for a single event. */
 function withTicketingTotals(event: DashboardEvent): DashboardEvent {
@@ -98,11 +25,6 @@ function withTicketingTotals(event: DashboardEvent): DashboardEvent {
   return { ...event, totalAvailable, totalSold, totalRevenue };
 }
 
-// WARNING: All mutations (createEvent, updateEvent, deleteEvent) are currently mock implementations
-// that only modify local state. When replacing with real Supabase calls, ensure that:
-// 1. Supabase RLS policies restrict writes to events owned by the caller's society
-// 2. OR edge functions verify society ownership before performing mutations
-// Do NOT rely solely on the client-side layout auth check for authorization.
 export function useEvents(societyId: string | undefined) {
   const [events, setEvents] = useState<DashboardEvent[]>([]);
   const [loading, setLoading] = useState(false);
@@ -113,68 +35,66 @@ export function useEvents(societyId: string | undefined) {
 
   const fetchEvents = useCallback(async () => {
     if (!societyId) return;
-
     setLoading(true);
     setError(null);
-
     try {
-      const { data, error: queryError } = await getClient()
-        .from("events")
-        .select(DASHBOARD_EVENT_SELECT)
-        .eq("event_societies.society_id", societyId);
-
-      if (queryError) {
-        console.error("[useEvents] fetchEvents error:", queryError.message);
-        setError(queryError.message);
-        return;
-      }
-
-      const dashboardEvents = (data as unknown as RawRow[]).map(toDashboardEvent);
-      setEvents(dashboardEvents);
+      const supabase = createAuthBrowserClient();
+      const data = await getEventsForSociety(supabase, societyId);
+      setEvents(data);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to fetch events";
-      console.error("[useEvents] fetchEvents error:", message);
-      setError(message);
+      console.error("[useEvents] fetchEvents error:", err);
+      setError(err instanceof Error ? err.message : "Failed to load events");
     } finally {
       setLoading(false);
     }
   }, [societyId]);
 
-  const createEvent = async (formData: Record<string, unknown>) => {
-    const newEvent: DashboardEvent = {
-      id: `e-${Date.now()}`,
-      title: (formData.title as string) ?? "New Event",
-      description: (formData.description as string) ?? "",
-      date: new Date().toISOString(),
-      status: "ingested",
-      source: "manual",
-      likes: 0,
-      attending: 0,
-      categories: [],
-      imageUrl: null,
-      imageUrls: [],
-      registrationUrl: null,
-      isOnline: false,
-      isFree: true,
-      price: null,
-      schedules: [],
-      isTicketed: false,
-    };
-    setEvents((prev) => [newEvent, ...prev]);
-    return { event_id: newEvent.id, status: "ingested" };
+  const createEvent = async (
+    formData: EventFormData,
+    categoryIds: string[]
+  ) => {
+    if (!societyId) throw new Error("No society selected");
+    const supabase = createAuthBrowserClient();
+    const schedule = formScheduleToPayload(formData.schedules);
+    const result = await createEventEdge(supabase, {
+      society_id: societyId,
+      title: formData.title,
+      description: formData.description,
+      category_ids: categoryIds,
+      schedule,
+      is_online: formData.isOnline,
+      is_free: formData.isFree,
+      price: formData.isFree ? undefined : formData.price || undefined,
+      registration_url: formData.registrationUrl || undefined,
+    });
+    await fetchEvents();
+    return result;
   };
 
-  const updateEvent = async (eventId: string, formData: Record<string, unknown>) => {
-    setEvents((prev) =>
-      prev.map((e) =>
-        e.id === eventId
-          ? { ...e, ...(formData as Partial<DashboardEvent>) }
-          : e
-      )
-    );
+  const updateEvent = async (
+    eventId: string,
+    formData: EventFormData,
+    categoryIds: string[]
+  ) => {
+    const supabase = createAuthBrowserClient();
+    const schedule = formScheduleToPayload(formData.schedules);
+    await updateEventEdge(supabase, {
+      event_id: eventId,
+      title: formData.title,
+      description: formData.description,
+      category_ids: categoryIds,
+      schedule,
+      is_online: formData.isOnline,
+      is_free: formData.isFree,
+      price: formData.isFree ? undefined : formData.price || undefined,
+      registration_url: formData.registrationUrl || undefined,
+    });
+    await fetchEvents();
   };
 
   const deleteEvent = async (eventId: string) => {
+    const supabase = createAuthBrowserClient();
+    await deleteEventEdge(supabase, eventId);
     setEvents((prev) => prev.filter((e) => e.id !== eventId));
   };
 

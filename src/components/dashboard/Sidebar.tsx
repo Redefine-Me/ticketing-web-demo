@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
@@ -9,6 +10,7 @@ import {
   CalendarDays,
   CalendarCheck,
   Users,
+  UsersRound,
   PieChart,
   Settings,
 } from "lucide-react";
@@ -18,6 +20,7 @@ const navItems = [
   { path: "/events", label: "Events", icon: CalendarDays },
   { path: "/bookings", label: "Bookings", icon: CalendarCheck },
   { path: "/followers", label: "Followers", icon: Users },
+  { path: "/committee", label: "Committee", icon: UsersRound },
   { path: "/audience", label: "Audience", icon: PieChart },
   { path: "/settings", label: "Settings", icon: Settings },
 ];
@@ -29,8 +32,15 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex md:w-64 md:flex-col md:border-r md:border-border bg-card/95 backdrop-blur-sm">
       <div className="flex h-16 items-center border-b border-border px-6">
-        <Link href={nav.href("/overview")} className="flex items-center gap-2">
-          <span className="text-xl font-bold text-foreground">RedefineMe</span>
+        <Link href={nav.href("/overview")} className="flex items-center">
+          <Image
+            src="/logos/Redefine Me logo wno bg.png"
+            alt="Redefine Me"
+            width={640}
+            height={144}
+            className="h-[154px] w-auto"
+            priority
+          />
         </Link>
       </div>
       <nav className="flex-1 space-y-1 p-4">

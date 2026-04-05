@@ -6,12 +6,14 @@ import type { User } from "@supabase/supabase-js";
 import type { SocietyAccountRow, SocietyRow, SocietyProfileRow } from "@/lib/supabase/types";
 import { useDashboardContext } from "@/components/dashboard/DashboardContext";
 import { createAuthBrowserClient } from "@/supabase_lib/auth/browser";
+import { getCommitteePermissions } from "@/supabase_lib/societies";
 
 interface SocietyAuth {
   user: User | null;
   account: SocietyAccountRow | null;
   society: SocietyRow | null;
   profile: SocietyProfileRow | null;
+  permissions: string[];
   loading: boolean;
   signOut: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -25,6 +27,7 @@ export function useSocietyAuth(): SocietyAuth {
   const [account, setAccount] = useState<SocietyAccountRow | null>(null);
   const [society, setSociety] = useState<SocietyRow | null>(null);
   const [profile, setProfile] = useState<SocietyProfileRow | null>(null);
+  const [permissions, setPermissions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
@@ -73,6 +76,14 @@ export function useSocietyAuth(): SocietyAuth {
 
       setSociety((societyResult.data as SocietyRow) ?? null);
       setProfile((profileResult.data as SocietyProfileRow) ?? null);
+
+      // Fetch permissions for the current user's society account
+      if (accountResult.data?.id) {
+        const perms = await getCommitteePermissions(supabase, [accountResult.data.id]);
+        setPermissions(perms.map((p) => p.society_management_perms.name));
+      } else {
+        setPermissions([]);
+      }
     } catch (err) {
       console.error("[useSocietyAuth] fetch error:", err);
     } finally {
@@ -103,6 +114,7 @@ export function useSocietyAuth(): SocietyAuth {
     account,
     society,
     profile,
+    permissions,
     loading,
     signOut,
     refresh,

@@ -3,8 +3,6 @@ import type {
   SocietyRow,
   SocietyProfileRow,
   DashboardEvent,
-  AnalyticsData,
-  PostHogAnalyticsData,
 } from "@/lib/supabase/types";
 
 // Mock society
@@ -69,6 +67,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: "Kilburn Building",
         locationId: "l-001",
         locationGoogleMapsUrl: "https://maps.google.com/?q=Kilburn+Building+Manchester",
+        buildingName: "Kilburn Building",
+        buildingId: "b-001",
+        buildingGoogleMapsUrl: "https://maps.google.com/?q=Kilburn+Building+Manchester",
+        roomName: null,
+        roomId: null,
+        description: null,
       },
       {
         scheduledAt: "2026-03-23T09:00:00Z",
@@ -77,6 +81,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: null,
         locationId: null,
         locationGoogleMapsUrl: null,
+        buildingName: null,
+        buildingId: null,
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
     ],
   },
@@ -104,6 +114,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: "University Place Theatre A",
         locationId: "l-002",
         locationGoogleMapsUrl: null,
+        buildingName: "University Place",
+        buildingId: "b-002",
+        buildingGoogleMapsUrl: null,
+        roomName: "Theatre A",
+        roomId: "r-001",
+        description: null,
       },
       {
         scheduledAt: "2026-03-15T20:00:00Z",
@@ -112,6 +128,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: null,
         locationId: null,
         locationGoogleMapsUrl: null,
+        buildingName: null,
+        buildingId: null,
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
     ],
   },
@@ -139,6 +161,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: "256 Wilmslow Road",
         locationId: "l-003",
         locationGoogleMapsUrl: null,
+        buildingName: "256 Wilmslow Road",
+        buildingId: "b-003",
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
     ],
   },
@@ -166,6 +194,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: "Kilburn Building LF15",
         locationId: "l-004",
         locationGoogleMapsUrl: null,
+        buildingName: "Kilburn Building",
+        buildingId: "b-001",
+        buildingGoogleMapsUrl: null,
+        roomName: "LF15",
+        roomId: "r-002",
+        description: null,
       },
       {
         scheduledAt: "2026-03-28T16:00:00Z",
@@ -174,6 +208,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: null,
         locationId: null,
         locationGoogleMapsUrl: null,
+        buildingName: null,
+        buildingId: null,
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
     ],
   },
@@ -201,6 +241,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: "Kilburn Building LF31",
         locationId: "l-005",
         locationGoogleMapsUrl: null,
+        buildingName: "Kilburn Building",
+        buildingId: "b-001",
+        buildingGoogleMapsUrl: null,
+        roomName: "LF31",
+        roomId: "r-003",
+        description: null,
       },
       {
         scheduledAt: "2026-04-02T19:00:00Z",
@@ -209,6 +255,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: null,
         locationId: null,
         locationGoogleMapsUrl: null,
+        buildingName: null,
+        buildingId: null,
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
     ],
   },
@@ -236,6 +288,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: "Kimpton Clocktower Hotel",
         locationId: "l-006",
         locationGoogleMapsUrl: "https://maps.google.com/?q=Kimpton+Clocktower+Manchester",
+        buildingName: "Kimpton Clocktower Hotel",
+        buildingId: "b-004",
+        buildingGoogleMapsUrl: "https://maps.google.com/?q=Kimpton+Clocktower+Manchester",
+        roomName: null,
+        roomId: null,
+        description: null,
       },
       {
         scheduledAt: "2026-05-11T01:00:00Z",
@@ -244,6 +302,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: null,
         locationId: null,
         locationGoogleMapsUrl: null,
+        buildingName: null,
+        buildingId: null,
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
     ],
   },
@@ -271,6 +335,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: null,
         locationId: null,
         locationGoogleMapsUrl: null,
+        buildingName: null,
+        buildingId: null,
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
       {
         scheduledAt: "2026-03-08T17:00:00Z",
@@ -279,6 +349,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: null,
         locationId: null,
         locationGoogleMapsUrl: null,
+        buildingName: null,
+        buildingId: null,
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
     ],
   },
@@ -306,6 +382,12 @@ export const mockEvents: DashboardEvent[] = [
         locationName: "Alan Turing Building",
         locationId: "l-007",
         locationGoogleMapsUrl: null,
+        buildingName: "Alan Turing Building",
+        buildingId: "b-005",
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
       {
         scheduledAt: "2026-03-20T19:30:00Z",
@@ -314,98 +396,16 @@ export const mockEvents: DashboardEvent[] = [
         locationName: null,
         locationId: null,
         locationGoogleMapsUrl: null,
+        buildingName: null,
+        buildingId: null,
+        buildingGoogleMapsUrl: null,
+        roomName: null,
+        roomId: null,
+        description: null,
       },
     ],
   },
 ];
-
-// Generate follower growth data
-function generateFollowerGrowth(days: number): Array<{ date: string; count: number }> {
-  const data: Array<{ date: string; count: number }> = [];
-  const now = new Date();
-  for (let i = days; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    data.push({
-      date: date.toISOString().split("T")[0],
-      count: Math.floor(Math.random() * 8) + 1,
-    });
-  }
-  return data;
-}
-
-// Generate engagement data
-function generateEngagementData(
-  days: number
-): Array<{ date: string; likes: number; attending: number; views: number }> {
-  const data: Array<{
-    date: string;
-    likes: number;
-    attending: number;
-    views: number;
-  }> = [];
-  const now = new Date();
-  for (let i = days; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    data.push({
-      date: date.toISOString().split("T")[0],
-      likes: Math.floor(Math.random() * 15) + 2,
-      attending: Math.floor(Math.random() * 10) + 1,
-      views: Math.floor(Math.random() * 40) + 10,
-    });
-  }
-  return data;
-}
-
-export function getMockAnalytics(timeRange: "7d" | "30d" | "90d"): AnalyticsData {
-  const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
-  return {
-    followerCount: 482,
-    followerGrowth: generateFollowerGrowth(days),
-    totalLikes: mockEvents.reduce((sum, e) => sum + e.likes, 0),
-    totalAttending: mockEvents.reduce((sum, e) => sum + e.attending, 0),
-    eventStats: mockEvents.map((e) => ({
-      id: e.id,
-      title: e.title,
-      likes: e.likes,
-      attending: e.attending,
-      source: e.source,
-      date: e.date,
-    })),
-    audienceByUniversity: [
-      { name: "University of Manchester", count: 312 },
-      { name: "Manchester Metropolitan University", count: 89 },
-      { name: "University of Salford", count: 47 },
-      { name: "University of Bolton", count: 18 },
-      { name: "Other", count: 16 },
-    ],
-    audienceByStudyLevel: [
-      { name: "Undergraduate", count: 298 },
-      { name: "Postgraduate", count: 112 },
-      { name: "PhD", count: 42 },
-      { name: "Foundation", count: 18 },
-      { name: "Other", count: 12 },
-    ],
-  };
-}
-
-export function getMockPostHogAnalytics(): PostHogAnalyticsData {
-  return {
-    totalViews: 1847,
-    profileViews: 623,
-    viewsByEvent: mockEvents.map((e) => ({
-      eventId: e.id,
-      views: Math.floor(Math.random() * 200) + 30,
-    })),
-    registrationClicks: 156,
-  };
-}
-
-export function getMockEngagementData(timeRange: "7d" | "30d" | "90d") {
-  const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
-  return generateEngagementData(days);
-}
 
 export const mockCategories = [
   { id: "cat-001", name: "social" },

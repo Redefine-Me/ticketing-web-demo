@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Effective date: 23 February 2026**
+**Effective date: 17 March 2026**
 
 ---
 
@@ -49,19 +49,29 @@ We also collect **analytics data** through PostHog, our analytics provider. This
 - Interaction events (e.g. liking, RSVPing to, or sharing an event; tapping a category or university; performing a search)
 - Authentication events (e.g. sign-in method used, onboarding completion)
 - Non-identifying metadata associated with your account (university, study level, number of interests selected)
+- Whether you granted or denied the App Tracking Transparency prompt (iOS only)
 
 Analytics data is sent to PostHog's **EU servers** (Frankfurt, Germany). PostHog does not receive your name, email address, or other directly identifying information. When you are signed in, your anonymous user ID is linked to the above metadata to help us understand how the App is used and improve it.
 
-### (c) Information we do NOT collect
+### (c) Advertising attribution data
+
+When you first open the App on iOS, we request your permission (via Apple's App Tracking Transparency prompt) to access your device's advertising identifier (IDFA). On Android, the advertising identifier (Android Advertising ID) is available without a prompt.
+
+If you grant permission (or on Android by default), this identifier is shared with **Meta Platforms, Inc.** solely to measure whether our advertising campaigns on Facebook and Instagram led to app installations. We do not use this data for retargeting, personalisation, or any purpose other than install attribution.
+
+- On **iOS**, you can deny this permission when prompted, or revoke it later via Settings → Privacy & Security → Tracking.
+- On **Android**, you can opt out via Settings → Google → Ads → Delete advertising ID.
+
+If you deny or revoke permission, the advertising identifier is not collected and no data is shared with Meta for attribution purposes.
+
+### (d) Information we do NOT collect
 
 To be clear about the limits of our data collection:
 
 - We do **not** collect your device's GPS location or coarse network location
-- We do **not** collect device identifiers (IDFA, Android Advertising ID, IMEI, etc.)
 - We do **not** send push notification tokens to external services (notifications are scheduled locally on your device)
 - We do **not** collect any financial or payment information
 - We do **not** read, store, or process the content of any messages or communications
-- We do **not** use advertising SDKs in the App
 
 ---
 
@@ -78,6 +88,7 @@ To be clear about the limits of our data collection:
 | Saved events, RSVPs, shares | Persisting your preferences and activity across devices and sessions | Performance of a contract (Article 6(1)(b)) |
 | Session token | Keeping you authenticated | Performance of a contract (Article 6(1)(b)) |
 | Analytics data | Understanding how the App is used and improving the service | Legitimate interests (Article 6(1)(f)) — to improve and maintain the App |
+| Advertising identifier (IDFA / Android Ad ID) | Measuring whether our Facebook/Instagram ad campaigns led to app installs | Consent (Article 6(1)(a)) via ATT prompt on iOS; legitimate interests (Article 6(1)(f)) on Android with opt-out available |
 | Aggregated event interaction data | Providing societies with anonymous analytics about their events via the Society Dashboard | Legitimate interests (Article 6(1)(f)) — to help societies understand and improve their events |
 
 We do not use your personal data for automated decision-making or profiling that produces legal or similarly significant effects.
@@ -86,7 +97,7 @@ We do not use your personal data for automated decision-making or profiling that
 
 ## 4. How We Share Your Information
 
-We do not sell your personal data. We do not share your data with advertising networks or data brokers.
+We do not sell your personal data. We do not share your data with data brokers.
 
 We share data only with the following parties, solely to operate the App:
 
@@ -95,6 +106,9 @@ Our database and authentication provider. Supabase acts as a data processor on o
 
 **PostHog Inc.**
 Our analytics provider. PostHog acts as a data processor on our behalf. It receives anonymised interaction events, screen views, search queries, authentication method, and non-identifying account metadata (university, study level, interests count). All analytics data is processed on PostHog's **EU servers** (Frankfurt, Germany). PostHog does not receive your name or email address. PostHog's privacy policy is available at [posthog.com/privacy](https://posthog.com/privacy).
+
+**Meta Platforms, Inc.**
+If you have granted tracking permission (iOS) or have not opted out of your advertising identifier (Android), we share your device's advertising identifier with Meta solely to measure app install attribution from our advertising campaigns on Facebook and Instagram. Meta processes this data under its own privacy policy, available at [facebook.com/privacy](https://www.facebook.com/privacy/policy). Meta is based in the United States; this transfer is covered by Standard Contractual Clauses for EU/UK data transfers.
 
 **Apple Inc. (Apple Sign In)**
 If you choose to sign in with Apple, your name and email address are shared with Apple as part of the standard Apple Sign In authentication flow. Apple acts as an identity provider; we receive an authentication token from Apple to verify your identity. Apple's privacy policy is available at [apple.com/legal/privacy](https://www.apple.com/legal/privacy/).

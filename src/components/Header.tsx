@@ -51,8 +51,8 @@ export default function Header({ cities, universities }: HeaderProps) {
 
   return (
     <>
-    <div className="sticky top-0 z-50 bg-[#FAFAFA] border-b border-border">
-      <div className="max-w-[1120px] mx-auto px-[18px]">
+    <div className="sticky top-0 z-50 bg-bg border-b border-border">
+      <div className="max-w-[1120px] mx-auto px-5">
         <div className="flex items-center justify-between gap-3 h-16">
           {/* Logo — crossfade between dot and no-dot variants over 6s */}
           <Link href="/" className="-ml-10 relative w-[128px] h-[128px] block flex-shrink-0">
@@ -61,7 +61,7 @@ export default function Header({ cities, universities }: HeaderProps) {
               alt="RedefineMe"
               width={128}
               height={128}
-              unoptimized
+              priority
               className="absolute inset-0 animate-[logoDotFade_6s_ease-in-out_infinite]"
             />
             <Image
@@ -69,7 +69,7 @@ export default function Header({ cities, universities }: HeaderProps) {
               alt=""
               width={128}
               height={128}
-              unoptimized
+              priority
               className="absolute inset-0"
               aria-hidden
             />
@@ -184,7 +184,7 @@ export default function Header({ cities, universities }: HeaderProps) {
 
     {/* Slide-out panel */}
     <div
-      className="fixed top-0 right-0 h-full w-[300px] bg-[#FAFAFA] z-[200] mobile-only shadow-[-4px_0_20px_rgba(0,0,0,0.08)] transition-transform duration-500 ease-out"
+      className="fixed top-0 right-0 h-full w-[300px] bg-bg z-[200] mobile-only shadow-[-4px_0_20px_rgba(0,0,0,0.08)] transition-transform duration-500 ease-out"
       style={{ transform: showMobileMenu ? 'translateX(0)' : 'translateX(100%)' }}
     >
       {/* Hamburger — slides in with panel, animates ☰ → X */}

@@ -73,6 +73,12 @@ export default function EventDetailPage() {
     }
   }, [society?.id, fetchEvents]);
 
+  useEffect(() => {
+    if (society?.id) {
+      fetchEvents();
+    }
+  }, [society?.id, fetchEvents]);
+
   const event = events.find((e) => e.id === params.id);
 
   const handleDelete = async () => {
@@ -327,6 +333,9 @@ export default function EventDetailPage() {
                               </a>
                             )}
                           </div>
+                        )}
+                        {entry.description && (
+                          <p className="text-sm text-muted-foreground italic">{entry.description}</p>
                         )}
                       </div>
                     </div>

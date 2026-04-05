@@ -15,6 +15,10 @@ import { ScheduleBuilder, type ScheduleEntry } from "@/components/events/Schedul
 import { ImageUploader } from "@/components/events/ImageUploader";
 import { CategorySelector } from "@/components/events/CategorySelector";
 import { AlertTriangle, Loader2 } from "lucide-react";
+import { APIProvider } from "@vis.gl/react-google-maps";
+import type { Category } from "@/supabase_lib/types";
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
 
 const eventFormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -26,14 +30,18 @@ const eventFormSchema = z.object({
         date: z.string().min(1, "Date is required"),
         startTime: z.string().min(1, "Start time is required"),
         endTime: z.string(),
-        locationName: z.string(),
-        locationId: z.string().optional(),
+        buildingName: z.string(),
+        buildingId: z.string().optional(),
+        buildingGoogleMapsUrl: z.string().nullish(),
+        roomName: z.string(),
+        roomId: z.string().optional(),
+        description: z.string(),
       })
     )
     .min(1, "Add at least one schedule entry"),
   isOnline: z.boolean(),
   isFree: z.boolean(),
-  price: z.string().optional(),
+  price: z.string().max(100, "Price description must be under 100 characters").optional(),
   registrationUrl: z.string().url("Enter a valid URL").optional().or(z.literal("")),
 });
 
@@ -54,13 +62,17 @@ interface EventFormProps {
   isScraped?: boolean;
   onSubmit: (data: EventFormData & { images: File[] }) => Promise<void>;
   submitLabel?: string;
+  categories: Category[];
+  categoriesLoading?: boolean;
 }
 
 const defaultSchedule: ScheduleEntry = {
   date: "",
   startTime: "",
   endTime: "",
-  locationName: "",
+  buildingName: "",
+  roomName: "",
+  description: "",
 };
 
 export function EventForm({
@@ -68,6 +80,8 @@ export function EventForm({
   isScraped,
   onSubmit,
   submitLabel = "Create Event",
+  categories,
+  categoriesLoading,
 }: EventFormProps) {
   const [images, setImages] = useState<File[]>(initialData?.images ?? []);
   const [submitting, setSubmitting] = useState(false);
@@ -104,6 +118,7 @@ export function EventForm({
   }
 
   return (
+    <APIProvider apiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       {isScraped && (
         <div className="flex items-start gap-3 rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-sm text-yellow-800 dark:border-yellow-500/30 dark:bg-yellow-500/10 dark:text-yellow-200">
@@ -147,7 +162,7 @@ export function EventForm({
               name="categoryIds"
               control={control}
               render={({ field }) => (
-                <CategorySelector value={field.value} onChange={field.onChange} />
+                <CategorySelector value={field.value} onChange={field.onChange} categories={categories} loading={categoriesLoading} />
               )}
             />
             {errors.categoryIds && (
@@ -219,11 +234,16 @@ export function EventForm({
           {!isFree && (
             <div className="space-y-1.5">
               <Label htmlFor="price">Price</Label>
+              <p className="text-sm text-muted-foreground">Describe the price — not just a number</p>
               <Input
                 id="price"
-                placeholder="e.g. 5.00"
+                placeholder="e.g. £4 at the door"
+                maxLength={100}
                 {...register("price")}
               />
+              {errors.price && (
+                <p className="text-sm text-destructive">{errors.price.message}</p>
+              )}
             </div>
           )}
 
@@ -262,5 +282,6 @@ export function EventForm({
         </Button>
       </div>
     </form>
+    </APIProvider>
   );
 }

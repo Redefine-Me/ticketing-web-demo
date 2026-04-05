@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { PublicButton } from '@/components/ui/PublicButton';
 
 export default function Footer() {
   return (
@@ -13,7 +14,6 @@ export default function Footer() {
                 alt="RedefineMe"
                 width={100}
                 height={100}
-                unoptimized
                 className="absolute inset-0 animate-[logoDotFade_6s_ease-in-out_infinite]"
               />
               <Image
@@ -21,7 +21,6 @@ export default function Footer() {
                 alt=""
                 width={100}
                 height={100}
-                unoptimized
                 className="absolute inset-0 animate-[logoNoDotFade_6s_ease-in-out_infinite]"
                 aria-hidden
               />
@@ -30,44 +29,43 @@ export default function Footer() {
               Discover society events across the UK
             </p>
           </div>
-          
+
           <div>
-            <h3 className="text-sm font-semibold text-text mb-4">Explore</h3>
-            <ul className="space-y-2">
+            <p className="text-sm font-semibold text-text mb-4">Explore</p>
+            <ul className="space-y-1">
               <li>
                 <Link href="/discover" className="text-sm text-subtle hover:text-text transition-colors">
                   Discover Events
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-sm text-subtle hover:text-text transition-colors">
+                <Link href="/about" className="inline-block py-2 text-sm text-subtle hover:text-text transition-colors">
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/help" className="text-sm text-subtle hover:text-text transition-colors">
+                <Link href="/help" className="inline-block py-2 text-sm text-subtle hover:text-text transition-colors">
                   Help
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="text-sm text-subtle hover:text-text transition-colors">
+                <Link href="/support" className="inline-block py-2 text-sm text-subtle hover:text-text transition-colors">
                   Support
                 </Link>
               </li>
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="text-sm font-semibold text-text mb-4">Get Started</h3>
-            <Link
-              href="/about"
-              className="inline-block px-4 py-2 text-sm font-medium text-text border border-border rounded-lg hover:bg-bg transition-colors"
-            >
-              Get the App
-            </Link>
+            <p className="text-sm font-semibold text-text mb-4">Get Started</p>
+            <PublicButton variant="outline" asChild className="px-4 py-2 font-medium">
+              <Link href="/about">
+                Get the App
+              </Link>
+            </PublicButton>
           </div>
         </div>
-        
+
         <div className="mt-8 pt-8 border-t border-border text-center text-sm text-subtle">
           <p>© 2026 Redefine Me. All rights reserved.</p>
         </div>
@@ -75,8 +73,3 @@ export default function Footer() {
     </footer>
   );
 }
-
-
-
-
-

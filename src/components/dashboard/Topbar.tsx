@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
@@ -21,6 +22,7 @@ import {
   LayoutDashboard,
   CalendarDays,
   Users,
+  UsersRound,
   PieChart,
   Settings,
   LogOut,
@@ -32,6 +34,7 @@ const navItems = [
   { path: "/overview", label: "Overview", icon: LayoutDashboard },
   { path: "/events", label: "Events", icon: CalendarDays },
   { path: "/followers", label: "Followers", icon: Users },
+  { path: "/committee", label: "Committee", icon: UsersRound },
   { path: "/audience", label: "Audience", icon: PieChart },
   { path: "/settings", label: "Settings", icon: Settings },
 ];
@@ -74,11 +77,18 @@ export function Topbar() {
               <Menu className="h-5 w-5" />
             )}
           </Button>
-          <h2 className="text-lg font-semibold md:hidden">RedefineMe</h2>
+          <Image
+            src="/logos/Redefine Me logo wno bg.png"
+            alt="Redefine Me"
+            width={280}
+            height={64}
+            className="h-14 w-auto md:hidden"
+            priority
+          />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger
-            render={<Button variant="ghost" className="flex items-center gap-2" />}
+            render={<Button variant="ghost" className="flex items-center gap-2 py-5 rounded-xl" />}
           >
             <Avatar className="h-8 w-8">
               <AvatarImage

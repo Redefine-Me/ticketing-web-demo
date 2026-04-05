@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Image, Instagram, LogOut } from "lucide-react";
+import { Image, Instagram, LogOut, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardPageHeader, DashboardSection } from "@/components/dashboard/DashboardMotion";
 
@@ -98,7 +98,8 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (typeof societyId === "string") {
-      getSocietyProfileData(societyId).then((data) => {
+      const supabase = createAuthBrowserClient();
+      getSocietyProfileData(societyId, supabase).then((data) => {
         setName(data.name ?? "");
         setDescription(data.description ?? "");
         setImageUrl(data.imageUrl);
@@ -361,8 +362,17 @@ export default function SettingsPage() {
 
       <Separator />
 
-      {/* Sign out */}
-      <div className="flex justify-end">
+      {/* Reset & Sign out */}
+      <div className="flex justify-between">
+        <Button
+          variant="outline"
+          onClick={() => {
+            toast.info("Reset back to Instagram — not yet implemented");
+          }}
+        >
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Reset back to Instagram
+        </Button>
         <Button variant="outline" onClick={handleSignOut}>
           <LogOut className="mr-2 h-4 w-4" />
           Sign Out

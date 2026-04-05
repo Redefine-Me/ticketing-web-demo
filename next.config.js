@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://redefine-me.supabase.co';
+
 const nextConfig = {
   async headers() {
     const sharedHeaders = [
       "default-src 'self'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://dgzzf6k1ibya0.cloudfront.net https://redefine-me-image-bucket.s3.amazonaws.com https://*.cdninstagram.com https://images.unsplash.com https://via.placeholder.com https://lh3.googleusercontent.com",
+      "img-src 'self' data: blob: https://dgzzf6k1ibya0.cloudfront.net https://redefine-me-image-bucket.s3.amazonaws.com https://*.cdninstagram.com https://images.unsplash.com https://via.placeholder.com https://lh3.googleusercontent.com https://maps.googleapis.com https://maps.gstatic.com",
       "object-src 'none'",
       "base-uri 'self'",
     ];
@@ -20,7 +22,7 @@ const nextConfig = {
             value: [
               ...sharedHeaders,
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://prod.spline.design https://unpkg.com https://www.ameportal.com",
-              "connect-src 'self' https://redefine-me.supabase.co https://prod.spline.design https://unpkg.com https://www.ameportal.com",
+              `connect-src 'self' ${supabaseUrl} https://redefine-me.supabase.co https://prod.spline.design https://unpkg.com https://www.ameportal.com`,
               "frame-src 'self' https://prod.spline.design",
             ].join('; '),
           },
@@ -46,9 +48,9 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               ...sharedHeaders,
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.ameportal.com",
-              "connect-src 'self' https://redefine-me.supabase.co https://www.ameportal.com",
-              "frame-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.ameportal.com https://maps.googleapis.com",
+              `connect-src 'self' ${supabaseUrl} https://redefine-me.supabase.co https://www.ameportal.com https://maps.googleapis.com https://maps.gstatic.com https://places.googleapis.com`,
+              "frame-src 'self' https://www.google.com https://maps.google.com",
             ].join('; '),
           },
           {

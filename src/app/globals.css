@@ -154,6 +154,8 @@
     font-family: var(--font-space-grotesk), 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
+    font-size: 16px;
+    line-height: 1.5;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -164,6 +166,7 @@
     letter-spacing: -0.02em;
     font-weight: 600;
     line-height: 1.2;
+    text-wrap: balance;
   }
 }
 
