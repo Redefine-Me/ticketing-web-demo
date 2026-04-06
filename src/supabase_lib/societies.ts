@@ -1,6 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { getClient } from './client';
 import { transformSociety } from './transform';
+import { fixStorageUrl } from '@/lib/utils';
 import type {
   Society,
   SocietyWithUniversity,
@@ -189,7 +190,7 @@ export async function getSocietyProfileData(
     }
   }
 
-  return { name, description, imageUrl };
+  return { name, description, imageUrl: imageUrl ? fixStorageUrl(imageUrl) : null };
 }
 
 /**
@@ -206,7 +207,7 @@ export async function getSocietyImageUrl(societyId: string, supabase?: SupabaseC
     .single();
 
   if (profileData?.image_url) {
-    return profileData.image_url;
+    return fixStorageUrl(profileData.image_url);
   }
 
   const { data: societyData } = await client
@@ -215,7 +216,7 @@ export async function getSocietyImageUrl(societyId: string, supabase?: SupabaseC
     .eq('id', societyId)
     .single();
 
-  return societyData?.image_url ?? null;
+  return societyData?.image_url ? fixStorageUrl(societyData.image_url) : null;
 }
 
 /**
@@ -314,7 +315,7 @@ export async function updateSocietyProfileImage(
     }
 
     const data = await res.json();
-    return { imageUrl: data.image_url ?? null };
+    return { imageUrl: data.image_url ? fixStorageUrl(data.image_url) : null };
   } catch (err) {
     console.error('[supabase_lib] updateSocietyProfileImage error:', err);
     return { imageUrl: null, error: 'Network error' };

@@ -1,6 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { getClient } from './client';
 import { transformEvent, generateSlug } from './transform';
+import { fixStorageUrl } from '@/lib/utils';
 import { getCities } from './cities';
 import type { Event, EventWithRelations } from './types';
 import type { DashboardEvent } from '@/lib/supabase/types';
@@ -211,7 +212,7 @@ function toDashboardEvent(row: any): DashboardEvent {
     likes: row.likes ?? 0,
     attending: row.attending ?? 0,
     categories,
-    imageUrl: sortedImages[0]?.post_images?.full_url ?? null,
+    imageUrl: fixStorageUrl(sortedImages[0]?.post_images?.full_url ?? null),
     registrationUrl: row.registration_url,
     isOnline: row.is_online ?? false,
     isFree: row.is_free ?? true,

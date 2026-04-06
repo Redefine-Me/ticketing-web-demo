@@ -20,6 +20,9 @@ import type {
 
 // ---- Helpers ----
 
+export { fixStorageUrl } from '@/lib/utils';
+import { fixStorageUrl } from '@/lib/utils';
+
 function isValidUrl(value: string | null): boolean {
   if (!value) return false;
   try {
@@ -68,7 +71,7 @@ export function transformEvent(row: EventWithRelations): Event {
   const sortedImages = [...(row.event_images ?? [])].sort(
     (a, b) => (a.image_index ?? 0) - (b.image_index ?? 0)
   );
-  const imageUrl = sortedImages[0]?.post_images?.full_url ?? '';
+  const imageUrl = fixStorageUrl(sortedImages[0]?.post_images?.full_url ?? '');
 
   // Derive start/end/location from schedule_entries.
   const sortedEntries = [...(row.schedule_entries ?? [])].sort(
@@ -115,7 +118,7 @@ export function transformSociety(row: SocietyWithUniversity): Society {
     instagram: row.instagram_handle,
     description: row.description ?? '',
     university: row.universities?.name ?? 'Unknown University',
-    imageUrl: row.image_url ?? '',
+    imageUrl: fixStorageUrl(row.image_url ?? ''),
     bioUrl: row.bio_url ?? '',
   };
 }

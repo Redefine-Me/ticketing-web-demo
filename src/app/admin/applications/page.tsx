@@ -1,6 +1,7 @@
 import { createAuthServerClient } from '@/supabase_lib/auth/server';
 import { isAdmin, getSocietyUserDetails } from '@/supabase_lib/users';
 import { getPendingSocietyAccounts, getApprovalStatuses } from '@/supabase_lib/societies';
+import { fixStorageUrl } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import ApplicationsPageClient from './ApplicationsPageClient';
 
@@ -35,7 +36,7 @@ export default async function ApplicationsPage() {
       authUserId: acc.auth_user_id,
       societyId: acc.society_id,
       societyName: acc.societies?.name ?? 'Unknown Society',
-      societyImageUrl: acc.societies?.image_url ?? null,
+      societyImageUrl: fixStorageUrl(acc.societies?.image_url),
       universityName: acc.societies?.universities?.name ?? null,
       instagramHandle: acc.societies?.instagram_handle ?? null,
       appliedAt: acc.created_at,

@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useDashboardNav } from "@/hooks/useDashboardNav";
 import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { createAuthBrowserClient } from "@/supabase_lib/auth/browser";
-import { cn } from "@/lib/utils";
+import { cn, fixStorageUrl } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -92,7 +92,7 @@ export function Topbar() {
           >
             <Avatar className="h-8 w-8">
               <AvatarImage
-                src={profile?.image_url ?? society?.image_url ?? undefined}
+                src={fixStorageUrl(profile?.image_url ?? society?.image_url) || undefined}
                 alt={society?.name ?? "Society"}
               />
               <AvatarFallback className="bg-primary/10 text-primary text-xs">

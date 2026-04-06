@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { fixStorageUrl } from "@/lib/utils";
 
 interface SocietyAccount {
   id: string;
@@ -51,7 +52,7 @@ export function SocietyPickerCards({
                     className="flex items-center gap-4 p-4 bg-[var(--surface)] rounded-[var(--radius)] border border-[var(--border)] transition-all duration-[120ms] hover:-translate-y-1 hover:shadow-lg hover:border-[#DC2626] hover:ring-2 hover:ring-[#DC2626]/20"
                   >
                     <Image
-                      src={society.image_url || "/logos/rm-dot-logo.png"}
+                      src={fixStorageUrl(society.image_url) || "/logos/rm-dot-logo.png"}
                       alt={society.name}
                       width={48}
                       height={48}
@@ -103,7 +104,7 @@ export function SocietyPickerCards({
                     className="flex items-center gap-4 p-4 bg-[var(--surface)] rounded-[var(--radius)] border border-[var(--border)] transition-all opacity-60 cursor-not-allowed"
                   >
                     <Image
-                      src={society.image_url || "/logos/rm-dot-logo.png"}
+                      src={fixStorageUrl(society.image_url) || "/logos/rm-dot-logo.png"}
                       alt={society.name}
                       width={48}
                       height={48}

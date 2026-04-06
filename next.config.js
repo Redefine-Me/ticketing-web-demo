@@ -95,6 +95,11 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
+      {
+        protocol: 'http',
+        hostname: '100.76.140.93',
+        port: '54321',
+      },
     ],
   },
 }

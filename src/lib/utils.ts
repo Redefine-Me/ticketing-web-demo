@@ -41,6 +41,12 @@ export function formatTimeRange(start: string, end?: string): string {
   return `${startTime} – ${endTime}`;
 }
 
+/** Rewrite internal Supabase Docker URLs (http://kong:8000/…) to the public Supabase URL. */
+export function fixStorageUrl(url: string | null | undefined): string {
+  if (!url) return '';
+  return url.replace(/^http:\/\/kong:8000\//, `${process.env.NEXT_PUBLIC_SUPABASE_URL}/`);
+}
+
 export function getEdgeFunctionUrl(functionName: string): string {
   return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/${functionName}`;
 }
