@@ -6,6 +6,7 @@ import { useSocietyAuth } from "@/hooks/useSocietyAuth";
 import { useEvents } from "@/hooks/useEvents";
 import { useCategories } from "@/hooks/useCategories";
 import { EventForm, type EventFormData } from "@/components/events/EventForm";
+import type { ImageItem } from "@/components/events/ImageUploader";
 import { toast } from "sonner";
 
 export default function CreateEventPage() {
@@ -15,7 +16,7 @@ export default function CreateEventPage() {
   const { createEvent } = useEvents(society?.id);
   const { categories, loading: categoriesLoading } = useCategories();
 
-  const handleSubmit = async (formData: EventFormData & { images: File[] }) => {
+  const handleSubmit = async (formData: EventFormData & { images: ImageItem[] }) => {
     try {
       await createEvent(formData, formData.categoryIds);
 

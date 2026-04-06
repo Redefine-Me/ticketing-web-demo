@@ -21,6 +21,7 @@ import {
 import {
   LayoutDashboard,
   CalendarDays,
+  CalendarCheck,
   Users,
   UsersRound,
   PieChart,
@@ -33,6 +34,7 @@ import {
 const navItems = [
   { path: "/overview", label: "Overview", icon: LayoutDashboard },
   { path: "/events", label: "Events", icon: CalendarDays },
+  { path: "/bookings", label: "Bookings", icon: CalendarCheck },
   { path: "/followers", label: "Followers", icon: Users },
   { path: "/committee", label: "Committee", icon: UsersRound },
   { path: "/audience", label: "Audience", icon: PieChart },
@@ -78,17 +80,18 @@ export function Topbar() {
             )}
           </Button>
           <Image
-            src="/logos/Redefine Me logo wno bg.png"
+            src="/logos/Redefine%20Me%20logo%20wno%20bg.png"
             alt="Redefine Me"
-            width={280}
-            height={64}
-            className="h-14 w-auto md:hidden"
+            width={160}
+            height={36}
+            className="h-10 w-auto md:hidden"
+            style={{ width: "auto" }}
             priority
           />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger
-            render={<Button variant="ghost" className="flex items-center gap-2 py-5 rounded-xl" />}
+            render={<Button variant="ghost" className="flex items-center gap-2.5 px-3 py-5 rounded-xl hover:bg-muted/80" />}
           >
             <Avatar className="h-8 w-8">
               <AvatarImage
@@ -137,12 +140,15 @@ export function Topbar() {
                   href={href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                     isActive
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary/15 text-primary"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
+                  {isActive && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-full bg-primary" />
+                  )}
                   <item.icon className="h-5 w-5" />
                   {item.label}
                 </Link>

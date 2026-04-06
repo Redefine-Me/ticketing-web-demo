@@ -7,7 +7,7 @@ const nextConfig = {
       "default-src 'self'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://dgzzf6k1ibya0.cloudfront.net https://redefine-me-image-bucket.s3.amazonaws.com https://*.cdninstagram.com https://images.unsplash.com https://via.placeholder.com https://lh3.googleusercontent.com https://maps.googleapis.com https://maps.gstatic.com",
+      "img-src 'self' data: blob: https://dgzzf6k1ibya0.cloudfront.net https://redefine-me-image-bucket.s3.amazonaws.com https://*.cdninstagram.com https://images.unsplash.com https://via.placeholder.com https://lh3.googleusercontent.com https://maps.googleapis.com https://maps.gstatic.com http://100.76.140.93:54321",
       "object-src 'none'",
       "base-uri 'self'",
     ];
@@ -70,6 +70,7 @@ const nextConfig = {
     ];
   },
   images: {
+    dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
         protocol: 'https',

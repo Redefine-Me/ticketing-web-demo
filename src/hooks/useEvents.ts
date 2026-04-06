@@ -63,8 +63,7 @@ export function useEvents(societyId: string | undefined) {
       category_ids: categoryIds,
       schedule,
       is_online: formData.isOnline,
-      is_free: formData.isFree,
-      price: formData.isFree ? undefined : formData.price || undefined,
+      is_free: !formData.isTicketed || formData.ticketTypes?.every((t) => t.price === 0),
       registration_url: formData.registrationUrl || undefined,
     });
     await fetchEvents();
@@ -85,8 +84,7 @@ export function useEvents(societyId: string | undefined) {
       category_ids: categoryIds,
       schedule,
       is_online: formData.isOnline,
-      is_free: formData.isFree,
-      price: formData.isFree ? undefined : formData.price || undefined,
+      is_free: !formData.isTicketed || formData.ticketTypes?.every((t) => t.price === 0),
       registration_url: formData.registrationUrl || undefined,
     });
     await fetchEvents();

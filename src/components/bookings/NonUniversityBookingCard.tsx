@@ -2,7 +2,7 @@
 
 import type { NonUniversityBooking, BookingStatus } from "@/lib/supabase/types";
 import { BookingStatusDropdown } from "./BookingStatusDropdown";
-import { CommunicationHistory } from "./CommunicationHistory";
+import { BookingJournal } from "./BookingJournal";
 import { MapPin, Phone, ExternalLink } from "lucide-react";
 
 export function NonUniversityBookingCard({
@@ -49,9 +49,9 @@ export function NonUniversityBookingCard({
           onChange={onStatusChange}
         />
       </div>
-      <CommunicationHistory
-        messages={booking.messages}
-        onSend={onSendMessage}
+      <BookingJournal
+        entries={booking.messages}
+        onAddEntry={onSendMessage}
       />
     </div>
   );

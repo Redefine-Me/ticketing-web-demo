@@ -89,7 +89,7 @@ export default function OverviewPage() {
       <DashboardPageHeader>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Overview</h1>
+            <h1 className="text-2xl font-bold" style={{ letterSpacing: "-0.02em" }}>Overview</h1>
             <p className="text-muted-foreground">
               Welcome back, {society?.name ?? "..."}
             </p>
@@ -141,9 +141,10 @@ export default function OverviewPage() {
 
       {/* Top events table */}
       <DashboardSection delay={0.24}>
-      <Card className="transition-all duration-[120ms] hover:-translate-y-0.5 hover:shadow-md">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-base">Top Events</CardTitle>
+      <Card className="transition-shadow duration-[120ms] hover:shadow-[0_6px_24px_rgba(15,23,42,0.08)]"
+        style={{ boxShadow: "0 4px 14px rgba(15,23,42,0.06)", borderRadius: "16px" }}>
+        <CardHeader className="flex flex-row items-center justify-between border-b pb-3">
+          <CardTitle className="text-base font-semibold" style={{ letterSpacing: "-0.02em" }}>Top Events</CardTitle>
           <Button variant="ghost" size="sm" render={<Link href={nav.href("/events")} />}>
             View all
           </Button>
