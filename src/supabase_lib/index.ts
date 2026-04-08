@@ -120,6 +120,9 @@ export { submitOnboarding, uploadProfilePicture, saveUserInterests } from './onb
 // Event management (authenticated — edge functions)
 export { createEvent, updateEvent, deleteEvent } from './event-management';
 
+// Event forms
+export { getEventFormFields, saveEventFormFields, deleteEventFormFields } from './eventForms';
+
 // Analytics (authenticated — edge functions)
 export { fetchSocietyAnalytics, fetchPostHogAnalytics } from './analytics';
 

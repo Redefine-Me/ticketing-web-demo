@@ -9,6 +9,7 @@ import {
   deleteEvent as deleteEventEdge,
 } from "@/supabase_lib/event-management";
 import { formScheduleToPayload } from "@/utils/scheduleTransform";
+import { saveEventFormFields, deleteEventFormFields } from "@/supabase_lib/eventForms";
 import type { EventFormData } from "@/components/events/EventForm";
 import type { DashboardEvent } from "@/lib/supabase/types";
 
@@ -66,6 +67,12 @@ export function useEvents(societyId: string | undefined) {
       is_free: !formData.isTicketed || formData.ticketTypes?.every((t) => t.price === 0),
       registration_url: formData.registrationUrl || undefined,
     });
+
+    // Save form fields if form is enabled
+    if (formData.hasForm && formData.formFields?.length) {
+      await saveEventFormFields(result.id, formData.formFields);
+    }
+
     await fetchEvents();
     return result;
   };
@@ -87,6 +94,14 @@ export function useEvents(societyId: string | undefined) {
       is_free: !formData.isTicketed || formData.ticketTypes?.every((t) => t.price === 0),
       registration_url: formData.registrationUrl || undefined,
     });
+
+    // Save or clear form fields
+    if (formData.hasForm && formData.formFields?.length) {
+      await saveEventFormFields(eventId, formData.formFields);
+    } else {
+      await deleteEventFormFields(eventId);
+    }
+
     await fetchEvents();
   };
 
