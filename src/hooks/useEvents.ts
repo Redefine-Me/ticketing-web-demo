@@ -225,6 +225,10 @@ export function useEvents(societyId: string | undefined) {
         ? ticketTypes.map((t) => ({ ...t, eventId: `e-${Date.now()}` }))
         : undefined,
       purchases: isTicketed ? [] : undefined,
+      hasForm: Boolean(formData.hasForm),
+      formFields: formData.hasForm && Array.isArray(formData.formFields)
+        ? (formData.formFields as DashboardEvent["formFields"])
+        : undefined,
     };
 
     // Fix eventId now that we have the real one
@@ -253,6 +257,10 @@ export function useEvents(societyId: string | undefined) {
 
     const isTicketed = formData.isTicketed != null ? Boolean(formData.isTicketed) : undefined;
     const rawTicketTypes = Array.isArray(formData.ticketTypes) ? formData.ticketTypes as TicketType[] : undefined;
+    const hasForm = formData.hasForm != null ? Boolean(formData.hasForm) : undefined;
+    const rawFormFields = Array.isArray(formData.formFields)
+      ? (formData.formFields as DashboardEvent["formFields"])
+      : undefined;
 
     // Resolve images before the state updater (keeps it pure)
     const updatedImageUrls = Array.isArray(formData.images)
@@ -296,6 +304,8 @@ export function useEvents(societyId: string | undefined) {
           isTicketed: updatedTicketed,
           ticketTypes: updatedTicketTypes,
           purchases: updatedPurchases ?? e.purchases,
+          hasForm: hasForm ?? e.hasForm,
+          formFields: hasForm ? rawFormFields : hasForm === false ? undefined : e.formFields,
         };
       });
       saveSharedEvents(next);

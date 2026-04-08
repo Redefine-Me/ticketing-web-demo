@@ -68,6 +68,8 @@ export default function EditEventPage() {
     isTicketed: event.isTicketed,
     ticketTypes: event.ticketTypes,
     purchases: event.purchases,
+    hasForm: event.hasForm ?? false,
+    formFields: event.formFields,
     images: event.imageUrls.map((url, i) => ({ url, name: `${event.title} ${i + 1}` })),
   };
 

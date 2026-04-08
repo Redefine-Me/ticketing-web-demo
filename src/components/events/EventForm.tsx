@@ -16,6 +16,8 @@ import { ImageUploader, type ImageItem } from "@/components/events/ImageUploader
 import { CategorySelector } from "@/components/events/CategorySelector";
 import { TicketConfigPanel } from "@/components/ticketing/TicketConfigPanel";
 import type { TicketTypeFormData } from "@/components/ticketing/TicketTypeCard";
+import { FormBuilder } from "@/components/forms/FormBuilder";
+import type { FormFieldData } from "@/components/forms/FormFieldCard";
 import { AlertTriangle, Loader2, Sparkles } from "lucide-react";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import type { Category } from "@/types";
@@ -53,6 +55,8 @@ const eventFormSchema = z.object({
 export type EventFormData = z.infer<typeof eventFormSchema> & {
   isTicketed?: boolean;
   ticketTypes?: TicketType[];
+  hasForm?: boolean;
+  formFields?: FormFieldData[];
 };
 
 interface EventFormProps {
@@ -68,6 +72,8 @@ interface EventFormProps {
     isTicketed?: boolean;
     ticketTypes?: TicketType[];
     purchases?: TicketPurchase[];
+    hasForm?: boolean;
+    formFields?: FormFieldData[];
   };
   isScraped?: boolean;
   onSubmit: (data: EventFormData & { images: ImageItem[] }) => Promise<void>;
@@ -116,6 +122,12 @@ export function EventForm({
   >({});
   const [ticketGlobalError, setTicketGlobalError] = useState<string>();
   const [toggleWarning, setToggleWarning] = useState<string>();
+
+  // Form builder state
+  const [hasForm, setHasForm] = useState(initialData?.hasForm ?? false);
+  const [formFields, setFormFields] = useState<FormFieldData[]>(
+    initialData?.formFields ?? [],
+  );
 
   const purchases = initialData?.purchases ?? [];
 
@@ -198,8 +210,14 @@ export function EventForm({
     return valid;
   }
 
+  function validateFormFields(): boolean {
+    if (!hasForm) return true;
+    return formFields.every((f) => f.title.trim().length > 0);
+  }
+
   async function handleFormSubmit(data: z.infer<typeof eventFormSchema>) {
     if (!validateTickets()) return;
+    if (!validateFormFields()) return;
 
     setSubmitting(true);
     try {
@@ -217,6 +235,8 @@ export function EventForm({
               totalAvailable: t.totalAvailable,
             }))
           : undefined,
+        hasForm,
+        formFields: hasForm ? formFields : undefined,
       };
       await onSubmit(payload);
     } finally {
@@ -230,6 +250,9 @@ export function EventForm({
       ticketTypes.some(
         (t) => !t.name.trim() || t.price < 0 || t.totalAvailable < 1,
       ));
+
+  const hasFormValidationErrors =
+    hasForm && formFields.some((f) => !f.title.trim());
 
   return (
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
@@ -347,6 +370,47 @@ export function EventForm({
         </CardContent>
       </Card>
 
+      {/* Form Builder */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Registration Form</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="hasForm">Add form to event</Label>
+              <p className="text-sm text-muted-foreground">
+                Collect information from attendees with custom questions
+              </p>
+            </div>
+            <Switch
+              id="hasForm"
+              checked={hasForm}
+              onCheckedChange={(checked) => {
+                setHasForm(checked);
+                if (checked && formFields.length === 0) {
+                  setFormFields([
+                    {
+                      id: `ff-${Date.now()}`,
+                      type: "text",
+                      title: "",
+                      options: [],
+                      required: false,
+                    },
+                  ]);
+                }
+              }}
+            />
+          </div>
+
+          <FormBuilder
+            open={hasForm}
+            fields={formFields}
+            onChange={setFormFields}
+          />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Details</CardTitle>
@@ -431,7 +495,7 @@ export function EventForm({
         <Button
           type="submit"
           size="lg"
-          disabled={submitting || !!hasTicketValidationErrors}
+          disabled={submitting || !!hasTicketValidationErrors || !!hasFormValidationErrors}
         >
           {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
           {submitLabel}

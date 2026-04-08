@@ -209,6 +209,16 @@ export interface DashboardEvent {
   ticketTypes?: TicketType[];
   purchases?: TicketPurchase[];
 
+  // Form builder (optional — only present if "Add form to event" toggle is on)
+  hasForm?: boolean;
+  formFields?: Array<{
+    id: string;
+    type: "text" | "paragraph" | "checkbox" | "radio";
+    title: string;
+    options: string[];
+    required: boolean;
+  }>;
+
   // Computed (derived in hook, not stored)
   totalRevenue?: number;
   totalSold?: number;
