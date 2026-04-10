@@ -406,7 +406,10 @@ export function EventForm({
           <FormBuilder
             open={hasForm}
             fields={formFields}
-            onChange={setFormFields}
+            onChange={(next) => {
+              setFormFields(next);
+              if (next.length === 0) setHasForm(false);
+            }}
           />
         </CardContent>
       </Card>
