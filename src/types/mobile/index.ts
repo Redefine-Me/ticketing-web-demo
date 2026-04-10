@@ -93,6 +93,8 @@ export interface TicketType {
   price: number;          // GBP, 0 = free
   isMemberTicket: boolean;
   totalAvailable: number;
+  salesStartAt: string; // ISO 8601 local wall-clock from <input type="datetime-local">
+  salesEndAt: string;  // ISO 8601
 }
 
 /** A purchased ticket instance. */

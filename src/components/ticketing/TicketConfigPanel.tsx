@@ -1,9 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { TicketTypeCard, type TicketTypeFormData } from "./TicketTypeCard";
+import {
+  TicketTypeCard,
+  type TicketTypeFormData,
+  type SaleWindowClipboard,
+} from "./TicketTypeCard";
 import { TicketTotalCounter } from "./TicketTotalCounter";
 import type { TicketPurchase } from "@/lib/supabase/types";
 
@@ -12,7 +17,16 @@ interface TicketConfigPanelProps {
   ticketTypes: TicketTypeFormData[];
   onChange: (ticketTypes: TicketTypeFormData[]) => void;
   purchases?: TicketPurchase[];
-  errors?: Record<number, { name?: string; price?: string; totalAvailable?: string }>;
+  errors?: Record<
+    number,
+    {
+      name?: string;
+      price?: string;
+      totalAvailable?: string;
+      salesStartAt?: string;
+      salesEndAt?: string;
+    }
+  >;
   globalError?: string;
 }
 
@@ -24,15 +38,28 @@ export function TicketConfigPanel({
   errors,
   globalError,
 }: TicketConfigPanelProps) {
+  const [clipboard, setClipboard] = useState<SaleWindowClipboard>({
+    salesStartAt: null,
+    salesEndAt: null,
+  });
+
   function soldFor(ticketType: TicketTypeFormData) {
     if (!ticketType.id) return 0;
     return purchases.filter((p) => p.ticketTypeId === ticketType.id).length;
   }
 
   function handleAdd() {
+    const previous = ticketTypes[ticketTypes.length - 1];
     onChange([
       ...ticketTypes,
-      { name: "", price: 0, isMemberTicket: false, totalAvailable: 0 },
+      {
+        name: "",
+        price: 0,
+        isMemberTicket: false,
+        totalAvailable: 0,
+        salesStartAt: previous?.salesStartAt ?? "",
+        salesEndAt: previous?.salesEndAt ?? "",
+      },
     ]);
   }
 
@@ -45,6 +72,26 @@ export function TicketConfigPanel({
   function handleRemove(index: number) {
     if (ticketTypes.length <= 1) return;
     onChange(ticketTypes.filter((_, i) => i !== index));
+  }
+
+  function handleCopyWindow(
+    field: "salesStartAt" | "salesEndAt",
+    value: string,
+  ) {
+    setClipboard((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function handlePasteWindow(
+    targetIndex: number,
+    field: "salesStartAt" | "salesEndAt",
+  ) {
+    const copied = clipboard[field];
+    if (copied === null || copied === "") return;
+    onChange(
+      ticketTypes.map((tt, i) =>
+        i === targetIndex ? { ...tt, [field]: copied } : tt,
+      ),
+    );
   }
 
   const total = ticketTypes.reduce((sum, t) => sum + (t.totalAvailable || 0), 0);
@@ -68,6 +115,15 @@ export function TicketConfigPanel({
                 onRemove={() => handleRemove(i)}
                 soldCount={soldFor(tt)}
                 errors={errors?.[i]}
+                clipboard={ticketTypes.length > 1 ? clipboard : undefined}
+                onCopyWindow={
+                  ticketTypes.length > 1 ? handleCopyWindow : undefined
+                }
+                onPasteWindow={
+                  ticketTypes.length > 1
+                    ? (field) => handlePasteWindow(i, field)
+                    : undefined
+                }
               />
             ))}
 

@@ -66,7 +66,11 @@ export default function EditEventPage() {
     isOnline: event.isOnline,
     registrationUrl: event.registrationUrl ?? "",
     isTicketed: event.isTicketed,
-    ticketTypes: event.ticketTypes,
+    ticketTypes: (event.ticketTypes ?? []).map((t) => ({
+      ...t,
+      salesStartAt: t.salesStartAt ?? "",
+      salesEndAt: t.salesEndAt ?? "",
+    })),
     purchases: event.purchases,
     hasForm: event.hasForm ?? false,
     formFields: event.formFields,

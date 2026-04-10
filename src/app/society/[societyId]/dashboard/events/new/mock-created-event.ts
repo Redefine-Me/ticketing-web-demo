@@ -60,6 +60,8 @@ export const mockCreatedEvent: {
       price: 3,
       isMemberTicket: true,
       totalAvailable: 150,
+      salesStartAt: "2026-03-01T10:00",
+      salesEndAt: "2026-04-11T18:59",
     },
     {
       id: "tt-theyyam-nonmember",
@@ -68,6 +70,8 @@ export const mockCreatedEvent: {
       price: 6,
       isMemberTicket: false,
       totalAvailable: 100,
+      salesStartAt: "2026-03-01T10:00",
+      salesEndAt: "2026-04-11T18:59",
     },
   ],
 };

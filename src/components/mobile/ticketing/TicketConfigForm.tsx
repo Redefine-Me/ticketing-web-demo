@@ -17,6 +17,8 @@ interface TicketTypeFormData {
   isMemberTicket: boolean;
   totalAvailable: string;
   soldCount: number; // 0 for new types
+  salesStartAt: string; // passthrough only; mobile form doesn't expose UI
+  salesEndAt: string;
 }
 
 function emptyTicketType(): TicketTypeFormData {
@@ -27,6 +29,8 @@ function emptyTicketType(): TicketTypeFormData {
     isMemberTicket: false,
     totalAvailable: '',
     soldCount: 0,
+    salesStartAt: '',
+    salesEndAt: '',
   };
 }
 
@@ -56,6 +60,8 @@ export function TicketConfigForm({ mode, event, eventSummary, onClose }: TicketC
         isMemberTicket: tt.isMemberTicket,
         totalAvailable: tt.totalAvailable.toString(),
         soldCount: eventSummary.purchases.filter(p => p.ticketTypeId === tt.id).length,
+        salesStartAt: tt.salesStartAt ?? '',
+        salesEndAt: tt.salesEndAt ?? '',
       }));
     }
     return [emptyTicketType()];
@@ -150,6 +156,8 @@ export function TicketConfigForm({ mode, event, eventSummary, onClose }: TicketC
           price: parseFloat(t.price),
           isMemberTicket: t.isMemberTicket,
           totalAvailable: parseInt(t.totalAvailable),
+          salesStartAt: t.salesStartAt,
+          salesEndAt: t.salesEndAt,
         })),
       );
       showToast('Ticket successfully registered');
@@ -161,6 +169,8 @@ export function TicketConfigForm({ mode, event, eventSummary, onClose }: TicketC
         price: parseFloat(t.price),
         isMemberTicket: t.isMemberTicket,
         totalAvailable: parseInt(t.totalAvailable),
+        salesStartAt: t.salesStartAt,
+        salesEndAt: t.salesEndAt,
       }));
       updateTickets(eventId, updatedTypes);
       showToast('Ticketing successfully updated');

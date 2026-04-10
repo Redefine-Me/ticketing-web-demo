@@ -77,8 +77,8 @@ function mockPurchases(
 
 // e-002 Onam Sadhya Night — ticket types
 const onamTicketTypes: TicketType[] = [
-  { id: "tt-002-1", eventId: "e-002", name: "Member", price: 5, isMemberTicket: true, totalAvailable: 60 },
-  { id: "tt-002-2", eventId: "e-002", name: "Non-Member", price: 8, isMemberTicket: false, totalAvailable: 40 },
+  { id: "tt-002-1", eventId: "e-002", name: "Member", price: 5, isMemberTicket: true, totalAvailable: 60, salesStartAt: "2026-03-01T10:00", salesEndAt: "2025-10-11T18:29" },
+  { id: "tt-002-2", eventId: "e-002", name: "Non-Member", price: 8, isMemberTicket: false, totalAvailable: 40, salesStartAt: "2026-03-01T10:00", salesEndAt: "2025-10-11T18:29" },
 ];
 
 const onamPurchases: TicketPurchase[] = [
@@ -88,9 +88,9 @@ const onamPurchases: TicketPurchase[] = [
 
 // e-004 Diwali Rave — ticket types
 const diwaliTicketTypes: TicketType[] = [
-  { id: "tt-004-1", eventId: "e-004", name: "Early Bird", price: 8, isMemberTicket: false, totalAvailable: 50 },
-  { id: "tt-004-2", eventId: "e-004", name: "Standard", price: 12, isMemberTicket: false, totalAvailable: 100 },
-  { id: "tt-004-3", eventId: "e-004", name: "Member", price: 6, isMemberTicket: true, totalAvailable: 40 },
+  { id: "tt-004-1", eventId: "e-004", name: "Early Bird", price: 8, isMemberTicket: false, totalAvailable: 50, salesStartAt: "2026-03-01T10:00", salesEndAt: "2025-11-01T20:59" },
+  { id: "tt-004-2", eventId: "e-004", name: "Standard", price: 12, isMemberTicket: false, totalAvailable: 100, salesStartAt: "2026-03-01T10:00", salesEndAt: "2025-11-01T20:59" },
+  { id: "tt-004-3", eventId: "e-004", name: "Member", price: 6, isMemberTicket: true, totalAvailable: 40, salesStartAt: "2026-03-01T10:00", salesEndAt: "2025-11-01T20:59" },
 ];
 
 const diwaliPurchases: TicketPurchase[] = [
@@ -101,8 +101,8 @@ const diwaliPurchases: TicketPurchase[] = [
 
 // e-006 Christmas Mixer — ticket types
 const mixerTicketTypes: TicketType[] = [
-  { id: "tt-006-1", eventId: "e-006", name: "General Admission", price: 5, isMemberTicket: false, totalAvailable: 80 },
-  { id: "tt-006-2", eventId: "e-006", name: "Member", price: 3, isMemberTicket: true, totalAvailable: 40 },
+  { id: "tt-006-1", eventId: "e-006", name: "General Admission", price: 5, isMemberTicket: false, totalAvailable: 80, salesStartAt: "2026-03-01T10:00", salesEndAt: "2025-12-06T19:59" },
+  { id: "tt-006-2", eventId: "e-006", name: "Member", price: 3, isMemberTicket: true, totalAvailable: 40, salesStartAt: "2026-03-01T10:00", salesEndAt: "2025-12-06T19:59" },
 ];
 
 const mixerPurchases: TicketPurchase[] = [
@@ -112,8 +112,8 @@ const mixerPurchases: TicketPurchase[] = [
 
 // e-008 Blind Date Night — ticket types
 const blindDateTicketTypes: TicketType[] = [
-  { id: "tt-008-1", eventId: "e-008", name: "Single Entry", price: 4, isMemberTicket: false, totalAvailable: 60 },
-  { id: "tt-008-2", eventId: "e-008", name: "Member", price: 2, isMemberTicket: true, totalAvailable: 30 },
+  { id: "tt-008-1", eventId: "e-008", name: "Single Entry", price: 4, isMemberTicket: false, totalAvailable: 60, salesStartAt: "2026-03-01T10:00", salesEndAt: "2026-02-13T18:59" },
+  { id: "tt-008-2", eventId: "e-008", name: "Member", price: 2, isMemberTicket: true, totalAvailable: 30, salesStartAt: "2026-03-01T10:00", salesEndAt: "2026-02-13T18:59" },
 ];
 
 const blindDatePurchases: TicketPurchase[] = [
@@ -123,10 +123,10 @@ const blindDatePurchases: TicketPurchase[] = [
 
 // e-010 VAJRAM Annual Gala Night — ticket types
 const vajramTicketTypes: TicketType[] = [
-  { id: "tt-010-1", eventId: "e-010", name: "Early Bird", price: 20, isMemberTicket: false, totalAvailable: 50 },
-  { id: "tt-010-2", eventId: "e-010", name: "Standard", price: 30, isMemberTicket: false, totalAvailable: 120 },
-  { id: "tt-010-3", eventId: "e-010", name: "VIP Table", price: 50, isMemberTicket: false, totalAvailable: 20 },
-  { id: "tt-010-4", eventId: "e-010", name: "Member", price: 15, isMemberTicket: true, totalAvailable: 40 },
+  { id: "tt-010-1", eventId: "e-010", name: "Early Bird", price: 20, isMemberTicket: false, totalAvailable: 50, salesStartAt: "2026-03-01T10:00", salesEndAt: "2026-03-21T17:59" },
+  { id: "tt-010-2", eventId: "e-010", name: "Standard", price: 30, isMemberTicket: false, totalAvailable: 120, salesStartAt: "2026-03-01T10:00", salesEndAt: "2026-03-21T17:59" },
+  { id: "tt-010-3", eventId: "e-010", name: "VIP Table", price: 50, isMemberTicket: false, totalAvailable: 20, salesStartAt: "2026-03-01T10:00", salesEndAt: "2026-03-21T17:59" },
+  { id: "tt-010-4", eventId: "e-010", name: "Member", price: 15, isMemberTicket: true, totalAvailable: 40, salesStartAt: "2026-03-01T10:00", salesEndAt: "2026-03-21T17:59" },
 ];
 
 const vajramPurchases: TicketPurchase[] = [

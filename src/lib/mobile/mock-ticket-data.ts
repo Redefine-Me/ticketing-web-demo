@@ -39,21 +39,21 @@ function mockBuyer(seed: number) {
 
 // ── Ticket Types for "Simpsons Trivia Night" (e-004) ────────
 export const triviaTicketTypes: TicketType[] = [
-  { id: 'tt-004-1', eventId: 'e-004', name: 'Member', price: 2.00, isMemberTicket: true, totalAvailable: 40 },
-  { id: 'tt-004-2', eventId: 'e-004', name: 'Non-Member', price: 4.00, isMemberTicket: false, totalAvailable: 25 },
+  { id: 'tt-004-1', eventId: 'e-004', name: 'Member', price: 2.00, isMemberTicket: true, totalAvailable: 40, salesStartAt: '2026-03-01T10:00', salesEndAt: '2026-05-01T17:59' },
+  { id: 'tt-004-2', eventId: 'e-004', name: 'Non-Member', price: 4.00, isMemberTicket: false, totalAvailable: 25, salesStartAt: '2026-03-01T10:00', salesEndAt: '2026-05-01T17:59' },
 ];
 
 // ── Ticket Types for "Springfield Film Festival" (e-008) ─────
 export const festivalTicketTypes: TicketType[] = [
-  { id: 'tt-008-1', eventId: 'e-008', name: 'General Admission', price: 3.00, isMemberTicket: false, totalAvailable: 80 },
-  { id: 'tt-008-2', eventId: 'e-008', name: 'Member Price', price: 1.00, isMemberTicket: true, totalAvailable: 30 },
+  { id: 'tt-008-1', eventId: 'e-008', name: 'General Admission', price: 3.00, isMemberTicket: false, totalAvailable: 80, salesStartAt: '2026-03-01T10:00', salesEndAt: '2026-05-01T17:59' },
+  { id: 'tt-008-2', eventId: 'e-008', name: 'Member Price', price: 1.00, isMemberTicket: true, totalAvailable: 30, salesStartAt: '2026-03-01T10:00', salesEndAt: '2026-05-01T17:59' },
 ];
 
 // ── Ticket Types for "American Studies Spring Ball" (e-009) ──
 export const ballTicketTypes: TicketType[] = [
-  { id: 'tt-009-1', eventId: 'e-009', name: 'Early Bird', price: 25.00, isMemberTicket: false, totalAvailable: 50 },
-  { id: 'tt-009-2', eventId: 'e-009', name: 'Standard', price: 35.00, isMemberTicket: false, totalAvailable: 100 },
-  { id: 'tt-009-3', eventId: 'e-009', name: 'VIP', price: 55.00, isMemberTicket: false, totalAvailable: 20 },
+  { id: 'tt-009-1', eventId: 'e-009', name: 'Early Bird', price: 25.00, isMemberTicket: false, totalAvailable: 50, salesStartAt: '2026-03-01T10:00', salesEndAt: '2026-04-15T23:59' },
+  { id: 'tt-009-2', eventId: 'e-009', name: 'Standard', price: 35.00, isMemberTicket: false, totalAvailable: 100, salesStartAt: '2026-04-16T00:00', salesEndAt: '2026-05-10T17:59' },
+  { id: 'tt-009-3', eventId: 'e-009', name: 'VIP', price: 55.00, isMemberTicket: false, totalAvailable: 20, salesStartAt: '2026-03-01T10:00', salesEndAt: '2026-05-10T17:59' },
 ];
 
 // ── Generate mock purchases ──────────────────────────────────

@@ -115,10 +115,12 @@ export function EventForm({
       price: t.price,
       isMemberTicket: t.isMemberTicket,
       totalAvailable: t.totalAvailable,
-    })) ?? [{ name: "", price: 0, isMemberTicket: false, totalAvailable: 0 }],
+      salesStartAt: t.salesStartAt ?? "",
+      salesEndAt: t.salesEndAt ?? "",
+    })) ?? [{ name: "", price: 0, isMemberTicket: false, totalAvailable: 0, salesStartAt: "", salesEndAt: "" }],
   );
   const [ticketErrors, setTicketErrors] = useState<
-    Record<number, { name?: string; price?: string; totalAvailable?: string }>
+    Record<number, { name?: string; price?: string; totalAvailable?: string; salesStartAt?: string; salesEndAt?: string }>
   >({});
   const [ticketGlobalError, setTicketGlobalError] = useState<string>();
   const [toggleWarning, setToggleWarning] = useState<string>();
@@ -163,7 +165,7 @@ export function EventForm({
       setToggleWarning(undefined);
       setIsTicketed(checked);
       if (checked && ticketTypes.length === 0) {
-        setTicketTypes([{ name: "", price: 0, isMemberTicket: false, totalAvailable: 0 }]);
+        setTicketTypes([{ name: "", price: 0, isMemberTicket: false, totalAvailable: 0, salesStartAt: "", salesEndAt: "" }]);
       }
     },
     [totalSold, ticketTypes.length],
@@ -172,7 +174,7 @@ export function EventForm({
   function validateTickets(): boolean {
     if (!isTicketed) return true;
 
-    const errs: typeof ticketErrors = {};
+    const errs: Record<number, { name?: string; price?: string; totalAvailable?: string; salesStartAt?: string; salesEndAt?: string }> = {};
     let valid = true;
 
     if (ticketTypes.length === 0) {
@@ -180,8 +182,27 @@ export function EventForm({
       return false;
     }
 
+    function computeEventBounds() {
+      const schedules = watch("schedules");
+      if (!schedules || schedules.length === 0) return null;
+      const toDate = (date: string, time: string) => {
+        if (!date || !time) return null;
+        const d = new Date(`${date}T${time}`);
+        return isNaN(d.getTime()) ? null : d;
+      };
+      const starts = schedules.map((s) => toDate(s.date, s.startTime)).filter((d): d is Date => d !== null);
+      const ends = schedules.map((s) => toDate(s.date, s.endTime || s.startTime)).filter((d): d is Date => d !== null);
+      if (starts.length === 0) return null;
+      return {
+        firstAt: new Date(Math.min(...starts.map((d) => d.getTime()))),
+        lastAt: new Date(Math.max(...ends.map((d) => d.getTime()))),
+      };
+    }
+
+    const bounds = computeEventBounds();
+
     ticketTypes.forEach((tt, i) => {
-      const fieldErrs: { name?: string; price?: string; totalAvailable?: string } = {};
+      const fieldErrs: { name?: string; price?: string; totalAvailable?: string; salesStartAt?: string; salesEndAt?: string } = {};
       if (!tt.name.trim()) {
         fieldErrs.name = "Ticket name is required";
         valid = false;
@@ -202,6 +223,35 @@ export function EventForm({
           valid = false;
         }
       }
+
+      // Sale window checks
+      if (!tt.salesStartAt) {
+        fieldErrs.salesStartAt = "Sale start is required";
+        valid = false;
+      }
+      if (!tt.salesEndAt) {
+        fieldErrs.salesEndAt = "Sale end is required";
+        valid = false;
+      }
+      if (tt.salesStartAt && tt.salesEndAt) {
+        const start = new Date(tt.salesStartAt);
+        const end = new Date(tt.salesEndAt);
+        if (start >= end) {
+          fieldErrs.salesEndAt = "Sale end must be after sale start";
+          valid = false;
+        }
+        if (bounds) {
+          if (start >= bounds.firstAt) {
+            fieldErrs.salesStartAt = "Sale start must be before the event begins";
+            valid = false;
+          }
+          if (end > bounds.lastAt) {
+            fieldErrs.salesEndAt = "Sale end must be on or before the event ends";
+            valid = false;
+          }
+        }
+      }
+
       if (Object.keys(fieldErrs).length > 0) errs[i] = fieldErrs;
     });
 
@@ -233,6 +283,8 @@ export function EventForm({
               price: t.price,
               isMemberTicket: t.isMemberTicket,
               totalAvailable: t.totalAvailable,
+              salesStartAt: t.salesStartAt,
+              salesEndAt: t.salesEndAt,
             }))
           : undefined,
         hasForm,
@@ -248,7 +300,12 @@ export function EventForm({
     isTicketed &&
     (Object.keys(ticketErrors).length > 0 ||
       ticketTypes.some(
-        (t) => !t.name.trim() || t.price < 0 || t.totalAvailable < 1,
+        (t) =>
+          !t.name.trim() ||
+          t.price < 0 ||
+          t.totalAvailable < 1 ||
+          !t.salesStartAt ||
+          !t.salesEndAt,
       ));
 
   const hasFormValidationErrors =
