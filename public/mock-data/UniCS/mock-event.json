@@ -1,0 +1,34 @@
+{
+  "society": {
+    "name": "University of Manchester's Computer Science Society 💻",
+    "handle": "unicsmcr"
+  },
+  "event": {
+    "title": "HACK & SOCIAL: The End-of-Term Showdown",
+    "caption": "IT'S GIVING... END OF TERM ENERGY 🔥💻 Build something sick in 3 hours then come celebrate at Terrace!! Mini hackathon sprint → awards → drinks → vibes 🎶 Teams of 2-4, all skill levels welcome. Members £3 / Non-members £5. Spots are LIMITED so grab your tickets NOW 🎟️ Link in bio!!",
+    "date": "2026-04-17",
+    "schedule": [
+      {
+        "start": "17:00",
+        "end": "20:00",
+        "activity": "Mini Hackathon Sprint — 3-hour build challenge, theme revealed on the night",
+        "venue": "Students' Union, Meeting Room 4",
+        "venueType": "university"
+      },
+      {
+        "start": "20:30",
+        "end": "23:30",
+        "activity": "Awards & Drinks — judges announce winners, prizes, DJ set",
+        "venue": "Terrace Bar",
+        "venueType": "non-university",
+        "venueWebsite": "https://www.terracemcr.co.uk",
+        "venuePhone": "0161 819 2345"
+      }
+    ],
+    "imageStyle": "Bold, high-energy tech-meets-nightlife aesthetic. Split composition: one half coding/hackathon energy with glowing screens, the other half neon bar/party vibes. UniCS's playful, varied poster style with strong typography.",
+    "ticketing": {
+      "memberPrice": 3,
+      "nonMemberPrice": 5
+    }
+  }
+}
